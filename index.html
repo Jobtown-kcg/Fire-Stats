@@ -1,11 +1,111 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>My First Site</title>
-    <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Firefighter Debrief</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Master Cole!</h1>
-  <p>This page is live on the internet, deployed straight from GitHub.</p>
+
+  <div class="intro-banner">
+    <div class="intro-title headline">🔥 Interior Attack Line — Firefighter Debrief</div>
+    <p>For the firefighter who stretched the hoseline and performed the interior (push) fire attack. Tap an answer to select it — tap again to change it.</p>
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+    <div class="progress-label" id="progress-label">0 of 5 questions answered</div>
+  </div>
+
+  <div class="question-card">
+    <h3><span class="qnum">1.</span> Your assignment on this incident</h3>
+    <div class="options" data-question>
+      <button class="option-btn">Nozzle firefighter</button>
+      <button class="option-btn">Backup/second firefighter</button>
+      <button class="option-btn">Officer/company officer</button>
+      <button class="option-btn">Driver/engineer</button>
+      <button class="option-btn">Other</button>
+    </div>
+  </div>
+
+  <div class="question-card">
+    <h3><span class="qnum">2.</span> Years of firefighting experience</h3>
+    <div class="options" data-question>
+      <button class="option-btn">Less than 1 year</button>
+      <button class="option-btn">1–3 years</button>
+      <button class="option-btn">4–7 years</button>
+      <button class="option-btn">8–15 years</button>
+      <button class="option-btn">16+ years</button>
+    </div>
+  </div>
+
+  <div class="question-card">
+    <h3><span class="qnum">3.</span> What load did you pull?</h3>
+    <div class="options" data-question>
+      <button class="option-btn">Bulk load</button>
+      <button class="option-btn">Pre-connect</button>
+      <button class="option-btn">Bumper load</button>
+      <button class="option-btn">Denver</button>
+      <button class="option-btn">Other</button>
+    </div>
+  </div>
+
+  <div class="question-card">
+    <h3><span class="qnum">4.</span> How much hose did you project you would need to pull?</h3>
+    <div class="options" data-question>
+      <button class="option-btn">50 ft (1 section)</button>
+      <button class="option-btn">100 ft (2 sections)</button>
+      <button class="option-btn">150 ft (3 sections)</button>
+      <button class="option-btn">200 ft (4 sections)</button>
+      <button class="option-btn">250 ft (5 sections)</button>
+      <button class="option-btn">300+ ft</button>
+    </div>
+  </div>
+
+  <div class="question-card">
+    <h3><span class="qnum">5.</span> What entry point did you use?</h3>
+    <div class="options" data-question>
+      <button class="option-btn">Front door</button>
+      <button class="option-btn">Side door</button>
+      <button class="option-btn">Rear door</button>
+      <button class="option-btn">Garage</button>
+      <button class="option-btn">Window</button>
+    </div>
+  </div>
+
+  <nav class="bottom-nav">
+    <a href="#" class="nav-item"><span class="icon">🚚</span>Deploy</a>
+    <a href="index.html" class="nav-item active"><span class="icon">📋</span>Logs</a>
+    <a href="trends.html" class="nav-item"><span class="icon">📈</span>Trends</a>
+    <a href="#" class="nav-item"><span class="icon">⚙️</span>Gear</a>
+  </nav>
+
+  <script>
+    const totalQuestions = document.querySelectorAll('[data-question]').length;
+    const answered = new Set();
+
+    document.querySelectorAll('[data-question]').forEach((group, index) => {
+      group.querySelectorAll('.option-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const alreadySelected = btn.classList.contains('selected');
+          group.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+          if (alreadySelected) {
+            answered.delete(index);
+          } else {
+            btn.classList.add('selected');
+            answered.add(index);
+          }
+          updateProgress();
+        });
+      });
+    });
+
+    function updateProgress() {
+      const percent = (answered.size / totalQuestions) * 100;
+      document.getElementById('progress-fill').style.width = percent + '%';
+      document.getElementById('progress-label').innerText =
+        `${answered.size} of ${totalQuestions} questions answered`;
+    }
+  </script>
+
 </body>
 </html>
