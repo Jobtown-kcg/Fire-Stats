@@ -253,6 +253,40 @@ body {
   color: #777;
 }
 
+/* ---- Submit button (Debrief page) ---- */
+.submit-btn {
+  width: 100%;
+  background-color: #e53935;
+  border: none;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 16px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.submit-btn:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+
+.submit-status {
+  margin-top: 12px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.submit-status.success {
+  color: #4caf50;
+}
+
+.submit-status.error {
+  color: #ff6b6b;
+}
+
 /* ---- Bottom navigation ---- */
 .bottom-nav {
   position: fixed;
