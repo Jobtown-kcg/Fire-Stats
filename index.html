@@ -13,12 +13,12 @@
     <div class="progress-track">
       <div class="progress-fill" id="progress-fill"></div>
     </div>
-    <div class="progress-label" id="progress-label">0 of 5 questions answered</div>
+    <div class="progress-label" id="progress-label">0 of 26 questions answered</div>
   </div>
 
-  <div class="question-card">
+  <div class="question-card" data-qid="1">
     <h3><span class="qnum">1.</span> Your assignment on this incident</h3>
-    <div class="options" data-question>
+    <div class="options">
       <button class="option-btn">Nozzle firefighter</button>
       <button class="option-btn">Backup/second firefighter</button>
       <button class="option-btn">Officer/company officer</button>
@@ -27,9 +27,9 @@
     </div>
   </div>
 
-  <div class="question-card">
+  <div class="question-card" data-qid="2">
     <h3><span class="qnum">2.</span> Years of firefighting experience</h3>
-    <div class="options" data-question>
+    <div class="options">
       <button class="option-btn">Less than 1 year</button>
       <button class="option-btn">1–3 years</button>
       <button class="option-btn">4–7 years</button>
@@ -38,38 +38,300 @@
     </div>
   </div>
 
-  <div class="question-card">
+  <div class="question-card" data-qid="3">
     <h3><span class="qnum">3.</span> What load did you pull?</h3>
-    <div class="options" data-question>
+    <div class="options">
       <button class="option-btn">Bulk load</button>
       <button class="option-btn">Pre-connect</button>
-      <button class="option-btn">Bumper load</button>
+      <button class="option-btn">Bumper Load</button>
       <button class="option-btn">Denver</button>
       <button class="option-btn">Other</button>
     </div>
   </div>
 
-  <div class="question-card">
+  <div class="question-card" data-qid="4">
     <h3><span class="qnum">4.</span> How much hose did you project you would need to pull?</h3>
-    <div class="options" data-question>
+    <div class="options">
       <button class="option-btn">50 ft (1 section)</button>
       <button class="option-btn">100 ft (2 sections)</button>
       <button class="option-btn">150 ft (3 sections)</button>
       <button class="option-btn">200 ft (4 sections)</button>
       <button class="option-btn">250 ft (5 sections)</button>
       <button class="option-btn">300+ ft</button>
+      <button class="option-btn">Not sure</button>
+      <button class="option-btn">Other</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="5">
+    <h3><span class="qnum">5.</span> How much did you end up actually needing?</h3>
+    <div class="options">
+      <button class="option-btn">50 ft (1 section)</button>
+      <button class="option-btn">100 ft (2 sections)</button>
+      <button class="option-btn">150 ft (3 sections)</button>
+      <button class="option-btn">200 ft (4 sections)</button>
+      <button class="option-btn">250 ft (5 sections)</button>
+      <button class="option-btn">300+ ft</button>
+      <button class="option-btn">Not sure</button>
+      <button class="option-btn">Other</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="6">
+    <h3><span class="qnum">6.</span> Hoseline and nozzle selected for this attack</h3>
+    <div class="options">
+      <button class="option-btn">1¾" blue</button>
+      <button class="option-btn">1¾" red</button>
+      <button class="option-btn">2½"</button>
+      <button class="option-btn">1¾" Bumper</button>
+      <button class="option-btn">Other</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="7">
+    <h3><span class="qnum">7.</span> Primary reason you chose this hoseline/nozzle</h3>
+    <div class="options">
+      <button class="option-btn">Department SOP / standard line</button>
+      <button class="option-btn">Anticipated fire load or occupancy size</button>
+      <button class="option-btn">Needed reach/distance</button>
+      <button class="option-btn">Easier to maneuver/advance</button>
+      <button class="option-btn">Directed by officer/command</button>
+      <button class="option-btn">Other</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="8">
+    <h3><span class="qnum">8.</span> Did this affect how quickly you got water on the fire?</h3>
+    <div class="options">
+      <button class="option-btn">Yes, slowed us down</button>
+      <button class="option-btn">No noticeable effect</button>
+      <button class="option-btn">Not sure</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="9">
+    <h3><span class="qnum">9.</span> Which door or opening did you use to make entry into the structure?</h3>
+    <div class="options">
+      <button class="option-btn">Front door</button>
+      <button class="option-btn">Side door</button>
+      <button class="option-btn">Rear door</button>
+      <button class="option-btn">Garage door/opening</button>
+      <button class="option-btn">Window</button>
+      <button class="option-btn">Other</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="10">
+    <h3><span class="qnum">10.</span> Primary reason you chose that specific entry point over other options</h3>
+    <div class="options">
+      <button class="option-btn">Closest to the fire</button>
+      <button class="option-btn">Fire/smoke showing at that location</button>
+      <button class="option-btn">Directed by command/officer</button>
+      <button class="option-btn">Path of least resistance/most accessible</button>
+      <button class="option-btn">Wind direction/ventilation profile</button>
+      <button class="option-btn">Prior knowledge of building layout</button>
+      <button class="option-btn">Other</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="11">
+    <h3><span class="qnum">11.</span> Conditions you encountered immediately upon entry</h3>
+
+    <div class="sub-label">Smoke</div>
+    <div class="options">
+      <button class="option-btn">Light</button>
+      <button class="option-btn">Moderate</button>
+      <button class="option-btn">Heavy / zero visibility</button>
+    </div>
+
+    <div class="sub-label">Heat</div>
+    <div class="options">
+      <button class="option-btn">Mild</button>
+      <button class="option-btn">Moderate</button>
+      <button class="option-btn">Severe / high heat</button>
+    </div>
+
+    <div class="sub-label">Visibility</div>
+    <div class="options">
+      <button class="option-btn">Good</button>
+      <button class="option-btn">Reduced</button>
+      <button class="option-btn">Zero</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="12">
+    <h3><span class="qnum">12.</span> How did you conduct your attack?</h3>
+    <div class="options">
+      <button class="option-btn">Continuous flow to the seat of the fire</button>
+      <button class="option-btn">Shut down water to move</button>
+      <button class="option-btn">Half bailed nozzle to move</button>
+      <button class="option-btn">Other</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="13">
+    <h3><span class="qnum">13.</span> Did you have a heel man (backup firefighter behind you managing/feeding the line)?</h3>
+    <div class="options">
+      <button class="option-btn">Yes</button>
+      <button class="option-btn">No</button>
+      <button class="option-btn">Not sure</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="14">
+    <h3><span class="qnum">14.</span> If you stopped flowing water or half-bailed the nozzle to move, did you notice an increase in heat/temperature?</h3>
+    <div class="options">
+      <button class="option-btn">Yes, noticeable increase</button>
+      <button class="option-btn">No noticeable change</button>
+      <button class="option-btn">N/A – flowed continuously the whole time</button>
+      <button class="option-btn">Not sure</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="15">
+    <h3><span class="qnum">15.</span> Did you or your team have any trouble managing/advancing the hoseline?</h3>
+    <div class="select-note">Select all that apply</div>
+    <div class="options" data-mode="multi">
+      <button class="option-btn">No trouble</button>
+      <button class="option-btn">Kinks</button>
+      <button class="option-btn">Snagged on doorway/furniture</button>
+      <button class="option-btn">Excess hose / too much slack</button>
+      <button class="option-btn">Stairs/tight spaces</button>
+      <button class="option-btn">Other</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="16">
+    <h3><span class="qnum">16.</span> How did you find your way to the seat of the fire?</h3>
+    <div class="options">
+      <button class="option-btn">Followed the hoseline/wall</button>
+      <button class="option-btn">Thermal imaging camera</button>
+      <button class="option-btn">Visual on the glow/light</button>
+      <button class="option-btn">Prior knowledge of the layout</button>
+      <button class="option-btn">Other</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="17">
+    <h3><span class="qnum">17.</span> Approximately how long did it take to reach the seat of the fire from the point of entry?</h3>
+    <div class="options">
+      <button class="option-btn">Under 1 minute</button>
+      <button class="option-btn">1–2 minutes</button>
+      <button class="option-btn">2–4 minutes</button>
+      <button class="option-btn">Over 4 minutes</button>
+      <button class="option-btn">Not sure</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="18">
+    <h3><span class="qnum">18.</span> Approximately how long did it take to knock down/extinguish the fire once water was applied?</h3>
+    <div class="options">
+      <button class="option-btn">Under 15 seconds</button>
+      <button class="option-btn">15–30 seconds</button>
+      <button class="option-btn">30 seconds – 1 minute</button>
+      <button class="option-btn">Over 1 minute</button>
+      <button class="option-btn">Not sure</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="19">
+    <h3><span class="qnum">19.</span> Was stretching the line and performing this attack physically taxing?</h3>
+    <div class="options">
+      <button class="option-btn">Not at all taxing</button>
+      <button class="option-btn">Slightly taxing</button>
+      <button class="option-btn">Moderately taxing</button>
+      <button class="option-btn">Very taxing / exhausting</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="20">
+    <h3><span class="qnum">20.</span> If taxing, what contributed most?</h3>
+    <div class="select-note">Select all that apply</div>
+    <div class="options" data-mode="multi">
+      <button class="option-btn">Heavy/awkward hose load</button>
+      <button class="option-btn">Heat stress</button>
+      <button class="option-btn">Heavy breathing/air consumption</button>
+      <button class="option-btn">Muscle strain/fatigue</button>
+      <button class="option-btn">Distance/stairs</button>
+      <button class="option-btn">N/A – not taxing</button>
+      <button class="option-btn">Other</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="21">
+    <h3><span class="qnum">21.</span> Approximately how much SCBA air did you have remaining when you exited the structure?</h3>
+    <div class="options">
+      <button class="option-btn">75–100%</button>
+      <button class="option-btn">50–75%</button>
+      <button class="option-btn">25–50%</button>
+      <button class="option-btn">Under 25% / low-air alarm activated</button>
+      <button class="option-btn">Not sure</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="22">
+    <h3><span class="qnum">22.</span> Did you experience any equipment problems during this evolution?</h3>
+    <div class="options">
+      <button class="option-btn">No problems</button>
+      <button class="option-btn">Nozzle issue</button>
+      <button class="option-btn">Coupling/connection issue</button>
+      <button class="option-btn">Burst or kinked hose</button>
+      <button class="option-btn">PPE issue</button>
+      <button class="option-btn">Other</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="23">
+    <h3><span class="qnum">23.</span> Was the fire fully extinguished with this line alone, or was more needed?</h3>
+    <div class="options">
+      <button class="option-btn">Extinguished with this line alone</button>
+      <button class="option-btn">Additional line(s) needed</button>
+      <button class="option-btn">Additional personnel needed</button>
+      <button class="option-btn">Other</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="24">
+    <h3><span class="qnum">24.</span> Did you experience any injuries, close calls, or near-misses during this evolution?</h3>
+    <div class="options">
+      <button class="option-btn">None</button>
+      <button class="option-btn">Minor injury</button>
+      <button class="option-btn">Serious injury</button>
+      <button class="option-btn">Close call / near-miss (no injury)</button>
+      <button class="option-btn">Other</button>
+    </div>
+    <textarea class="text-input" rows="2" placeholder="If yes, briefly describe (optional)"></textarea>
+  </div>
+
+  <div class="question-card" data-qid="25">
+    <h3><span class="qnum">25.</span> Looking back, would you choose the same hoseline, entry point, and technique again?</h3>
+    <div class="options">
+      <button class="option-btn">Yes, all the same</button>
+      <button class="option-btn">No, would change hoseline</button>
+      <button class="option-btn">No, would change entry point</button>
+      <button class="option-btn">No, would change technique</button>
+      <button class="option-btn">No, would change more than one</button>
+      <button class="option-btn">Other</button>
+    </div>
+    <textarea class="text-input" rows="2" placeholder="Why or why not (optional)"></textarea>
+  </div>
+
+  <div class="question-card" data-qid="26">
+    <h3><span class="qnum">26.</span> What, if anything, would you do differently next time?</h3>
+    <div class="select-note">Select all that apply</div>
+    <div class="options" data-mode="multi">
+      <button class="option-btn">Nothing, would do the same</button>
+      <button class="option-btn">Choose different hoseline/nozzle</button>
+      <button class="option-btn">Choose different entry point</button>
+      <button class="option-btn">Communicate more with command/crew</button>
+      <button class="option-btn">Manage air consumption differently</button>
+      <button class="option-btn">Other</button>
     </div>
   </div>
 
   <div class="question-card">
-    <h3><span class="qnum">5.</span> What entry point did you use?</h3>
-    <div class="options" data-question>
-      <button class="option-btn">Front door</button>
-      <button class="option-btn">Side door</button>
-      <button class="option-btn">Rear door</button>
-      <button class="option-btn">Garage</button>
-      <button class="option-btn">Window</button>
-    </div>
+    <h3><span class="qnum">27.</span> Any other comments, hazards, or lessons learned from this specific attack?</h3>
+    <textarea class="text-input" rows="3" placeholder="Type your answer here (optional)"></textarea>
   </div>
 
   <nav class="bottom-nav">
@@ -80,30 +342,42 @@
   </nav>
 
   <script>
-    const totalQuestions = document.querySelectorAll('[data-question]').length;
-    const answered = new Set();
+    const questionCards = Array.from(document.querySelectorAll('.question-card[data-qid]'));
+    const totalQuestions = questionCards.length;
 
-    document.querySelectorAll('[data-question]').forEach((group, index) => {
+    // Wire up every options group (single-select by default, multi-select if data-mode="multi")
+    document.querySelectorAll('.options').forEach(group => {
+      const isMulti = group.dataset.mode === 'multi';
+
       group.querySelectorAll('.option-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           const alreadySelected = btn.classList.contains('selected');
-          group.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
-          if (alreadySelected) {
-            answered.delete(index);
-          } else {
-            btn.classList.add('selected');
-            answered.add(index);
+
+          if (!isMulti) {
+            // single-select: clear the rest of this group first
+            group.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
           }
+
+          btn.classList.toggle('selected', !alreadySelected);
           updateProgress();
         });
       });
     });
 
     function updateProgress() {
-      const percent = (answered.size / totalQuestions) * 100;
+      let answeredCount = 0;
+
+      questionCards.forEach(card => {
+        const groups = Array.from(card.querySelectorAll('.options'));
+        if (groups.length === 0) return; // open-text-only question, not counted
+        const allGroupsAnswered = groups.every(g => g.querySelector('.option-btn.selected'));
+        if (allGroupsAnswered) answeredCount++;
+      });
+
+      const percent = (answeredCount / totalQuestions) * 100;
       document.getElementById('progress-fill').style.width = percent + '%';
       document.getElementById('progress-label').innerText =
-        `${answered.size} of ${totalQuestions} questions answered`;
+        `${answeredCount} of ${totalQuestions} questions answered`;
     }
   </script>
 
