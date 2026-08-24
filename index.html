@@ -2,57 +2,58 @@
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Fire-Stats — Select Debrief</title>
+  <title>Fire-Stats — Select Job</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="no-bottom-nav">
 
-  <div class="topbar">
-    <h1 class="headline">Select a Debrief</h1>
-    <div class="avatar">👤</div>
+  <div class="job-topbar">
+    <span class="job-topbar-icon">☰</span>
+    <h1 class="job-topbar-title">Select Job</h1>
+    <span class="job-topbar-icon">🔍</span>
   </div>
 
-  <div class="progress-label" style="margin: 14px 0 0;">Choose the operation you performed on this incident</div>
-
-  <div class="menu-grid">
-    <a class="menu-tile" href="fire-attack.html">
-      <div class="menu-icon">🧯</div>
-      <div class="menu-text">
-        <div class="menu-title">Interior Attack Line</div>
-        <div class="menu-subtitle">For the firefighter who stretched the hoseline and performed the interior fire attack.</div>
+  <div class="job-grid">
+    <a class="job-card" href="fire-attack.html">
+      <div class="job-card-image job-card-image-attack">
+        <span class="job-card-emoji">🧯</span>
+      </div>
+      <div class="job-card-body">
+        <div class="job-card-title">Interior Attack Line</div>
+        <div class="job-card-desc">For the firefighter who stretched the hoseline and performed the interior fire attack.</div>
       </div>
     </a>
 
-    <a class="menu-tile" href="debrief-ventilation.html">
-      <div class="menu-icon">🪓</div>
-      <div class="menu-text">
-        <div class="menu-title">Ventilation</div>
-        <div class="menu-subtitle">For the firefighter who performed horizontal, vertical, or mechanical ventilation.</div>
+    <a class="job-card" href="debrief-ventilation.html">
+      <div class="job-card-image job-card-image-vent">
+        <span class="job-card-emoji">🪓</span>
+      </div>
+      <div class="job-card-body">
+        <div class="job-card-title">Ventilation</div>
+        <div class="job-card-desc">For the firefighter who performed horizontal, vertical, or mechanical ventilation.</div>
       </div>
     </a>
 
-    <a class="menu-tile" href="debrief-search.html">
-      <div class="menu-icon">🔦</div>
-      <div class="menu-text">
-        <div class="menu-title">Search</div>
-        <div class="menu-subtitle">For the firefighter who conducted the primary search of the structure.</div>
+    <a class="job-card" href="debrief-search.html">
+      <div class="job-card-image job-card-image-search">
+        <span class="job-card-emoji">🔦</span>
+      </div>
+      <div class="job-card-body">
+        <div class="job-card-title">Search</div>
+        <div class="job-card-desc">For the firefighter who conducted the primary search of the structure.</div>
       </div>
     </a>
 
-    <a class="menu-tile" href="debrief-secondary-search.html">
-      <div class="menu-icon">🔁</div>
-      <div class="menu-text">
-        <div class="menu-title">Secondary Search</div>
-        <div class="menu-subtitle">For the firefighter who conducted a secondary search after the fire was under control.</div>
+    <a class="job-card" href="debrief-secondary-search.html">
+      <div class="job-card-image job-card-image-secondary">
+        <span class="job-card-emoji">🔁</span>
+      </div>
+      <div class="job-card-body">
+        <div class="job-card-title">Secondary Search</div>
+        <div class="job-card-desc">For the firefighter who conducted a secondary search after the fire was under control.</div>
       </div>
     </a>
   </div>
-
-  <nav class="bottom-nav">
-    <a href="index.html" class="nav-item active"><span class="icon">🏠</span>Home</a>
-    <a href="trends.html" class="nav-item"><span class="icon">📈</span>Trends</a>
-    <a href="admin-roster.html" class="nav-item"><span class="icon">⚙️</span>Gear</a>
-  </nav>
 
 </body>
 </html>
