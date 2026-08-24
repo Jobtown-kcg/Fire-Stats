@@ -12,6 +12,12 @@ body {
   padding-bottom: 90px; /* leave room for the fixed bottom nav */
 }
 
+/* Pages sent directly to a firefighter (Select Job + the debrief forms) have
+   no bottom nav, so they don't need the reserved space at the bottom. */
+body.no-bottom-nav {
+  padding-bottom: 0;
+}
+
 .headline {
   text-transform: uppercase;
   font-weight: 800;
@@ -214,6 +220,46 @@ body {
   margin-top: 0;
 }
 
+/* ---- Inline follow-ups that pop open inside a question (Yes/No -> detail) ---- */
+.inline-followup {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ---- One combined answer box with a fixed suffix (e.g. roof pitch "_ : 12") ---- */
+.pitch-field {
+  display: inline-flex;
+  align-items: center;
+  background-color: #14161c;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-top: 14px;
+}
+
+.pitch-field input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 14px;
+  width: 40px;
+  text-align: right;
+  padding: 0;
+}
+
+.pitch-field input::placeholder {
+  color: #777;
+}
+
+.pitch-field .pitch-suffix {
+  color: #ffffff;
+  font-size: 14px;
+  margin-left: 2px;
+}
+
 .options {
   display: flex;
   flex-wrap: wrap;
@@ -285,6 +331,95 @@ body {
 
 .submit-status.error {
   color: #ff6b6b;
+}
+
+/* ---- Job/debrief selection screen (Home page) ---- */
+.job-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 18px;
+  background-color: #000000;
+  border-bottom: 2px solid #e53935;
+}
+
+.job-topbar-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.job-topbar-icon {
+  font-size: 20px;
+  color: #e57373;
+  line-height: 1;
+}
+
+.job-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  padding: 16px 18px;
+}
+
+.job-card {
+  display: block;
+  background-color: #1c1e24;
+  border-radius: 10px;
+  overflow: hidden;
+  text-decoration: none;
+  color: #ffffff;
+  border-top: 3px solid #e53935;
+}
+
+.job-card-image {
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.job-card-emoji {
+  font-size: 36px;
+}
+
+.job-card-image-attack {
+  background: linear-gradient(135deg, #6b1d1d, #e5533a);
+}
+
+.job-card-image-vent {
+  background: linear-gradient(135deg, #37474f, #78909c);
+}
+
+.job-card-image-search {
+  background: linear-gradient(135deg, #1c1c1c, #4a4a4a);
+}
+
+.job-card-image-secondary {
+  background: linear-gradient(135deg, #7a1f00, #ff6f3c);
+}
+
+.job-card-body {
+  padding: 12px;
+}
+
+.job-card-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  line-height: 1.25;
+}
+
+.job-card-desc {
+  font-size: 12px;
+  color: #c98f8f;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 /* ---- Bottom navigation ---- */
