@@ -155,6 +155,17 @@
     <textarea class="text-input" id="comments-textarea" rows="3" placeholder="Type your answer here (optional)"></textarea>
   </div>
 
+  <div class="chat-followup-card">
+    <h3><span class="qnum">💬</span> Quick Follow-Up</h3>
+    <p class="chat-subtitle">A few open-ended questions, in your own words — this helps build a narrative summary for the AAR. Optional.</p>
+    <div class="chat-thread" id="chat-thread"></div>
+    <div class="chat-input-row" id="chat-input-row">
+      <textarea id="chat-textarea" rows="1" placeholder="Type your answer…"></textarea>
+      <button class="chat-send-btn" id="chat-send-btn" type="button">➤</button>
+    </div>
+    <button class="chat-skip-link" id="chat-skip-btn" type="button">Skip this question</button>
+  </div>
+
   <div class="question-card" id="submit-card">
     <button class="submit-btn" id="submit-btn">Submit Debrief</button>
     <div class="submit-status" id="submit-status"></div>
@@ -246,6 +257,72 @@
       return answers;
     }
 
+    // ===== AI chat follow-up =====
+    // A small fixed set of open-ended prompts, presented like a text
+    // conversation. Free-text answers ride along with the structured
+    // answers when the debrief is submitted.
+    const chatPrompts = [
+      "Walk me through how this went, in your own words.",
+      "Anything that surprised you, or that you'd want the next crew to know?",
+      "Anything you'd do differently next time, or any final thoughts?"
+    ];
+
+    let chatStep = 0;
+    const chatAnswers = [];
+    const chatThread = document.getElementById('chat-thread');
+    const chatInputRow = document.getElementById('chat-input-row');
+    const chatTextarea = document.getElementById('chat-textarea');
+    const chatSendBtn = document.getElementById('chat-send-btn');
+    const chatSkipBtn = document.getElementById('chat-skip-btn');
+
+    function addChatBubble(text, type) {
+      const bubble = document.createElement('div');
+      bubble.className = 'chat-bubble ' + type;
+      bubble.textContent = text;
+      chatThread.appendChild(bubble);
+      chatThread.scrollTop = chatThread.scrollHeight;
+    }
+
+    function askNextChatPrompt() {
+      if (chatStep < chatPrompts.length) {
+        addChatBubble(chatPrompts[chatStep], 'incoming');
+      } else {
+        chatInputRow.style.display = 'none';
+        chatSkipBtn.style.display = 'none';
+        addChatBubble("That's everything — hit Submit Debrief below when you're ready.", 'incoming system-note');
+      }
+    }
+
+    function advanceChat(responseText) {
+      if (responseText) {
+        chatAnswers.push({ prompt: chatPrompts[chatStep], response: responseText });
+      }
+      chatStep++;
+      askNextChatPrompt();
+    }
+
+    chatSendBtn.addEventListener('click', () => {
+      const text = chatTextarea.value.trim();
+      if (!text) return;
+      addChatBubble(text, 'outgoing');
+      chatTextarea.value = '';
+      advanceChat(text);
+    });
+
+    chatTextarea.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        chatSendBtn.click();
+      }
+    });
+
+    chatSkipBtn.addEventListener('click', () => {
+      chatTextarea.value = '';
+      advanceChat(null);
+    });
+
+    askNextChatPrompt();
+
     document.getElementById('submit-btn').addEventListener('click', async () => {
       const statusEl = document.getElementById('submit-status');
       const btn = document.getElementById('submit-btn');
@@ -257,6 +334,23 @@
 
       const answers = collectAnswers();
       answers.operation_type = 'secondary_search';
+      answers.chat_followup = chatAnswers;
+
+      // One AI call: turns the structured answers + free-text chat responses
+      // into a narrative summary for the AAR. Runs through a Supabase Edge
+      // Function so the real API key stays server-side. If the function
+      // isn't deployed yet (or the call fails for any reason), we don't
+      // block the submission — the structured data still reaches Trends.
+      try {
+        const { data: summaryData, error: summaryError } = await sb.functions.invoke('generate-debrief-summary', {
+          body: { answers }
+        });
+        if (!summaryError && summaryData && summaryData.summary) {
+          answers.ai_summary = summaryData.summary;
+        }
+      } catch (e) {
+        console.warn('AI summary unavailable, submitting without it:', e);
+      }
 
       const { error } = await sb.from('debrief_submissions').insert([{ answers }]);
 
