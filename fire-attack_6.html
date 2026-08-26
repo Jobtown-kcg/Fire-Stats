@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Interior Attack Line Debrief</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="no-bottom-nav">
+
+  <div class="intro-banner">
+    <div class="intro-title headline">🔥 Interior Attack Line — Firefighter Debrief</div>
+    <p>For the firefighter who stretched the hoseline and performed the interior (push) fire attack. Tap an answer to select it — tap again to change it.</p>
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+    <div class="progress-label" id="progress-label">0 of 24 questions answered</div>
+  </div>
+
+  <div class="question-card" data-qid="load_type">
+    <h3><span class="qnum">1.</span> What load did you pull?</h3>
+    <div class="options">
+      <button class="option-btn">Bulk load</button>
+      <button class="option-btn">Pre-connect</button>
+      <button class="option-btn">Bumper Load</button>
+      <button class="option-btn">Denver</button>
+      <button class="option-btn">Other</button>
+    </div>
+    <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
+  </div>
+
+  <div class="question-card" data-qid="hoseline_nozzle">
+    <h3><span class="qnum">2.</span> Hoseline and nozzle selected for this attack</h3>
+    <div class="options">
+      <button class="option-btn">1¾" blue</button>
+      <button class="option-btn">1¾" red</button>
+      <button class="option-btn">1¾" pre-connect</button>
+      <button class="option-btn">2½"</button>
+      <button class="option-btn">1¾" Bumper</button>
+      <button class="option-btn">Other</button>
+    </div>
+    <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
+  </div>
+
+  <div class="question-card" data-qid="hoseline_reason">
+    <h3><span class="qnum">3.</span> Primary reason you chose this hoseline/nozzle</h3>
+    <div class="options">
+      <button class="option-btn">Anticipated fire load or occupancy size</button>
+      <button class="option-btn">Needed reach/distance</button>
+      <button class="option-btn">Easier to maneuver/advance</button>
+      <button class="option-btn">Directed by officer/command</button>
+      <button class="option-btn">Other</button>
+    </div>
+    <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
+  </div>
+
+  <div class="question-card" data-qid="hose_pulled">
+    <h3><span class="qnum">4.</span> How much hose did you project you would need to pull?</h3>
+    <div class="options">
+      <button class="option-btn">50 ft</button>
+      <button class="option-btn">100 ft</button>
+      <button class="option-btn">150 ft</button>
+      <button class="option-btn">200 ft</button>
+      <button class="option-btn">250 ft</button>
+      <button class="option-btn">300+ ft</button>
+      <button class="option-btn">Not sure</button>
+      <button class="option-btn">Other</button>
+    </div>
+    <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
+  </div>
+
+  <div class="question-card" data-qid="hose_on_ground">
+    <h3><span class="qnum">5.</span> How much hose ended up on the ground?</h3>
+
+    <div class="sub-label">Amount</div>
+    <div class="options">
+      <button class="option-btn">50 ft</button>
+      <button class="option-btn">100 ft</button>
+      <button class="option-btn">150 ft</button>
+      <button class="option-btn">200 ft</button>
+      <button class="option-btn">250 ft</button>
+      <button class="option-btn">300+ ft</button>
+      <button class="option-btn">Not sure</button>
+      <button class="option-btn">Other</button>
+    </div>
+    <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
+
+    <div class="sub-label">Was that more or less than you wanted?</div>
+    <div class="options">
+      <button class="option-btn">Extra hose</button>
+      <button class="option-btn">Less hose</button>
+      <button class="option-btn">About right</button>
+    </div>
+
+    <textarea class="text-input" rows="2" placeholder="Why was it more or less than you wanted? (optional)"></textarea>
+  </div>
+
+  <div class="question-card" data-qid="hose_needed">
+    <h3><span class="qnum">6.</span> How much did you end up actually needing?</h3>
+    <div class="options">
+      <button class="option-btn">50 ft</button>
+      <button class="option-btn">100 ft</button>
+      <button class="option-btn">150 ft</button>
+      <button class="option-btn">200 ft</button>
+      <button class="option-btn">250 ft</button>
+      <button class="option-btn">300+ ft</button>
+      <button class="option-btn">Not sure</button>
+      <button class="option-btn">Other</button>
+    </div>
+    <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
+  </div>
+
+  <div class="question-card" data-qid="entry_door">
+    <h3><span class="qnum">7.</span> Which door or opening did you use to make entry into the structure?</h3>
+    <div class="options">
+      <button class="option-btn">Front door</button>
+      <button class="option-btn">Side door</button>
+      <button class="option-btn">Rear door</button>
+      <button class="option-btn">Garage door/opening</button>
+      <button class="option-btn">Window</button>
+      <button class="option-btn">Other</button>
+    </div>
+    <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
+  </div>
+
+  <div class="question-card" data-qid="entry_reason">
+    <h3><span class="qnum">8.</span> Primary reason you chose that specific entry point over other options</h3>
+    <div class="options">
+      <button class="option-btn">Closest to the fire</button>
+      <button class="option-btn">Fire/smoke showing at that location</button>
+      <button class="option-btn">Directed by command/officer</button>
+      <button class="option-btn">Path of least resistance/most accessible</button>
+      <button class="option-btn">Wind direction/ventilation profile</button>
+      <button class="option-btn">Prior knowledge of building layout</button>
+      <button class="option-btn">Other</button>
+    </div>
+    <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
+  </div>
+
+  <div class="question-card" data-qid="conditions">
+    <h3><span class="qnum">9.</span> Conditions you encountered immediately upon entry</h3>
+
+    <div class="sub-label">Smoke</div>
+    <div class="options">
+      <button class="option-btn">Light</button>
+      <button class="option-btn">Moderate</button>
+      <button class="option-btn">Heavy</button>
+    </div>
+
+    <div class="sub-label">Heat</div>
+    <div class="options">
+      <button class="option-btn">Mild</button>
+      <button class="option-btn">Moderate</button>
+      <button class="option-btn">Severe / high heat</button>
+    </div>
+
+    <div class="sub-label">Visibility</div>
+    <div class="options">
+      <button class="option-btn">Good</button>
+      <button class="option-btn">Reduced</button>
+      <button class="option-btn">Zero</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="attack_technique">
+    <h3><span class="qnum">10.</span> How did you conduct your attack?</h3>
+    <div class="options">
+      <button class="option-btn">Continuous flow to the seat of the fire</button>
+      <button class="option-btn">Shut down water to move</button>
+      <button class="option-btn">Half bailed nozzle to move</button>
+      <button class="option-btn">Other</button>
+    </div>
+    <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
+  </div>
+
+  <div class="question-card" data-qid="heel_man">
+    <h3><span class="qnum">11.</span> Did you have a heel man (backup firefighter behind you managing/feeding the line)?</h3>
+    <div class="options">
+      <button class="option-btn">Yes</button>
+      <button class="option-btn">No</button>
+      <button class="option-btn">Not sure</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="heat_increase">
+    <h3><span class="qnum">12.</span> If you stopped flowing water or half-bailed the nozzle to move, did you notice an increase in heat/temperature?</h3>
+    <div class="options">
+      <button class="option-btn">Yes, noticeable increase</button>
+      <button class="option-btn">No noticeable change</button>
+      <button class="option-btn">N/A – flowed continuously the whole time</button>
+      <button class="option-btn">Not sure</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="hoseline_trouble">
+    <h3><span class="qnum">13.</span> Did you or your team have any trouble managing/advancing the hoseline?</h3>
+    <div class="select-note">Select all that apply</div>
+    <div class="options" data-mode="multi">
+      <button class="option-btn">No trouble</button>
+      <button class="option-btn">Kinks</button>
+      <button class="option-btn">Snagged on doorway/furniture</button>
+      <button class="option-btn">Excess hose / too much slack</button>
+      <button class="option-btn">Stairs/tight spaces</button>
+      <button class="option-btn">Other</button>
+    </div>
+    <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
+  </div>
+
+  <div class="question-card" data-qid="found_seat">
+    <h3><span class="qnum">14.</span> How did you find your way to the seat of the fire?</h3>
+    <div class="options">
+      <button class="option-btn">Thermal imaging camera</button>
+      <button class="option-btn">Visual on the glow/light</button>
+      <button class="option-btn">Prior knowledge of the layout</button>
+      <button class="option-btn">Other</button>
+    </div>
+    <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
+  </div>
+
+  <div class="question-card" data-qid="time_to_water">
+    <h3><span class="qnum">15.</span> Approximately how long until you got water on the fire?</h3>
+    <div class="options">
+      <button class="option-btn">Under 1 minute</button>
+      <button class="option-btn">1–2 minutes</button>
+      <button class="option-btn">2–4 minutes</button>
+      <button class="option-btn">Over 4 minutes</button>
+      <button class="option-btn">Not sure</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="time_to_extinguish">
+    <h3><span class="qnum">16.</span> After getting water on the fire, approximately how long until extinguishment?</h3>
+    <div class="options">
+      <button class="option-btn">Under 15 seconds</button>
+      <button class="option-btn">15–30 seconds</button>
+      <button class="option-btn">30 seconds – 1 minute</button>
+      <button class="option-btn">Over 1 minute</button>
+      <button class="option-btn">Not sure</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="physically_taxing">
+    <h3><span class="qnum">17.</span> Was stretching the line and performing this attack physically taxing?</h3>
+    <div class="options">
+      <button class="option-btn">Not at all taxing</button>
+      <button class="option-btn">Slightly taxing</button>
+      <button class="option-btn">Moderately taxing</button>
+      <button class="option-btn">Very taxing / exhausting</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="taxing_factors">
+    <h3><span class="qnum">18.</span> If taxing, what contributed most?</h3>
+    <div class="select-note">Select all that apply</div>
+    <div class="options" data-mode="multi">
+      <button class="option-btn">Management of hose</button>
+      <button class="option-btn">Heat stress</button>
+      <button class="option-btn">Heavy breathing/air consumption</button>
+      <button class="option-btn">Muscle strain/fatigue</button>
+      <button class="option-btn">Distance/stairs</button>
+      <button class="option-btn">N/A – not taxing</button>
+      <button class="option-btn">Other</button>
+    </div>
+    <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
+  </div>
+
+  <div class="question-card" data-qid="scba_air">
+    <h3><span class="qnum">19.</span> Approximately how much SCBA air did you have remaining when you exited the structure?</h3>
+    <div class="options">
+      <button class="option-btn">75–100%</button>
+      <button class="option-btn">50–75%</button>
+      <button class="option-btn">25–50%</button>
+      <button class="option-btn">Under 25% / low-air alarm activated</button>
+      <button class="option-btn">Not sure</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="equipment_problems">
+    <h3><span class="qnum">20.</span> Did you experience any equipment problems during this evolution?</h3>
+    <div class="options">
+      <button class="option-btn">No problems</button>
+      <button class="option-btn">Nozzle issue</button>
+      <button class="option-btn">Coupling/connection issue</button>
+      <button class="option-btn">Burst or kinked hose</button>
+      <button class="option-btn">PPE issue</button>
+      <button class="option-btn">Other</button>
+    </div>
+    <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
+  </div>
+
+  <div class="question-card" data-qid="one_line_enough">
+    <h3><span class="qnum">21.</span> Was the fire fully extinguished with this line alone, or was more needed?</h3>
+    <div class="options">
+      <button class="option-btn">Extinguished with this line alone</button>
+      <button class="option-btn">Additional line(s) needed</button>
+      <button class="option-btn">Additional personnel needed</button>
+      <button class="option-btn">Other</button>
+    </div>
+    <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
+  </div>
+
+  <div class="question-card" data-qid="injuries">
+    <h3><span class="qnum">22.</span> Did you experience any injuries, close calls, or near-misses during this evolution?</h3>
+    <div class="options">
+      <button class="option-btn">None</button>
+      <button class="option-btn">Minor injury</button>
+      <button class="option-btn">Serious injury</button>
+      <button class="option-btn">Close call / near-miss (no injury)</button>
+      <button class="option-btn">Other</button>
+    </div>
+    <textarea class="text-input" rows="2" placeholder="If yes, briefly describe (optional)"></textarea>
+  </div>
+
+  <div class="question-card" data-qid="would_repeat">
+    <h3><span class="qnum">23.</span> Looking back, would you choose the same hoseline, entry point, and technique again?</h3>
+    <div class="options">
+      <button class="option-btn">Yes, all the same</button>
+      <button class="option-btn">No, would change hoseline</button>
+      <button class="option-btn">No, would change entry point</button>
+      <button class="option-btn">No, would change technique</button>
+      <button class="option-btn">No, would change more than one</button>
+      <button class="option-btn">Other</button>
+    </div>
+    <textarea class="text-input" rows="2" placeholder="Why or why not (optional)"></textarea>
+  </div>
+
+  <div class="question-card" data-qid="would_change">
+    <h3><span class="qnum">24.</span> What, if anything, would you do differently next time?</h3>
+    <div class="select-note">Select all that apply</div>
+    <div class="options" data-mode="multi">
+      <button class="option-btn">Nothing, would do the same</button>
+      <button class="option-btn">Choose different hoseline/nozzle</button>
+      <button class="option-btn">Choose different entry point</button>
+      <button class="option-btn">Communicate more with command/crew</button>
+      <button class="option-btn">Manage air consumption differently</button>
+      <button class="option-btn">Other</button>
+    </div>
+    <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
+  </div>
+
+  <div class="question-card" id="comments-card">
+    <h3><span class="qnum">25.</span> Any other comments, hazards, or lessons learned from this specific attack?</h3>
+    <textarea class="text-input" id="comments-textarea" rows="3" placeholder="Type your answer here (optional)"></textarea>
+  </div>
+
+  <div class="chat-followup-card">
+    <h3><span class="qnum">💬</span> Quick Follow-Up</h3>
+    <p class="chat-subtitle">A few open-ended questions, in your own words — this helps build a narrative summary for the AAR. Optional.</p>
+    <div class="chat-thread" id="chat-thread"></div>
+    <div class="chat-input-row" id="chat-input-row">
+      <textarea id="chat-textarea" rows="1" placeholder="Type your answer…"></textarea>
+      <button class="chat-send-btn" id="chat-send-btn" type="button">➤</button>
+    </div>
+    <button class="chat-skip-link" id="chat-skip-btn" type="button">Skip this question</button>
+  </div>
+
+  <div class="question-card" id="submit-card">
+    <button class="submit-btn" id="submit-btn">Submit Debrief</button>
+    <div class="submit-status" id="submit-status"></div>
+  </div>
+
+  <!-- Supabase client library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    // ===== Connection to your Supabase database =====
+    // The publishable key is safe to expose in browser code — it can only do
+    // what your Row Level Security policies allow it to do.
+    const SUPABASE_URL = 'https://phdvucbtlyqercviknhr.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_O5SQke2CeQj2PMMQnsQfHg_YMpe4MVk';
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  </script>
+
+  <script>
+    const questionCards = Array.from(document.querySelectorAll('.question-card[data-qid]'));
+    const totalQuestions = questionCards.length;
+
+    // Wire up every options group (single-select by default, multi-select if data-mode="multi")
+    document.querySelectorAll('.options').forEach(group => {
+      const isMulti = group.dataset.mode === 'multi';
+
+      group.querySelectorAll('.option-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const alreadySelected = btn.classList.contains('selected');
+
+          if (!isMulti) {
+            // single-select: clear the rest of this group first
+            group.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+          }
+
+          btn.classList.toggle('selected', !alreadySelected);
+          updateProgress();
+        });
+      });
+    });
+
+    // ===== "Other" write-in fields =====
+    // Any .options group that has an "Other" pill gets a companion write-in
+    // input immediately after it in the markup (class="other-writein").
+    // Selecting "Other" reveals it; picking anything else hides and clears
+    // it. Whatever gets typed rides along with the answer as "Other: ...".
+    document.querySelectorAll('.options').forEach(group => {
+      const otherBtn = Array.from(group.querySelectorAll('.option-btn'))
+        .find(b => b.textContent.trim() === 'Other');
+      if (!otherBtn) return;
+
+      const writein = group.nextElementSibling;
+      if (!writein || !writein.classList.contains('other-writein')) return;
+
+      function syncWritein() {
+        const isOtherSelected = otherBtn.classList.contains('selected');
+        writein.style.display = isOtherSelected ? 'block' : 'none';
+        if (!isOtherSelected) writein.value = '';
+      }
+
+      group.querySelectorAll('.option-btn').forEach(btn => {
+        btn.addEventListener('click', syncWritein);
+      });
+
+      writein.addEventListener('input', updateProgress);
+    });
+
+    function updateProgress() {
+      let answeredCount = 0;
+
+      questionCards.forEach(card => {
+        const groups = Array.from(card.querySelectorAll('.options'));
+        if (groups.length === 0) return; // open-text-only question, not counted
+        const allGroupsAnswered = groups.every(g => g.querySelector('.option-btn.selected'));
+        if (allGroupsAnswered) answeredCount++;
+      });
+
+      const percent = (answeredCount / totalQuestions) * 100;
+      document.getElementById('progress-fill').style.width = percent + '%';
+      document.getElementById('progress-label').innerText =
+        `${answeredCount} of ${totalQuestions} questions answered`;
+    }
+
+    // Reads the current selection(s) out of one .options group. If "Other"
+    // is selected and its companion write-in has text, the write-in text
+    // replaces the bare "Other" label so the detail travels with the answer.
+    function getGroupValue(group) {
+      const isMulti = group.dataset.mode === 'multi';
+      const writein = group.nextElementSibling && group.nextElementSibling.classList.contains('other-writein')
+        ? group.nextElementSibling
+        : null;
+      const detail = writein ? writein.value.trim() : '';
+
+      const selected = Array.from(group.querySelectorAll('.option-btn.selected'))
+        .map(b => {
+          const label = b.textContent.trim();
+          return (label === 'Other' && detail) ? `Other: ${detail}` : label;
+        });
+
+      return isMulti ? selected : (selected[0] || null);
+    }
+
+    // Walks every question card and builds one big answers object keyed by
+    // each question's stable name, e.g. { load_type: "Bulk load", conditions: {smoke: "Light", ...}, ... }
+    function collectAnswers() {
+      const answers = {};
+
+      questionCards.forEach(card => {
+        const qid = card.dataset.qid;
+        const groups = Array.from(card.querySelectorAll('.options'));
+        const textarea = card.querySelector('textarea');
+
+        let value;
+        if (groups.length === 1) {
+          value = getGroupValue(groups[0]);
+        } else if (groups.length > 1) {
+          // multi sub-group question (conditions, hose_on_ground): use each sub-label as a key
+          value = {};
+          groups.forEach(g => {
+            const label = g.previousElementSibling && g.previousElementSibling.classList.contains('sub-label')
+              ? g.previousElementSibling.textContent.trim().toLowerCase()
+              : 'value';
+            value[label] = getGroupValue(g);
+          });
+        }
+
+        if (textarea) {
+          answers[qid] = { selected: value, note: textarea.value.trim() };
+        } else {
+          answers[qid] = value;
+        }
+      });
+
+      // final comments question has no pill options — just an open text box
+      const commentsBox = document.getElementById('comments-textarea');
+      answers['comments'] = commentsBox ? commentsBox.value.trim() : '';
+
+      return answers;
+    }
+
+    // ===== AI chat follow-up =====
+    // A small fixed set of open-ended prompts, presented like a text
+    // conversation. Free-text answers ride along with the structured
+    // answers when the debrief is submitted.
+    const chatPrompts = [
+      "Walk me through the calls you made out there — what did you decide, and why'd you go that way instead of another option?",
+      "What's the biggest obstacle or curveball you ran into, and how did you work through it?",
+      "Looking back, is there anything you wish you'd known before this call — something that would've changed how you walked in?"
+    ];
+
+    let chatStep = 0;
+    const chatAnswers = [];
+    const chatThread = document.getElementById('chat-thread');
+    const chatInputRow = document.getElementById('chat-input-row');
+    const chatTextarea = document.getElementById('chat-textarea');
+    const chatSendBtn = document.getElementById('chat-send-btn');
+    const chatSkipBtn = document.getElementById('chat-skip-btn');
+
+    function addChatBubble(text, type) {
+      const bubble = document.createElement('div');
+      bubble.className = 'chat-bubble ' + type;
+      bubble.textContent = text;
+      chatThread.appendChild(bubble);
+      chatThread.scrollTop = chatThread.scrollHeight;
+    }
+
+    function askNextChatPrompt() {
+      if (chatStep < chatPrompts.length) {
+        addChatBubble(chatPrompts[chatStep], 'incoming');
+      } else {
+        chatInputRow.style.display = 'none';
+        chatSkipBtn.style.display = 'none';
+        addChatBubble("That's everything — hit Submit Debrief below when you're ready.", 'incoming system-note');
+      }
+    }
+
+    function advanceChat(responseText) {
+      if (responseText) {
+        chatAnswers.push({ prompt: chatPrompts[chatStep], response: responseText });
+      }
+      chatStep++;
+      askNextChatPrompt();
+    }
+
+    chatSendBtn.addEventListener('click', () => {
+      const text = chatTextarea.value.trim();
+      if (!text) return;
+      addChatBubble(text, 'outgoing');
+      chatTextarea.value = '';
+      advanceChat(text);
+    });
+
+    chatTextarea.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        chatSendBtn.click();
+      }
+    });
+
+    chatSkipBtn.addEventListener('click', () => {
+      chatTextarea.value = '';
+      advanceChat(null);
+    });
+
+    askNextChatPrompt();
+
+    document.getElementById('submit-btn').addEventListener('click', async () => {
+      const statusEl = document.getElementById('submit-status');
+      const btn = document.getElementById('submit-btn');
+
+      btn.disabled = true;
+      btn.textContent = 'Submitting…';
+      statusEl.textContent = '';
+      statusEl.className = 'submit-status';
+
+      const answers = collectAnswers();
+      answers.operation_type = 'interior_attack';
+      answers.chat_followup = chatAnswers;
+
+      // One AI call: turns the structured answers + free-text chat responses
+      // into a narrative summary for the AAR. Runs through a Supabase Edge
+      // Function so the real API key stays server-side. If the function
+      // isn't deployed yet (or the call fails for any reason), we don't
+      // block the submission — the structured data still reaches Trends.
+      try {
+        const { data: summaryData, error: summaryError } = await sb.functions.invoke('generate-debrief-summary', {
+          body: { answers }
+        });
+        if (!summaryError && summaryData && summaryData.summary) {
+          answers.ai_summary = summaryData.summary;
+        }
+      } catch (e) {
+        console.warn('AI summary unavailable, submitting without it:', e);
+      }
+
+      const { error } = await sb.from('debrief_submissions').insert([{ answers }]);
+
+      if (error) {
+        statusEl.textContent = 'Something went wrong submitting this — please try again. (' + error.message + ')';
+        statusEl.className = 'submit-status error';
+        btn.disabled = false;
+        btn.textContent = 'Submit Debrief';
+      } else {
+        statusEl.textContent = 'Debrief submitted — thank you. This will now be reflected on the Trends page.';
+        statusEl.className = 'submit-status success';
+        btn.textContent = 'Submitted ✓';
+      }
+    });
+  </script>
+
+</body>
+</html>
