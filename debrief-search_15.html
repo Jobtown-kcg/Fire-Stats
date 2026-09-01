@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Search Debrief</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="no-bottom-nav">
+
+  <div class="intro-banner">
+    <div class="intro-title headline">🔦 Search — Firefighter Debrief</div>
+    <p>For the firefighter who conducted the primary search of the structure on this incident. Answer the first question and the rest will adjust to match your crew's assignment.</p>
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+    <div class="progress-label" id="progress-label">0 of 16 questions answered</div>
+  </div>
+
+  <!-- ===== Identifier questions — who's filling this out ===== -->
+
+  <div class="question-card" data-qid="seat_assignment">
+    <h3><span class="qnum">2.</span> What was your seat assignment?</h3>
+    <div class="options">
+      <button class="option-btn">Captain</button>
+      <button class="option-btn">Engineer</button>
+      <button class="option-btn">FF1</button>
+      <button class="option-btn">FF2</button>
+    </div>
+  </div>
+
+  <!-- ===== Q3: the branch point — everything below reacts to this answer ===== -->
+  <div class="question-card" data-qid="search_approach">
+    <h3><span class="qnum">3.</span> How was your crew organized for the search?</h3>
+    <div class="options">
+      <button class="option-btn">All in</button>
+      <button class="option-btn">Split into two teams</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="building_stories">
+    <h3><span class="qnum">4.</span> How many stories was the structure?</h3>
+    <div class="options">
+      <button class="option-btn">1 story</button>
+      <button class="option-btn">1.5 story</button>
+      <button class="option-btn">2 story</button>
+      <button class="option-btn">2.5 story</button>
+      <button class="option-btn">3+ story</button>
+      <button class="option-btn">Not sure</button>
+    </div>
+  </div>
+
+  <!-- ===== Split-crew branch ===== -->
+
+  <div class="question-card" data-qid="split_focus" data-show-if='[{"qid":"search_approach","equals":"Split into two teams"}]'>
+    <h3><span class="qnum">•</span> Was your team's assignment focused on searching for life, or searching from the fire?</h3>
+    <div class="options">
+      <button class="option-btn">For life</button>
+      <button class="option-btn">From the fire</button>
+      <button class="option-btn">Other</button>
+    </div>
+
+    <div class="inline-followup" data-show-if='[{"qid":"split_focus","includes":"Other"}]'>
+      <div data-qid="split_focus_other">
+        <div class="sub-label">Please describe</div>
+        <textarea class="text-input" rows="2" placeholder="Describe"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="split_entry" data-show-if='[{"qid":"search_approach","equals":"Split into two teams"}]'>
+    <h3><span class="qnum">•</span> Where did you enter?</h3>
+    <div class="options">
+      <button class="option-btn">Alpha</button>
+      <button class="option-btn">Bravo</button>
+      <button class="option-btn">Charlie</button>
+      <button class="option-btn">Delta</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="split_entry_method" data-show-if='[{"qid":"search_approach","equals":"Split into two teams"}]'>
+    <h3><span class="qnum">•</span> How did you enter?</h3>
+    <div class="options">
+      <button class="option-btn">Door</button>
+      <button class="option-btn">Window</button>
+    </div>
+
+    <div class="inline-followup" data-show-if='[{"qid":"split_entry_method","answered":true}]'>
+      <div data-qid="split_forced_entry">
+        <div class="sub-label">Did you need to perform forced entry?</div>
+        <div class="options">
+          <button class="option-btn">Yes</button>
+          <button class="option-btn">No</button>
+        </div>
+      </div>
+
+      <div class="inline-followup" data-show-if='[{"qid":"split_forced_entry","equals":"Yes"}]'>
+        <div data-qid="split_forced_entry_details">
+          <div class="sub-label">Describe how forced entry was accomplished</div>
+          <textarea class="text-input" rows="2" placeholder="Describe how"></textarea>
+        </div>
+        <div data-qid="split_forced_entry_difficulty">
+          <div class="sub-label">Were there any difficulties?</div>
+          <div class="options">
+            <button class="option-btn">Yes</button>
+            <button class="option-btn">No</button>
+          </div>
+        </div>
+
+        <div class="inline-followup" data-show-if='[{"qid":"split_forced_entry_difficulty","equals":"Yes"}]'>
+          <div data-qid="split_forced_entry_difficulty_details">
+            <div class="sub-label">Explain the difficulties</div>
+            <textarea class="text-input" rows="2" placeholder="Describe what made it difficult"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Not split: single point-of-entry question ===== -->
+
+  <div class="question-card" data-qid="entry_location"
+       data-show-if='[{"qid":"search_approach","not":"Split into two teams"},{"qid":"search_approach","answered":true}]'>
+    <h3><span class="qnum">•</span> Where did you enter?</h3>
+    <div class="options">
+      <button class="option-btn">Alpha</button>
+      <button class="option-btn">Bravo</button>
+      <button class="option-btn">Charlie</button>
+      <button class="option-btn">Delta</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="point_of_entry"
+       data-show-if='[{"qid":"search_approach","not":"Split into two teams"},{"qid":"search_approach","answered":true}]'>
+    <h3><span class="qnum">•</span> How did you enter the structure?</h3>
+    <div class="options">
+      <button class="option-btn">Front door</button>
+      <button class="option-btn">Side door</button>
+      <button class="option-btn">Rear door</button>
+      <button class="option-btn">Window</button>
+      <button class="option-btn">Garage</button>
+      <button class="option-btn">Other</button>
+    </div>
+
+    <div class="inline-followup" data-show-if='[{"qid":"point_of_entry","includes":"Other"}]'>
+      <div data-qid="point_of_entry_other">
+        <div class="sub-label">Please describe</div>
+        <textarea class="text-input" rows="2" placeholder="Describe"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="floor_searched">
+    <h3><span class="qnum">•</span> What floor did you search?</h3>
+    <div class="options">
+      <button class="option-btn">Ground floor</button>
+      <button class="option-btn">2nd floor</button>
+      <button class="option-btn">3rd floor</button>
+      <button class="option-btn">Basement</button>
+      <button class="option-btn">Attic</button>
+      <button class="option-btn">Multiple floors</button>
+    </div>
+
+    <div class="inline-followup" data-show-if='[{"qid":"floor_searched","equals":"Multiple floors"}]'>
+      <div data-qid="floor_searched_which">
+        <div class="sub-label">Which floors? (select all that apply)</div>
+        <div class="options" data-mode="multi">
+          <button class="option-btn">Ground floor</button>
+          <button class="option-btn">2nd floor</button>
+          <button class="option-btn">3rd floor</button>
+          <button class="option-btn">Basement</button>
+          <button class="option-btn">Attic</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="search_type">
+    <h3><span class="qnum">3.</span> What type of search did you conduct?</h3>
+    <div class="options">
+      <button class="option-btn">Oriented Search</button>
+      <button class="option-btn">VES</button>
+      <button class="option-btn">Standard Search</button>
+    </div>
+
+    <div class="inline-followup" data-show-if='[{"qid":"search_type","equals":"VES"}]'>
+      <div data-qid="ves_entry_order">
+        <div class="sub-label">Were you the first or second person to enter?</div>
+        <div class="options">
+          <button class="option-btn">First</button>
+          <button class="option-btn">Second</button>
+          <button class="option-btn">Third</button>
+          <button class="option-btn">Fourth</button>
+        </div>
+      </div>
+      <div data-qid="ves_process">
+        <div class="sub-label">Walk me through the search process you took.</div>
+        <textarea class="text-input" rows="3" placeholder="Describe what you did, step by step"></textarea>
+      </div>
+      <div data-qid="ves_beyond_room">
+        <div class="sub-label">Did you search beyond the room you entered — for example, through the hallway into another room? If so, how many additional rooms, and did you run into any trouble?</div>
+        <textarea class="text-input" rows="3" placeholder="Describe where you went, how many rooms, and any trouble you ran into"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="search_method">
+    <h3><span class="qnum">4.</span> What search method did you use?</h3>
+    <div class="options">
+      <button class="option-btn">Right-hand wall</button>
+      <button class="option-btn">Left-hand wall</button>
+      <button class="option-btn">Oriented / team search</button>
+      <button class="option-btn">Thermal imaging-led</button>
+      <button class="option-btn">Other</button>
+    </div>
+
+    <div class="inline-followup" data-show-if='[{"qid":"search_method","includes":"Other"}]'>
+      <div data-qid="search_method_other">
+        <div class="sub-label">Please describe</div>
+        <textarea class="text-input" rows="2" placeholder="Describe"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="areas_searched">
+    <h3><span class="qnum">5.</span> Which areas did you search?</h3>
+    <div class="select-note">Select all that apply</div>
+    <div class="options" data-mode="multi">
+      <button class="option-btn">Room of origin</button>
+      <button class="option-btn">Bedrooms</button>
+      <button class="option-btn">Living areas</button>
+      <button class="option-btn">Kitchen</button>
+      <button class="option-btn">Basement</button>
+      <button class="option-btn">Attic</button>
+      <button class="option-btn">Other</button>
+    </div>
+
+    <div class="inline-followup" data-show-if='[{"qid":"areas_searched","includes":"Other"}]'>
+      <div data-qid="areas_searched_other">
+        <div class="sub-label">Please describe</div>
+        <textarea class="text-input" rows="2" placeholder="Describe"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="conditions">
+    <h3><span class="qnum">6.</span> Conditions you encountered during the search</h3>
+
+    <div class="sub-label">Smoke</div>
+    <div class="options">
+      <button class="option-btn">Light</button>
+      <button class="option-btn">Moderate</button>
+      <button class="option-btn">Heavy</button>
+    </div>
+
+    <div class="sub-label">Heat</div>
+    <div class="options">
+      <button class="option-btn">Mild</button>
+      <button class="option-btn">Moderate</button>
+      <button class="option-btn">Severe / high heat</button>
+    </div>
+
+    <div class="sub-label">Visibility</div>
+    <div class="options">
+      <button class="option-btn">Good</button>
+      <button class="option-btn">Reduced</button>
+      <button class="option-btn">Zero</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="orientation">
+    <h3><span class="qnum">7.</span> Did you maintain orientation to your exit at all times?</h3>
+    <div class="options">
+      <button class="option-btn">Yes</button>
+      <button class="option-btn">Lost orientation briefly</button>
+      <button class="option-btn">Lost orientation – needed help finding my way out</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="clear_method">
+    <h3><span class="qnum">8.</span> How did you confirm areas were clear?</h3>
+    <div class="options">
+      <button class="option-btn">Physical touch/sweep</button>
+      <button class="option-btn">Tool sweep under furniture/beds</button>
+      <button class="option-btn">Visual only</button>
+      <button class="option-btn">Thermal imaging camera</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="obstacles">
+    <h3><span class="qnum">9.</span> Any obstacles or hazards encountered during the search?</h3>
+    <div class="select-note">Select all that apply</div>
+    <div class="options" data-mode="multi">
+      <button class="option-btn">None</button>
+      <button class="option-btn">Locked doors</button>
+      <button class="option-btn">Cluttered / hoarding conditions</button>
+      <button class="option-btn">Structural collapse concern</button>
+      <button class="option-btn">Furniture blocking path</button>
+      <button class="option-btn">Other</button>
+    </div>
+
+    <div class="inline-followup" data-show-if='[{"qid":"obstacles","includes":"Other"}]'>
+      <div data-qid="obstacles_other">
+        <div class="sub-label">Please describe</div>
+        <textarea class="text-input" rows="2" placeholder="Describe"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="victims_found">
+    <h3><span class="qnum">10.</span> Did you locate any victims?</h3>
+    <div class="options">
+      <button class="option-btn">Yes, conscious</button>
+      <button class="option-btn">Yes, unconscious</button>
+      <button class="option-btn">No victims found</button>
+      <button class="option-btn">Search not completed</button>
+    </div>
+
+    <div class="inline-followup" data-show-if='[{"qid":"victims_found","in":["Yes, conscious","Yes, unconscious"]}]'>
+      <div data-qid="victims_room">
+        <div class="sub-label">What room?</div>
+        <textarea class="text-input" rows="1" placeholder="e.g. Bedroom 2, kitchen..."></textarea>
+      </div>
+
+      <div class="inline-followup" data-show-if='[{"qid":"floor_searched","equals":"Multiple floors"}]'>
+        <div data-qid="victims_floor">
+          <div class="sub-label">What floor was that on?</div>
+          <div class="options">
+            <button class="option-btn">Ground floor</button>
+            <button class="option-btn">2nd floor</button>
+            <button class="option-btn">3rd floor</button>
+            <button class="option-btn">Basement</button>
+            <button class="option-btn">Attic</button>
+          </div>
+        </div>
+      </div>
+      <div data-qid="victims_multiple">
+        <div class="sub-label">Were there multiple victims in that area?</div>
+        <div class="options">
+          <button class="option-btn">Yes</button>
+          <button class="option-btn">No</button>
+        </div>
+      </div>
+
+      <div class="inline-followup" data-show-if='[{"qid":"victims_multiple","equals":"Yes"}]'>
+        <div data-qid="victims_multiple_count">
+          <div class="sub-label">How many more victims?</div>
+          <input type="text" inputmode="numeric" class="text-input" placeholder="e.g. 2">
+        </div>
+      </div>
+
+      <div data-qid="victims_other_areas">
+        <div class="sub-label">Were additional victims found in other areas of the structure?</div>
+        <div class="options">
+          <button class="option-btn">Yes</button>
+          <button class="option-btn">No</button>
+        </div>
+      </div>
+
+      <div class="inline-followup" data-show-if='[{"qid":"victims_other_areas","equals":"Yes"}]'>
+        <div data-qid="victims_other_areas_where">
+          <div class="sub-label">Where?</div>
+          <textarea class="text-input" rows="1" placeholder="e.g. Living room, basement..."></textarea>
+        </div>
+        <div data-qid="victims_other_areas_finder">
+          <div class="sub-label">Was it you or another person who found them?</div>
+          <div class="options">
+            <button class="option-btn">Me</button>
+            <button class="option-btn">Another person</button>
+          </div>
+        </div>
+
+        <div class="inline-followup" data-show-if='[{"qid":"victims_other_areas_finder","equals":"Me"}]'>
+          <div data-qid="victims_other_areas_count">
+            <div class="sub-label">How many?</div>
+            <input type="text" inputmode="numeric" class="text-input" placeholder="e.g. 2">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="rescue_performed">
+    <h3><span class="qnum">11.</span> If a victim was located, was a rescue/removal performed?</h3>
+    <div class="options">
+      <button class="option-btn">Yes, removed by search crew</button>
+      <button class="option-btn">Yes, removed by RIT/rescue team</button>
+      <button class="option-btn">No – fire conditions prevented removal</button>
+      <button class="option-btn">N/A – no victim found</button>
+      <button class="option-btn">Other</button>
+    </div>
+
+    <div class="inline-followup" data-show-if='[{"qid":"rescue_performed","equals":"Other"}]'>
+      <div data-qid="rescue_performed_other">
+        <div class="sub-label">Please describe</div>
+        <textarea class="text-input" rows="2" placeholder="Describe what happened"></textarea>
+      </div>
+    </div>
+
+    <div class="inline-followup" data-show-if='[{"qid":"rescue_performed","equals":"Yes, removed by search crew"}]'>
+      <div data-qid="rescue_same_exit">
+        <div class="sub-label">Did the victim leave through the same way you entered?</div>
+        <div class="options">
+          <button class="option-btn">Yes</button>
+          <button class="option-btn">No</button>
+        </div>
+      </div>
+
+      <div class="inline-followup" data-show-if='[{"qid":"rescue_same_exit","equals":"No"}]'>
+        <div data-qid="rescue_removal_point">
+          <div class="sub-label">Where was the point of removal?</div>
+          <textarea class="text-input" rows="1" placeholder="Describe where"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="vent_improvement">
+    <h3><span class="qnum">•</span> Did you notice a significant improvement in conditions after ventilation?</h3>
+    <div class="options">
+      <button class="option-btn">Yes</button>
+      <button class="option-btn">No</button>
+      <button class="option-btn">Other</button>
+    </div>
+
+    <div class="inline-followup" data-show-if='[{"qid":"vent_improvement","includes":"Other"}]'>
+      <div data-qid="vent_improvement_other">
+        <div class="sub-label">Please describe</div>
+        <textarea class="text-input" rows="2" placeholder="Describe"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="search_time">
+    <h3><span class="qnum">13.</span> Approximately how long did the search take?</h3>
+    <div class="options">
+      <button class="option-btn">Under 2 minutes</button>
+      <button class="option-btn">2–5 minutes</button>
+      <button class="option-btn">5–10 minutes</button>
+      <button class="option-btn">Over 10 minutes</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="equipment_problems">
+    <h3><span class="qnum">14.</span> Did you experience any equipment problems?</h3>
+    <div class="options">
+      <button class="option-btn">No problems</button>
+      <button class="option-btn">TIC malfunction</button>
+      <button class="option-btn">PASS device issue</button>
+      <button class="option-btn">Other</button>
+    </div>
+
+    <div class="inline-followup" data-show-if='[{"qid":"equipment_problems","includes":"Other"}]'>
+      <div data-qid="equipment_problems_other">
+        <div class="sub-label">Please describe</div>
+        <textarea class="text-input" rows="2" placeholder="Describe"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="injuries">
+    <h3><span class="qnum">15.</span> Did you experience any injuries, close calls, or near-misses during this search?</h3>
+    <div class="options">
+      <button class="option-btn">None</button>
+      <button class="option-btn">Minor injury</button>
+      <button class="option-btn">Serious injury</button>
+      <button class="option-btn">Close call / near-miss (no injury)</button>
+      <button class="option-btn">Other</button>
+    </div>
+    <textarea class="text-input" rows="2" placeholder="If yes, briefly describe (optional)"></textarea>
+
+    <div class="inline-followup" data-show-if='[{"qid":"injuries","includes":"Other"}]'>
+      <div data-qid="injuries_other">
+        <div class="sub-label">Please describe</div>
+        <textarea class="text-input" rows="2" placeholder="Describe"></textarea>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="question-card" id="comments-card">
+    <h3><span class="qnum">17.</span> Any other comments, hazards, or lessons learned from this search?</h3>
+    <textarea class="text-input" id="comments-textarea" rows="3" placeholder="Type your answer here (optional)"></textarea>
+  </div>
+
+  <div class="chat-followup-card">
+    <h3><span class="qnum">💬</span> Quick Follow-Up</h3>
+    <p class="chat-subtitle">A few open-ended questions, in your own words — this helps build a narrative summary for the AAR. Optional.</p>
+    <div class="chat-thread" id="chat-thread"></div>
+    <div class="chat-input-row" id="chat-input-row">
+      <textarea id="chat-textarea" rows="1" placeholder="Type your answer…"></textarea>
+      <button class="chat-send-btn" id="chat-send-btn" type="button">➤</button>
+    </div>
+    <button class="chat-skip-link" id="chat-skip-btn" type="button">Skip this question</button>
+  </div>
+
+  <div class="question-card" id="submit-card">
+    <button class="submit-btn" id="submit-btn">Submit Debrief</button>
+    <div class="submit-status" id="submit-status"></div>
+  </div>
+
+  <!-- Supabase client library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = 'https://phdvucbtlyqercviknhr.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_O5SQke2CeQj2PMMQnsQfHg_YMpe4MVk';
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  </script>
+
+  <script>
+    // ===== Conditional / branching form engine =====
+    //
+    // Any element carrying data-show-if is a conditional question-card. Its
+    // data-show-if is a JSON list of conditions that must ALL be true for it
+    // to be visible:
+    //   {"qid": "x", "equals": "Y"}    -> show only if question x's answer is exactly Y
+    //   {"qid": "x", "not": "Y"}       -> show unless question x's answer is exactly Y
+    //   {"qid": "x", "answered": true} -> show as soon as question x has any answer
+
+    function getAnswerFor(qid) {
+      const el = document.querySelector(`[data-qid="${qid}"]`);
+      if (!el) return null;
+      const group = el.querySelector(':scope > .options');
+      if (!group) return null;
+      const selected = group.querySelector('.option-btn.selected');
+      return selected ? selected.textContent.trim() : null;
+    }
+
+    // Checks whether a given option's button is selected within a question's
+    // group(s) — works for both single- and multi-select groups, unlike
+    // getAnswerFor (which only ever reports the first selected button).
+    function optionSelected(qid, text) {
+      const el = document.querySelector(`[data-qid="${qid}"]`);
+      if (!el) return false;
+      const groups = Array.from(el.querySelectorAll(':scope > .options'));
+      return groups.some(g =>
+        Array.from(g.querySelectorAll('.option-btn.selected')).some(b => b.textContent.trim() === text)
+      );
+    }
+
+    function conditionMet(cond) {
+      if ('includes' in cond) return optionSelected(cond.qid, cond.includes);
+      const val = getAnswerFor(cond.qid);
+      if (cond.answered) return val !== null && val !== '';
+      if ('equals' in cond) return val === cond.equals;
+      if ('not' in cond) return val !== cond.not;
+      if ('in' in cond) return Array.isArray(cond.in) && cond.in.includes(val);
+      return true;
+    }
+
+    function elementVisible(el) {
+      const raw = el.dataset.showIf;
+      if (!raw) return true;
+      return JSON.parse(raw).every(conditionMet);
+    }
+
+    function refreshForm() {
+      Array.from(document.querySelectorAll('[data-show-if]')).forEach(el => {
+        el.style.display = elementVisible(el) ? '' : 'none';
+      });
+      renumberVisible();
+      updateProgress();
+    }
+
+    function renumberVisible() {
+      let n = 1;
+      Array.from(document.querySelectorAll('.question-card[data-qid]')).forEach(card => {
+        if (card.offsetParent === null) return;
+        const qnumEl = card.querySelector(':scope > h3 .qnum');
+        if (qnumEl) qnumEl.textContent = n + '.';
+        n++;
+      });
+      const commentsQnum = document.querySelector('#comments-card .qnum');
+      if (commentsQnum) commentsQnum.textContent = n + '.';
+    }
+
+    function updateProgress() {
+      const cards = Array.from(document.querySelectorAll('.question-card[data-qid]'))
+        .filter(c => c.offsetParent !== null);
+      const countable = cards.filter(c => c.querySelectorAll(':scope > .options').length > 0);
+      let answeredCount = 0;
+
+      countable.forEach(card => {
+        const groups = Array.from(card.querySelectorAll(':scope > .options'));
+        const allGroupsAnswered = groups.every(g => g.querySelector('.option-btn.selected'));
+        if (allGroupsAnswered) answeredCount++;
+      });
+
+      const total = countable.length;
+      const percent = total > 0 ? (answeredCount / total) * 100 : 0;
+      document.getElementById('progress-fill').style.width = percent + '%';
+      document.getElementById('progress-label').innerText =
+        `${answeredCount} of ${total} questions answered`;
+    }
+
+    document.querySelectorAll('.options').forEach(group => {
+      const isMulti = group.dataset.mode === 'multi';
+
+      group.querySelectorAll('.option-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const alreadySelected = btn.classList.contains('selected');
+
+          if (!isMulti) {
+            group.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+          }
+
+          btn.classList.toggle('selected', !alreadySelected);
+          refreshForm();
+        });
+      });
+    });
+
+    function getGroupValue(group) {
+      const isMulti = group.dataset.mode === 'multi';
+      const selected = Array.from(group.querySelectorAll('.option-btn.selected'))
+        .map(b => b.textContent.trim());
+      return isMulti ? selected : (selected[0] || null);
+    }
+
+    // Only reads answers from currently-visible [data-qid] elements, so a
+    // branch never taken (e.g. the split-crew questions when not split, or
+    // an inline-followup that never popped open) never ends up in the
+    // submitted data. Walks ALL [data-qid] elements (not just top-level
+    // question-cards) so nested inline-followup sub-questions get captured.
+    function collectAnswers() {
+      const answers = {};
+
+      Array.from(document.querySelectorAll('[data-qid]')).forEach(el => {
+        if (el.offsetParent === null) return;
+
+        const qid = el.dataset.qid;
+        const groups = Array.from(el.querySelectorAll(':scope > .options'));
+
+        if (groups.length === 0) {
+          const field = el.querySelector('textarea, input[type="text"]');
+          answers[qid] = field ? field.value.trim() : '';
+          return;
+        }
+
+        const textarea = el.querySelector(':scope > textarea');
+
+        let value;
+        if (groups.length === 1) {
+          value = getGroupValue(groups[0]);
+        } else if (groups.length > 1) {
+          value = {};
+          groups.forEach(g => {
+            const label = g.previousElementSibling && g.previousElementSibling.classList.contains('sub-label')
+              ? g.previousElementSibling.textContent.trim().toLowerCase()
+              : 'value';
+            value[label] = getGroupValue(g);
+          });
+        }
+
+        if (textarea) {
+          answers[qid] = { selected: value, note: textarea.value.trim() };
+        } else {
+          answers[qid] = value;
+        }
+      });
+
+      const commentsBox = document.getElementById('comments-textarea');
+      answers['comments'] = commentsBox ? commentsBox.value.trim() : '';
+
+      return answers;
+    }
+
+    // ===== AI chat follow-up =====
+    // A small fixed set of open-ended prompts, presented like a text
+    // conversation. Free-text answers ride along with the structured
+    // answers when the debrief is submitted.
+    const chatPrompts = [
+      "Walk me through how this went, in your own words.",
+      "Anything that surprised you, or that you'd want the next crew to know?",
+      "Anything you'd do differently next time, or any final thoughts?"
+    ];
+
+    let chatStep = 0;
+    const chatAnswers = [];
+    const chatThread = document.getElementById('chat-thread');
+    const chatInputRow = document.getElementById('chat-input-row');
+    const chatTextarea = document.getElementById('chat-textarea');
+    const chatSendBtn = document.getElementById('chat-send-btn');
+    const chatSkipBtn = document.getElementById('chat-skip-btn');
+
+    function addChatBubble(text, type) {
+      const bubble = document.createElement('div');
+      bubble.className = 'chat-bubble ' + type;
+      bubble.textContent = text;
+      chatThread.appendChild(bubble);
+      chatThread.scrollTop = chatThread.scrollHeight;
+    }
+
+    function askNextChatPrompt() {
+      if (chatStep < chatPrompts.length) {
+        addChatBubble(chatPrompts[chatStep], 'incoming');
+      } else {
+        chatInputRow.style.display = 'none';
+        chatSkipBtn.style.display = 'none';
+        addChatBubble("That's everything — hit Submit Debrief below when you're ready.", 'incoming system-note');
+      }
+    }
+
+    function advanceChat(responseText) {
+      if (responseText) {
+        chatAnswers.push({ prompt: chatPrompts[chatStep], response: responseText });
+      }
+      chatStep++;
+      askNextChatPrompt();
+    }
+
+    chatSendBtn.addEventListener('click', () => {
+      const text = chatTextarea.value.trim();
+      if (!text) return;
+      addChatBubble(text, 'outgoing');
+      chatTextarea.value = '';
+      advanceChat(text);
+    });
+
+    chatTextarea.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        chatSendBtn.click();
+      }
+    });
+
+    chatSkipBtn.addEventListener('click', () => {
+      chatTextarea.value = '';
+      advanceChat(null);
+    });
+
+    askNextChatPrompt();
+
+    document.getElementById('submit-btn').addEventListener('click', async () => {
+      const statusEl = document.getElementById('submit-status');
+      const btn = document.getElementById('submit-btn');
+
+      btn.disabled = true;
+      btn.textContent = 'Submitting…';
+      statusEl.textContent = '';
+      statusEl.className = 'submit-status';
+
+      const answers = collectAnswers();
+      answers.operation_type = 'search';
+      answers.chat_followup = chatAnswers;
+
+      // One AI call: turns the structured answers + free-text chat responses
+      // into a narrative summary for the AAR. Runs through a Supabase Edge
+      // Function so the real API key stays server-side. If the function
+      // isn't deployed yet (or the call fails for any reason), we don't
+      // block the submission — the structured data still reaches Trends.
+      try {
+        const { data: summaryData, error: summaryError } = await sb.functions.invoke('generate-debrief-summary', {
+          body: { answers }
+        });
+        if (!summaryError && summaryData && summaryData.summary) {
+          answers.ai_summary = summaryData.summary;
+        }
+      } catch (e) {
+        console.warn('AI summary unavailable, submitting without it:', e);
+      }
+
+      const { error } = await sb.from('debrief_submissions').insert([{ answers }]);
+
+      if (error) {
+        statusEl.textContent = 'Something went wrong submitting this — please try again. (' + error.message + ')';
+        statusEl.className = 'submit-status error';
+        btn.disabled = false;
+        btn.textContent = 'Submit Debrief';
+      } else {
+        statusEl.textContent = 'Debrief submitted — thank you. This will now be reflected on the Trends page.';
+        statusEl.className = 'submit-status success';
+        btn.textContent = 'Submitted ✓';
+      }
+    });
+
+    // Initial pass: hide every conditional element until its trigger question is answered
+    refreshForm();
+  </script>
+
+</body>
+</html>
