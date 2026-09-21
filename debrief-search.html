@@ -75,6 +75,7 @@
     <div class="options">
       <button class="option-btn">Yes</button>
       <button class="option-btn">No</button>
+      <button class="option-btn">N/A</button>
     </div>
 
     <div class="inline-followup" data-show-if='[{"qid":"victim_report_accuracy","equals":"No"}]'>
@@ -264,14 +265,14 @@
     </div>
   </div>
 
-  <div class="question-card" data-qid="split_entry_method" data-show-if='[{"qid":"search_approach","equals":"Split into two teams"}]'>
+  <div class="question-card" data-qid="entry_method" data-show-if='[{"qid":"search_approach","answered":true}]'>
     <h3><span class="qnum">•</span> How did you enter?</h3>
     <div class="options">
       <button class="option-btn">Door</button>
       <button class="option-btn">Window</button>
     </div>
 
-    <div class="inline-followup" data-show-if='[{"qid":"split_entry_method","answered":true}]'>
+    <div class="inline-followup" data-show-if='[{"qid":"entry_method","answered":true}]'>
       <div data-qid="split_forced_entry">
         <div class="sub-label">Did you need to perform forced entry?</div>
         <div class="options">
@@ -319,24 +320,6 @@
       <div data-qid="entry_floor">
         <div class="sub-label">What floor did you enter the structure on?</div>
         <div class="options" id="entry-floor-options"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="question-card" data-qid="point_of_entry"
-       data-show-if='[{"qid":"search_approach","not":"Split into two teams"},{"qid":"search_approach","answered":true}]'>
-    <h3><span class="qnum">•</span> How did you enter the structure?</h3>
-    <div class="options">
-      <button class="option-btn">Door</button>
-      <button class="option-btn">Window</button>
-      <button class="option-btn">Garage</button>
-      <button class="option-btn">Other</button>
-    </div>
-
-    <div class="inline-followup" data-show-if='[{"qid":"point_of_entry","includes":"Other"}]'>
-      <div data-qid="point_of_entry_other">
-        <div class="sub-label">Please describe</div>
-        <textarea class="text-input" rows="2" placeholder="Describe"></textarea>
       </div>
     </div>
   </div>
