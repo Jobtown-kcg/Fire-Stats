@@ -8,9 +8,11 @@
 <body>
 
   <div class="topbar">
-    <h1 class="headline">Interior Attack Trends</h1>
+    <h1 class="headline" id="page-title">Interior Attack Trends</h1>
     <div class="avatar">👤</div>
   </div>
+
+  <div class="trend-tabs" id="trend-tabs"></div>
 
   <div class="progress-label" id="submission-count" style="margin: 14px 0 0;">Loading submissions…</div>
 
@@ -19,79 +21,14 @@
   </div>
 
   <div id="charts-wrapper" style="display:none;">
-
-    <div class="stat-grid">
-      <div class="stat-card">
-        <div class="label">Avg time to extinguishment</div>
-        <div class="value" id="stat-knockdown">—</div>
-      </div>
-      <div class="stat-card">
-        <div class="label">Injury / close-call rate</div>
-        <div class="value red" id="stat-injury">—</div>
-      </div>
-      <div class="stat-card">
-        <div class="label">Heel man present</div>
-        <div class="value" id="stat-heelman">—</div>
-      </div>
-      <div class="stat-card">
-        <div class="label">One line sufficient</div>
-        <div class="value" id="stat-oneline">—</div>
-      </div>
-      <div class="stat-card">
-        <div class="label">Would do it all the same again</div>
-        <div class="value" id="stat-samechoice">—</div>
-      </div>
-      <div class="stat-card">
-        <div class="label">Very taxing / exhausting</div>
-        <div class="value red" id="stat-taxing">—</div>
-      </div>
-    </div>
-
-    <div class="section-card">
-      <h2 class="headline">Crew Size</h2>
-      <div id="chart-crew"></div>
-    </div>
-
-    <div class="section-card">
-      <h2 class="headline">Load Type Pulled</h2>
-      <div id="chart-load"></div>
-    </div>
-
-    <div class="section-card">
-      <h2 class="headline">Hoseline &amp; Nozzle Selected</h2>
-      <div id="chart-hoseline"></div>
-    </div>
-
-    <div class="section-card">
-      <h2 class="headline">Hose on the Ground: More or Less Than Wanted</h2>
-      <div id="chart-hoseground"></div>
-    </div>
-
-    <div class="section-card">
-      <h2 class="headline">Attack Technique Used</h2>
-      <div id="chart-technique"></div>
-    </div>
-
-    <div class="section-card">
-      <h2 class="headline">Entry Point Used</h2>
-      <div id="chart-entry"></div>
-    </div>
-
-    <div class="section-card">
-      <h2 class="headline">SCBA Air Remaining on Exit</h2>
-      <div id="chart-air"></div>
-    </div>
-
-    <div class="section-card">
-      <h2 class="headline">Time to Get Water on the Fire</h2>
-      <div id="chart-reach"></div>
-    </div>
-
+    <div class="stat-grid" id="stat-grid"></div>
+    <div id="sections"></div>
   </div>
 
   <nav class="bottom-nav">
     <a href="index.html" class="nav-item"><span class="icon">🏠</span>Home</a>
     <a href="trends.html" class="nav-item active"><span class="icon">📈</span>Trends</a>
+    <a href="pre-plans.html" class="nav-item"><span class="icon">🏢</span>Pre-Plans</a>
     <a href="admin-roster.html" class="nav-item"><span class="icon">⚙️</span>Gear</a>
   </nav>
 
@@ -104,33 +41,10 @@
   </script>
 
   <script>
-    const BAR_COLORS = {
-      crew: 'blue',
-      load: 'blue',
-      hoseline: 'purple',
-      hoseground: 'red',
-      technique: 'yellow',
-      entry: 'green',
-      air: 'blue',
-      reach: 'blue'
-    };
-
-    // Build one set of bar-rows inside a container, given raw tally counts
-    function renderBars(containerId, labels, counts, totalSubmissions, colorKey) {
-      const container = document.getElementById(containerId);
-      container.innerHTML = '';
-      labels.forEach(label => {
-        const count = counts[label] || 0;
-        const pct = totalSubmissions > 0 ? Math.round((count / totalSubmissions) * 100) : 0;
-        const row = document.createElement('div');
-        row.className = 'bar-row';
-        row.innerHTML = `
-          <div class="bar-label">${label}</div>
-          <div class="bar-track"><div class="bar-fill ${BAR_COLORS[colorKey]}" style="width: ${pct}%"></div></div>
-        `;
-        container.appendChild(row);
-      });
-    }
+    // ============================================================
+    // Generic tally helpers — one per answer "shape" produced by
+    // collectAnswers() across the debrief forms.
+    // ============================================================
 
     // Plain single-select question, e.g. answers['load_type'] === 'Bulk load'
     function tallySingle(rows, qid) {
@@ -138,6 +52,20 @@
       rows.forEach(r => {
         const v = r.answers && r.answers[qid];
         if (v && typeof v === 'string') counts[v] = (counts[v] || 0) + 1;
+      });
+      return counts;
+    }
+
+    // Multi-select question, e.g. answers['obstacles'] = ['Locked doors', 'Other']
+    // Counts each chosen option once per submission — totals can add up to
+    // more than the submission count since a crew can pick several.
+    function tallyMulti(rows, qid) {
+      const counts = {};
+      rows.forEach(r => {
+        const v = r.answers && r.answers[qid];
+        if (Array.isArray(v)) {
+          v.forEach(opt => { if (opt) counts[opt] = (counts[opt] || 0) + 1; });
+        }
       });
       return counts;
     }
@@ -159,6 +87,18 @@
       rows.forEach(r => {
         const wrapper = r.answers && r.answers[qid] && r.answers[qid].selected;
         const v = wrapper && wrapper[subKey];
+        if (v) counts[v] = (counts[v] || 0) + 1;
+      });
+      return counts;
+    }
+
+    // Multi-sub-group question with NO {selected, note} wrapper, keyed by lowercased sub-label,
+    // e.g. answers['roof_construction'] = {construction: 'Dimensional lumber', covering: 'Asphalt shingle'}
+    function tallyGroupField(rows, qid, subKey) {
+      const counts = {};
+      rows.forEach(r => {
+        const wrapper = r.answers && r.answers[qid];
+        const v = (wrapper && typeof wrapper === 'object' && !Array.isArray(wrapper)) ? wrapper[subKey] : undefined;
         if (v) counts[v] = (counts[v] || 0) + 1;
       });
       return counts;
@@ -192,26 +132,275 @@
       return s === 0 ? `${m}m` : `${m}m ${s}s`;
     }
 
-    async function loadTrends() {
-      const { data: allRows, error } = await sb.from('debrief_submissions').select('answers');
+    // Build one set of bar-rows inside a container, given raw tally counts
+    function renderBars(containerId, labels, counts, totalSubmissions, colorClass) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      container.innerHTML = '';
+      labels.forEach(label => {
+        const count = counts[label] || 0;
+        const barPct = totalSubmissions > 0 ? Math.round((count / totalSubmissions) * 100) : 0;
+        const row = document.createElement('div');
+        row.className = 'bar-row';
+        row.innerHTML = `
+          <div class="bar-label">${label}</div>
+          <div class="bar-track"><div class="bar-fill ${colorClass}" style="width: ${barPct}%"></div></div>
+        `;
+        container.appendChild(row);
+      });
+    }
 
-      if (error) {
-        document.getElementById('submission-count').textContent = 'Could not load submissions right now.';
+    // ============================================================
+    // Stat + chart computation, given a config entry (see TYPE_CONFIGS below)
+    // ============================================================
+
+    function computeStat(rows, stat) {
+      if (stat.type === 'avg_time') {
+        return formatSeconds(weightedAverageSeconds(rows, stat.qid, stat.midpoints));
+      }
+      // 'percent'
+      const denomRows = stat.denomFilter ? rows.filter(stat.denomFilter) : rows;
+      const count = denomRows.filter(stat.predicate).length;
+      return pct(count, denomRows.length);
+    }
+
+    function renderChart(chart, rows) {
+      const chartRows = chart.rowsFilter ? rows.filter(chart.rowsFilter) : rows;
+      const total = chartRows.length;
+
+      if (chart.type === 'avg_time_bar') {
+        const seconds = weightedAverageSeconds(chartRows, chart.qid, chart.midpoints);
+        const container = document.getElementById(chart.id);
+        if (!container) return;
+        const widthPct = seconds ? Math.min(100, Math.round(seconds / (chart.scaleDivisor || 3))) : 0;
+        container.innerHTML = `
+          <div class="bar-row">
+            <div class="bar-label">Avg</div>
+            <div class="bar-track"><div class="bar-fill ${chart.color}" style="width: ${widthPct}%"></div></div>
+          </div>
+          <div style="text-align:center; color:#a89e91; font-size:13px; margin-top:6px;">${formatSeconds(seconds)}</div>
+        `;
         return;
       }
 
-      // This page only reflects Interior Attack Line debriefs. Older submissions made
-      // before other debrief types existed don't have an operation_type tag at all,
-      // so we treat those as interior attack too rather than losing them.
-      const rows = allRows.filter(r =>
-        r.answers && (!r.answers.operation_type || r.answers.operation_type === 'interior_attack')
-      );
+      let counts;
+      if (chart.type === 'single') counts = tallySingle(chartRows, chart.qid);
+      else if (chart.type === 'multi') counts = tallyMulti(chartRows, chart.qid);
+      else if (chart.type === 'selected') counts = tallySelected(chartRows, chart.qid);
+      else if (chart.type === 'nested') counts = tallyNestedSelected(chartRows, chart.qid, chart.subKey);
+      else if (chart.type === 'group') counts = tallyGroupField(chartRows, chart.qid, chart.subKey);
+      else counts = {};
 
+      renderBars(chart.id, chart.labels, counts, total, chart.color);
+    }
+
+    // ============================================================
+    // Type configs — one per debrief type shown on this page.
+    // ============================================================
+
+    // ---- Interior Attack (unchanged from the original single-type page) ----
+    const interiorAttackConfig = {
+      tabLabel: 'Interior Attack',
+      pageTitle: 'Interior Attack Trends',
+      noun: 'interior attack debrief',
+      // Older submissions made before other debrief types existed don't have
+      // an operation_type tag at all, so those are treated as interior attack too.
+      filter: r => r.answers && (!r.answers.operation_type || r.answers.operation_type === 'interior_attack'),
+      stats: [
+        { id: 'stat-knockdown', label: 'Avg time to extinguishment', type: 'avg_time', qid: 'time_to_extinguish',
+          midpoints: { 'Under 15 seconds': 7, '15–30 seconds': 22, '30 seconds – 1 minute': 45, 'Over 1 minute': 75 } },
+        { id: 'stat-injury', label: 'Injury / close-call rate', red: true, type: 'percent',
+          predicate: r => { const v = r.answers['injuries'] && r.answers['injuries'].selected; return !!v && v !== 'None'; } },
+        { id: 'stat-heelman', label: 'Heel man present', type: 'percent',
+          predicate: r => r.answers['heel_man'] === 'Yes' },
+        { id: 'stat-oneline', label: 'One line sufficient', type: 'percent',
+          predicate: r => r.answers['one_line_enough'] === 'Extinguished with this line alone' },
+        { id: 'stat-samechoice', label: 'Would do it all the same again', type: 'percent',
+          predicate: r => (r.answers['would_repeat'] && r.answers['would_repeat'].selected) === 'Yes, all the same' },
+        { id: 'stat-taxing', label: 'Very taxing / exhausting', red: true, type: 'percent',
+          predicate: r => r.answers['physically_taxing'] === 'Very taxing / exhausting' }
+      ],
+      charts: [
+        { id: 'chart-crew', title: 'Crew Size', type: 'single', qid: 'crew_size', color: 'blue',
+          labels: ['Yes', 'No, three-man'] },
+        { id: 'chart-load', title: 'Load Type Pulled', type: 'single', qid: 'load_type', color: 'blue',
+          labels: ['Bulk load', 'Pre-connect', 'Bumper Load', 'Denver'] },
+        { id: 'chart-hoseline', title: 'Hoseline & Nozzle Selected', type: 'single', qid: 'hoseline_nozzle', color: 'purple',
+          labels: ['1¾" blue', '1¾" red', '1¾" pre-connect', '2½"', '1¾" Bumper'] },
+        { id: 'chart-hoseground', title: 'Hose on the Ground: More or Less Than Wanted', type: 'nested',
+          qid: 'hose_on_ground', subKey: 'was that more or less than you wanted?', color: 'red',
+          labels: ['Extra hose', 'Less hose', 'About right'] },
+        { id: 'chart-technique', title: 'Attack Technique Used', type: 'single', qid: 'attack_technique', color: 'yellow',
+          labels: ['Continuous flow to the seat of the fire', 'Shut down water to move', 'Half bailed nozzle to move'] },
+        { id: 'chart-entry', title: 'Entry Point Used', type: 'single', qid: 'entry_door', color: 'green',
+          labels: ['Front door', 'Side door', 'Rear door', 'Garage door/opening', 'Window'] },
+        { id: 'chart-air', title: 'SCBA Air Remaining on Exit', type: 'single', qid: 'scba_air', color: 'blue',
+          labels: ['75–100%', '50–75%', '25–50%', 'Under 25% / low-air alarm activated'] },
+        { id: 'chart-reach', title: 'Time to Get Water on the Fire', type: 'avg_time_bar', qid: 'time_to_water',
+          color: 'blue', scaleDivisor: 3,
+          midpoints: { 'Under 1 minute': 30, '1–2 minutes': 90, '2–4 minutes': 180, 'Over 4 minutes': 300 } }
+      ]
+    };
+
+    // ---- Search — shared stat/chart definitions ----
+    // debrief-search.html (FFRS, tagged 'search_ffrs') and debrief-search-2.html
+    // (simplified, tagged 'search') use identical wording/options for every
+    // field below, so both tabs reuse this same set of definitions.
+    function makeSearchStats(prefix) {
+      return [
+        { id: prefix + '-stat-victim', label: 'Victim located (by anyone)', type: 'percent',
+          predicate: r => { const v = r.answers['victims_found']; return !!v && v !== 'No victims found' && v !== 'Search not completed'; } },
+        { id: prefix + '-stat-injury', label: 'Injury / close-call rate', red: true, type: 'percent',
+          predicate: r => { const v = r.answers['injuries'] && r.answers['injuries'].selected; return !!v && v !== 'None'; } },
+        { id: prefix + '-stat-orientation', label: 'Maintained orientation to exit', type: 'percent',
+          predicate: r => r.answers['orientation'] === 'Yes' },
+        { id: prefix + '-stat-ventimprove', label: 'Ventilation improved conditions', type: 'percent',
+          predicate: r => r.answers['vent_improvement'] === 'Yes' },
+        { id: prefix + '-stat-noequip', label: 'No equipment problems', type: 'percent',
+          predicate: r => r.answers['equipment_problems'] === 'No problems' },
+        { id: prefix + '-stat-preknock', label: 'Search initiated pre-knockdown', type: 'percent',
+          predicate: r => r.answers['search_initiated_timing'] === 'Pre fire knockdown' }
+      ];
+    }
+
+    function makeSearchCharts(prefix) {
+      return [
+        { id: prefix + '-chart-approach', title: 'Search Approach', type: 'single', qid: 'search_approach', color: 'blue',
+          labels: ['All in', 'Split into two teams'] },
+        { id: prefix + '-chart-type', title: 'Type of Search Conducted', type: 'single', qid: 'search_type', color: 'purple',
+          labels: ['VES', 'Right-hand wall', 'Left-hand wall', 'Oriented / team search', 'Thermal imaging-led', 'Other'] },
+        { id: prefix + '-chart-entry', title: 'Entry Method', type: 'single', qid: 'entry_method', color: 'green',
+          labels: ['Door', 'Window'] },
+        { id: prefix + '-chart-areas', title: 'Areas Searched', type: 'multi', qid: 'areas_searched', color: 'blue',
+          labels: ['Room of origin', 'Bedrooms', 'Living areas', 'Kitchen', 'Basement', 'Attic', 'Other'] },
+        { id: prefix + '-chart-clear', title: 'How Areas Were Confirmed Clear', type: 'single', qid: 'clear_method', color: 'yellow',
+          labels: ['Physical touch/sweep', 'Tool sweep under furniture/beds', 'Visual only', 'Thermal imaging camera'] },
+        { id: prefix + '-chart-obstacles', title: 'Obstacles or Hazards Encountered', type: 'multi', qid: 'obstacles', color: 'red',
+          labels: ['None', 'Locked doors', 'Cluttered / hoarding conditions', 'Structural collapse concern', 'Furniture blocking path', 'Other'] },
+        { id: prefix + '-chart-victims', title: 'Victim Search Outcome', type: 'single', qid: 'victims_found', color: 'green',
+          labels: ['Yes - I found the victim', 'Yes - My crew member found the victim', 'No - Another crew found the victim', 'No victims found', 'Search not completed'] },
+        { id: prefix + '-chart-equip', title: 'Equipment Problems', type: 'single', qid: 'equipment_problems', color: 'blue',
+          labels: ['No problems', 'TIC malfunction', 'PASS device issue', 'Other'] }
+      ];
+    }
+
+    const searchFfrsConfig = {
+      tabLabel: 'Search (FFRS)',
+      pageTitle: 'Search (FFRS) Trends',
+      noun: 'Search (FFRS) debrief',
+      filter: r => r.answers && r.answers.operation_type === 'search_ffrs',
+      stats: makeSearchStats('ffrs'),
+      charts: makeSearchCharts('ffrs')
+    };
+
+    const searchConfig = {
+      tabLabel: 'Search',
+      pageTitle: 'Search Trends',
+      noun: 'Search debrief',
+      filter: r => r.answers && r.answers.operation_type === 'search',
+      stats: makeSearchStats('basic'),
+      charts: makeSearchCharts('basic')
+    };
+
+    // ---- Ventilation ----
+    // Many fields only apply to one of the two ventilation sub-types
+    // (Vertical / roof vs. Horizontal) — those stats/charts are filtered
+    // down to just that sub-type's rows so the percentages stay meaningful,
+    // and are labeled to say which sub-type they cover.
+    const isVerticalVent = r => r.answers && r.answers['ventilation_type'] === 'Vertical / roof';
+    const isHorizontalVent = r => r.answers && r.answers['ventilation_type'] === 'Horizontal';
+
+    const ventilationConfig = {
+      tabLabel: 'Ventilation',
+      pageTitle: 'Ventilation Trends',
+      noun: 'ventilation debrief',
+      filter: r => r.answers && r.answers.operation_type === 'ventilation',
+      stats: [
+        { id: 'vent-stat-injury', label: 'Injury / close-call rate', red: true, type: 'percent',
+          predicate: r => { const v = r.answers['injuries'] && r.answers['injuries'].selected; return !!v && v !== 'None'; } },
+        { id: 'vent-stat-sounded', label: 'Roof sounded before cutting (vertical)', type: 'percent',
+          denomFilter: isVerticalVent, predicate: r => r.answers['sounded_roof'] === 'Yes' },
+        { id: 'vent-stat-relief', label: 'Got noticeable smoke relief (vertical)', type: 'percent',
+          denomFilter: isVerticalVent, predicate: r => { const v = r.answers['smoke_relief']; return v === 'Yes, minimal' || v === 'Yes, mild' || v === 'Yes, significant'; } },
+        { id: 'vent-stat-coord', label: 'Coordinated with interior crew beforehand (horizontal)', type: 'percent',
+          denomFilter: isHorizontalVent, predicate: r => r.answers['coordination'] === 'Yes, coordinated beforehand' },
+        { id: 'vent-stat-improve', label: 'Conditions improved afterward (horizontal)', type: 'percent',
+          denomFilter: isHorizontalVent, predicate: r => { const v = r.answers['condition_change']; return v === 'Yes, noticeable improvement' || v === 'Some improvement'; } },
+        { id: 'vent-stat-noequip', label: 'No equipment problems', type: 'percent',
+          predicate: r => r.answers['equipment_problems'] === 'No problems' }
+      ],
+      charts: [
+        { id: 'vent-chart-type', title: 'Ventilation Type', type: 'single', qid: 'ventilation_type', color: 'blue',
+          labels: ['Vertical / roof', 'Horizontal'] },
+        { id: 'vent-chart-construction', title: 'Roof Construction', type: 'group', qid: 'roof_construction', subKey: 'construction',
+          color: 'purple', rowsFilter: isVerticalVent, note: 'Vertical / roof ventilations only',
+          labels: ['Dimensional lumber', 'Lightweight truss', 'Not sure'] },
+        { id: 'vent-chart-pattern', title: 'Cut Pattern Used', type: 'single', qid: 'cut_pattern', color: 'yellow',
+          rowsFilter: isVerticalVent, note: 'Vertical / roof ventilations only',
+          labels: ['Low Eight', 'Quick Six', 'High Five', 'Dice', 'Trench cut'] },
+        { id: 'vent-chart-cuttime', title: 'Time to Complete the Cut', type: 'avg_time_bar', qid: 'cut_time',
+          color: 'blue', scaleDivisor: 3.6, rowsFilter: isVerticalVent, note: 'Vertical / roof ventilations only',
+          midpoints: { 'Less than 1 min': 30, '1–2 min': 90, '2–3 min': 150, '3–5 min': 240, 'Over 5 min': 360 } },
+        { id: 'vent-chart-tools', title: 'Tools Used', type: 'multi', qid: 'tools_used', color: 'green',
+          rowsFilter: isHorizontalVent, note: 'Horizontal ventilations only',
+          labels: ['Chainsaw', 'Axe', 'Roof hook / pike pole', 'Ventilation saw', 'Hand tools only', 'Other'] },
+        { id: 'vent-chart-structural', title: 'Structural Concerns Encountered', type: 'multi', qid: 'structural_concerns', color: 'red',
+          rowsFilter: isHorizontalVent, note: 'Horizontal ventilations only',
+          labels: ['None', 'Soft spots / spongy roof', 'Signs of sagging or collapse', 'Truss construction concerns', 'Other'] },
+        { id: 'vent-chart-condition', title: 'Conditions Improved After Ventilating', type: 'single', qid: 'condition_change', color: 'green',
+          rowsFilter: isHorizontalVent, note: 'Horizontal ventilations only',
+          labels: ['Yes, noticeable improvement', 'Some improvement', 'No noticeable change', 'Conditions worsened'] },
+        { id: 'vent-chart-equip', title: 'Equipment Problems', type: 'single', qid: 'equipment_problems', color: 'blue',
+          labels: ['No problems', "Saw wouldn't start / stalled", 'Blade or chain issue', 'Other'] }
+      ]
+    };
+
+    const TYPE_CONFIGS = {
+      interior_attack: interiorAttackConfig,
+      search_ffrs: searchFfrsConfig,
+      search: searchConfig,
+      ventilation: ventilationConfig
+    };
+
+    // ============================================================
+    // Rendering
+    // ============================================================
+
+    let allRows = [];
+    let currentType = 'interior_attack';
+
+    function buildTabs() {
+      const wrap = document.getElementById('trend-tabs');
+      wrap.innerHTML = '';
+      Object.keys(TYPE_CONFIGS).forEach(key => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'trend-tab' + (key === currentType ? ' active' : '');
+        btn.textContent = TYPE_CONFIGS[key].tabLabel;
+        btn.addEventListener('click', () => {
+          if (currentType === key) return;
+          currentType = key;
+          document.querySelectorAll('.trend-tab').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          renderType(key);
+        });
+        wrap.appendChild(btn);
+      });
+    }
+
+    function renderType(typeKey) {
+      const config = TYPE_CONFIGS[typeKey];
+      document.getElementById('page-title').textContent = config.pageTitle;
+
+      const rows = allRows.filter(config.filter);
       const total = rows.length;
+
       document.getElementById('submission-count').textContent =
-        `Based on ${total} submitted interior attack debrief${total === 1 ? '' : 's'}`;
+        `Based on ${total} submitted ${config.noun}${total === 1 ? '' : 's'}`;
 
       if (total === 0) {
+        document.getElementById('empty-state').textContent =
+          `No ${config.noun}s have been submitted yet. Once firefighters start submitting this form, these charts will fill in automatically.`;
         document.getElementById('empty-state').style.display = 'block';
         document.getElementById('charts-wrapper').style.display = 'none';
         return;
@@ -221,75 +410,40 @@
       document.getElementById('charts-wrapper').style.display = 'block';
 
       // ---- Stat cards ----
-      const heelYes = rows.filter(r => r.answers && r.answers['heel_man'] === 'Yes').length;
-      document.getElementById('stat-heelman').innerHTML = `${pct(heelYes, total)}`;
-
-      const oneLine = rows.filter(r => r.answers && r.answers['one_line_enough'] === 'Extinguished with this line alone').length;
-      document.getElementById('stat-oneline').innerHTML = `${pct(oneLine, total)}`;
-
-      const injuryOrCloseCall = rows.filter(r => {
-        const v = r.answers && r.answers['injuries'] && r.answers['injuries'].selected;
-        return v && v !== 'None';
-      }).length;
-      document.getElementById('stat-injury').innerHTML = `${pct(injuryOrCloseCall, total)}`;
-
-      const sameChoice = rows.filter(r => {
-        const v = r.answers && r.answers['would_repeat'] && r.answers['would_repeat'].selected;
-        return v === 'Yes, all the same';
-      }).length;
-      document.getElementById('stat-samechoice').innerHTML = `${pct(sameChoice, total)}`;
-
-      const veryTaxing = rows.filter(r => r.answers && r.answers['physically_taxing'] === 'Very taxing / exhausting').length;
-      document.getElementById('stat-taxing').innerHTML = `${pct(veryTaxing, total)}`;
-
-      const knockdownSeconds = weightedAverageSeconds(rows, 'time_to_extinguish', {
-        'Under 15 seconds': 7,
-        '15–30 seconds': 22,
-        '30 seconds – 1 minute': 45,
-        'Over 1 minute': 75
-      });
-      document.getElementById('stat-knockdown').textContent = formatSeconds(knockdownSeconds);
-
-      // ---- Bar chart sections ----
-      renderBars('chart-crew', ['Yes', 'No, three-man'],
-        tallySingle(rows, 'crew_size'), total, 'crew');
-
-      renderBars('chart-load', ['Bulk load', 'Pre-connect', 'Bumper Load', 'Denver'],
-        tallySingle(rows, 'load_type'), total, 'load');
-
-      renderBars('chart-hoseline', ['1¾" blue', '1¾" red', '1¾" pre-connect', '2½"', '1¾" Bumper'],
-        tallySingle(rows, 'hoseline_nozzle'), total, 'hoseline');
-
-      renderBars('chart-hoseground', ['Extra hose', 'Less hose', 'About right'],
-        tallyNestedSelected(rows, 'hose_on_ground', 'was that more or less than you wanted?'), total, 'hoseground');
-
-      renderBars('chart-technique',
-        ['Continuous flow to the seat of the fire', 'Shut down water to move', 'Half bailed nozzle to move'],
-        tallySingle(rows, 'attack_technique'), total, 'technique');
-
-      renderBars('chart-entry',
-        ['Front door', 'Side door', 'Rear door', 'Garage door/opening', 'Window'],
-        tallySingle(rows, 'entry_door'), total, 'entry');
-
-      renderBars('chart-air',
-        ['75–100%', '50–75%', '25–50%', 'Under 25% / low-air alarm activated'],
-        tallySingle(rows, 'scba_air'), total, 'air');
-
-      // Time to get water on the fire — one summary bar built from bucket midpoints
-      const reachSeconds = weightedAverageSeconds(rows, 'time_to_water', {
-        'Under 1 minute': 30,
-        '1–2 minutes': 90,
-        '2–4 minutes': 180,
-        'Over 4 minutes': 300
-      });
-      const reachContainer = document.getElementById('chart-reach');
-      reachContainer.innerHTML = `
-        <div class="bar-row">
-          <div class="bar-label">Avg</div>
-          <div class="bar-track"><div class="bar-fill blue" style="width: ${reachSeconds ? Math.min(100, Math.round(reachSeconds / 3)) : 0}%"></div></div>
+      const statGrid = document.getElementById('stat-grid');
+      statGrid.innerHTML = config.stats.map(stat => `
+        <div class="stat-card">
+          <div class="label">${stat.label}</div>
+          <div class="value${stat.red ? ' red' : ''}" id="${stat.id}">—</div>
         </div>
-        <div style="text-align:center; color:#a89e91; font-size:13px; margin-top:6px;">${formatSeconds(reachSeconds)}</div>
-      `;
+      `).join('');
+      config.stats.forEach(stat => {
+        document.getElementById(stat.id).textContent = computeStat(rows, stat);
+      });
+
+      // ---- Chart sections ----
+      const sections = document.getElementById('sections');
+      sections.innerHTML = config.charts.map(chart => `
+        <div class="section-card">
+          <h2 class="headline">${chart.title}</h2>
+          ${chart.note ? `<div style="color:#a89e91; font-size:12px; margin:-10px 0 16px;">${chart.note}</div>` : ''}
+          <div id="${chart.id}"></div>
+        </div>
+      `).join('');
+      config.charts.forEach(chart => renderChart(chart, rows));
+    }
+
+    async function loadTrends() {
+      const { data, error } = await sb.from('debrief_submissions').select('answers');
+
+      if (error) {
+        document.getElementById('submission-count').textContent = 'Could not load submissions right now.';
+        return;
+      }
+
+      allRows = data || [];
+      buildTabs();
+      renderType(currentType);
     }
 
     loadTrends();
