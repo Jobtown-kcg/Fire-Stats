@@ -167,6 +167,38 @@ body.no-bottom-nav {
   font-weight: 700;
 }
 
+/* ---- Debrief type tabs (Trends page) ---- */
+.trend-tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 16px 18px 4px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.trend-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.trend-tab {
+  flex: 0 0 auto;
+  background: transparent;
+  border: 1px solid var(--color-pill-border);
+  color: var(--color-text-muted);
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.trend-tab.active {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-text-on-accent);
+}
+
 /* ---- Bar chart sections (Trends page) ---- */
 .section-card {
   background-color: var(--color-void);
@@ -626,4 +658,316 @@ body.no-bottom-nav {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* ---- Pre-Plans / Target Hazards ---- */
+.preplan-toolbar {
+  padding: 16px 18px 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.preplan-toolbar .text-input {
+  margin-top: 0;
+}
+
+.preplan-add-link {
+  display: block;
+  text-align: center;
+  background-color: var(--color-accent);
+  color: var(--color-text-on-accent);
+  font-size: 15px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 14px;
+  border-radius: 10px;
+  text-decoration: none;
+}
+
+.preplan-count {
+  color: var(--color-text-muted);
+  font-size: 13px;
+  padding: 0 18px;
+}
+
+.preplan-view-toggle {
+  display: flex;
+  gap: 8px;
+}
+
+.preplan-view-btn {
+  flex: 1;
+  background: transparent;
+  border: 1px solid var(--color-pill-border);
+  color: var(--color-text-muted);
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.preplan-view-btn.active {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-text-on-accent);
+}
+
+#pp-map {
+  height: 60vh;
+  margin: 12px 18px 18px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Leaflet's popup chrome is styled for a light page by default — retint it
+   to match the app's dark surface. */
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background-color: var(--color-surface);
+  color: var(--color-text);
+}
+
+.leaflet-popup-content {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.preplan-popup-btn {
+  margin-top: 6px;
+  background-color: var(--color-accent);
+  border: none;
+  color: var(--color-text-on-accent);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.preplan-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  padding: 12px 18px 18px;
+}
+
+.preplan-card {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background-color: var(--color-surface-alt);
+  border-radius: 10px;
+  overflow: hidden;
+  border-top: 3px solid var(--color-accent-line);
+  border-left: none;
+  border-right: none;
+  border-bottom: none;
+  padding: 0;
+  color: var(--color-text);
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.preplan-card-photo {
+  height: 100px;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--color-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  color: var(--color-text-muted);
+}
+
+.preplan-card-body {
+  padding: 12px;
+}
+
+.preplan-card-address {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+
+.preplan-card-sub {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.preplan-card-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.preplan-badge {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background-color: rgba(229, 57, 53, 0.18);
+  color: var(--color-accent-line);
+  border: 1px solid rgba(229, 57, 53, 0.4);
+}
+
+.preplan-empty {
+  color: var(--color-text-muted);
+  text-align: center;
+  padding: 40px 20px;
+  grid-column: 1 / -1;
+}
+
+/* ---- Pre-Plan detail modal ---- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modal-card {
+  background-color: var(--color-surface);
+  width: 100%;
+  max-width: 560px;
+  max-height: 88vh;
+  overflow-y: auto;
+  border-radius: 16px 16px 0 0;
+  padding: 20px 18px 28px;
+}
+
+.modal-close {
+  float: right;
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: 22px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+}
+
+.modal-title {
+  font-size: 19px;
+  font-weight: 800;
+  margin: 0 0 4px;
+  padding-right: 30px;
+}
+
+.modal-subtitle {
+  color: var(--color-text-muted);
+  font-size: 13px;
+  margin: 0 0 16px;
+}
+
+.modal-photos {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  margin: 0 0 18px;
+}
+
+.modal-photos img {
+  height: 120px;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.detail-section {
+  margin-bottom: 18px;
+}
+
+.detail-section h4 {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-text-muted);
+  margin: 0 0 8px;
+}
+
+.detail-row {
+  font-size: 14px;
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+.detail-row .detail-label {
+  color: var(--color-text-muted);
+  margin-right: 6px;
+}
+
+.modal-delete-btn {
+  width: 100%;
+  background: transparent;
+  border: 1px solid #7a7167;
+  color: #ff6b6b;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+/* ---- Pre-Plan submission form: photo upload ---- */
+.photo-upload-zone {
+  border: 1px dashed var(--color-border-input);
+  border-radius: 10px;
+  padding: 22px;
+  text-align: center;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  margin-top: 14px;
+  font-size: 13px;
+}
+
+.photo-upload-zone input {
+  display: none;
+}
+
+.photo-preview-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.photo-preview-item {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.photo-preview-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.photo-preview-remove {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  font-size: 11px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
 }
