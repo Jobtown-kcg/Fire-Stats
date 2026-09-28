@@ -598,17 +598,12 @@
       const rows = allRows.filter(config.filter);
       const total = rows.length;
 
-      document.getElementById('submission-count').textContent =
-        `Based on ${total} submitted ${config.noun}${total === 1 ? '' : 's'}`;
+      document.getElementById('submission-count').textContent = total === 0
+        ? `No ${config.noun}s submitted yet — showing charts with no data`
+        : `Based on ${total} submitted ${config.noun}${total === 1 ? '' : 's'}`;
 
-      if (total === 0) {
-        document.getElementById('empty-state').textContent =
-          `No ${config.noun}s have been submitted yet. Once firefighters start submitting this form, these charts will fill in automatically.`;
-        document.getElementById('empty-state').style.display = 'block';
-        document.getElementById('charts-wrapper').style.display = 'none';
-        return;
-      }
-
+      // Always show the stat grid and charts, even with zero submissions —
+      // they'll just render as "—" / empty bars until real data comes in.
       document.getElementById('empty-state').style.display = 'none';
       document.getElementById('charts-wrapper').style.display = 'block';
 
