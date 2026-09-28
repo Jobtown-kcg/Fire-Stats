@@ -4,19 +4,49 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Medford Fire Trends</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="jobtown-theme.css">
 </head>
-<body>
+<body class="no-bottom-nav jt-theme">
 
-  <div class="topbar">
-    <h1 class="headline" id="page-title">Interior Attack Trends</h1>
-    <div class="avatar">👤</div>
+  <div class="jt-topbar">
+    <a href="index.html" class="jt-brand">
+      <div class="jt-badge">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2 L14 8 L20 8.5 L15.5 12.3 L17 18.5 L12 15 L7 18.5 L8.5 12.3 L4 8.5 L10 8 Z"
+                fill="#e0392f" stroke="#e0392f" stroke-width="0.5"/>
+        </svg>
+      </div>
+      <div>
+        <div class="jt-brand-title">JOBTOWN AAR</div>
+        <div class="jt-brand-sub">TACTICAL OPERATION STREAM</div>
+      </div>
+    </a>
+    <nav class="jt-nav">
+      <a href="index.html" class="jt-nav-link">📄 AARS</a>
+      <a href="trends.html" class="jt-nav-link active">📈 TRENDS</a>
+      <a href="pre-plans.html" class="jt-nav-link">📋 PRE-PLANS</a>
+      <div class="jt-avatar">KC</div>
+      <div class="jt-gear">⚙️</div>
+    </nav>
   </div>
 
-  <div class="trend-tabs" id="trend-tabs"></div>
+  <div class="jt-page-header">
+    <div>
+      <div class="jt-page-title" id="page-title">Interior Attack Trends</div>
+      <div class="jt-page-subtitle">Debrief performance across every operation type.</div>
+    </div>
+    <div class="jt-org">
+      <div class="jt-org-label">MEDFORD FIRE</div>
+      <div class="jt-org-value">Medford, OR</div>
+    </div>
+  </div>
 
-  <div class="progress-label" id="submission-count" style="margin: 14px 0 0;">Loading submissions…</div>
+  <div class="jt-toolbar">
+    <div class="trend-tabs" id="trend-tabs"></div>
+    <div class="jt-count" id="submission-count">Loading…</div>
+  </div>
 
-  <div id="empty-state" style="display:none; text-align:center; color:#a89e91; padding: 40px 20px;">
+  <div id="empty-state" class="jt-empty" style="display:none;">
     No debriefs have been submitted yet. Once firefighters start submitting the form, these charts will fill in automatically.
   </div>
 
@@ -24,13 +54,6 @@
     <div class="stat-grid" id="stat-grid"></div>
     <div id="sections"></div>
   </div>
-
-  <nav class="bottom-nav">
-    <a href="index.html" class="nav-item"><span class="icon">🏠</span>Home</a>
-    <a href="trends.html" class="nav-item active"><span class="icon">📈</span>Trends</a>
-    <a href="pre-plans.html" class="nav-item"><span class="icon">🏢</span>Pre-Plans</a>
-    <a href="admin-roster.html" class="nav-item"><span class="icon">⚙️</span>Gear</a>
-  </nav>
 
   <!-- Supabase client library -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -132,22 +155,37 @@
       return s === 0 ? `${m}m` : `${m}m ${s}s`;
     }
 
+    // Shared 0-100% scale row, used underneath any percentage-based bar
+    // group so the bars read against a real axis, not just their own labels.
+    function pctAxisHtml() {
+      const ticks = [0, 25, 50, 75, 100];
+      return `
+        <div class="bar-row time-axis-row">
+          <div class="bar-label"></div>
+          <div class="time-axis">
+            ${ticks.map(t => `<span style="left:${t}%">${t}%</span>`).join('')}
+          </div>
+        </div>`;
+    }
+
     // Build one set of bar-rows inside a container, given raw tally counts
     function renderBars(containerId, labels, counts, totalSubmissions, colorClass) {
       const container = document.getElementById(containerId);
       if (!container) return;
-      container.innerHTML = '';
-      labels.forEach(label => {
+      const rowsHtml = labels.map(label => {
         const count = counts[label] || 0;
         const barPct = totalSubmissions > 0 ? Math.round((count / totalSubmissions) * 100) : 0;
-        const row = document.createElement('div');
-        row.className = 'bar-row';
-        row.innerHTML = `
-          <div class="bar-label">${label}</div>
-          <div class="bar-track"><div class="bar-fill ${colorClass}" style="width: ${barPct}%"></div></div>
-        `;
-        container.appendChild(row);
-      });
+        const valueLeft = Math.min(barPct, 88);
+        return `
+          <div class="bar-row">
+            <div class="bar-label">${label}</div>
+            <div class="bar-track bar-track-scale">
+              <div class="bar-fill ${colorClass}" style="width: ${barPct}%"></div>
+              <span class="bar-time-value" style="left: ${valueLeft}%">${barPct}%</span>
+            </div>
+          </div>`;
+      }).join('');
+      container.innerHTML = rowsHtml + pctAxisHtml();
     }
 
     // ============================================================
@@ -155,11 +193,26 @@
     // ============================================================
 
     function computeStat(rows, stat) {
+      // rowsFilter narrows which submissions this stat looks at at all
+      // (e.g. only four-man-engine rows), separate from denomFilter below
+      // (which only affects a percent's denominator).
+      const baseRows = stat.rowsFilter ? rows.filter(stat.rowsFilter) : rows;
+
       if (stat.type === 'avg_time') {
-        return formatSeconds(weightedAverageSeconds(rows, stat.qid, stat.midpoints));
+        return formatSeconds(weightedAverageSeconds(baseRows, stat.qid, stat.midpoints));
+      }
+      // Most-picked option for a categorical question, e.g. "Bulk load — 62%".
+      if (stat.type === 'mode') {
+        const counts = tallySingle(baseRows, stat.qid);
+        let bestLabel = null, bestCount = -1;
+        Object.keys(counts).forEach(label => {
+          if (counts[label] > bestCount) { bestCount = counts[label]; bestLabel = label; }
+        });
+        if (bestLabel === null) return '—';
+        return `${bestLabel} — ${pct(bestCount, baseRows.length)}`;
       }
       // 'percent'
-      const denomRows = stat.denomFilter ? rows.filter(stat.denomFilter) : rows;
+      const denomRows = stat.denomFilter ? baseRows.filter(stat.denomFilter) : baseRows;
       const count = denomRows.filter(stat.predicate).length;
       return pct(count, denomRows.length);
     }
@@ -178,8 +231,94 @@
             <div class="bar-label">Avg</div>
             <div class="bar-track"><div class="bar-fill ${chart.color}" style="width: ${widthPct}%"></div></div>
           </div>
-          <div style="text-align:center; color:#a89e91; font-size:13px; margin-top:6px;">${formatSeconds(seconds)}</div>
+          <div class="avg-caption">${formatSeconds(seconds)}</div>
         `;
+        return;
+      }
+
+      // One row per group (e.g. crew size), all sharing one time scale — bar
+      // length is the group's average time, with a tick-marked scale below.
+      if (chart.type === 'avg_time_multi') {
+        const container = document.getElementById(chart.id);
+        if (!container) return;
+        const scaleMax = chart.scaleMax || 90;
+        const rowsHtml = chart.groups.map(group => {
+          const seconds = weightedAverageSeconds(chartRows.filter(group.rowsFilter), chart.qid, chart.midpoints);
+          const widthPct = seconds ? Math.min(100, (seconds / scaleMax) * 100) : 0;
+          const valueLeft = Math.min(widthPct, 88);
+          return `
+            <div class="bar-row">
+              <div class="bar-label">${group.label}</div>
+              <div class="bar-track bar-track-scale">
+                <div class="bar-fill ${chart.color}" style="width: ${widthPct}%"></div>
+                <span class="bar-time-value" style="left: ${valueLeft}%">${formatSeconds(seconds)}</span>
+              </div>
+            </div>`;
+        }).join('');
+        const ticks = chart.axisTicks || [0, scaleMax];
+        const axisHtml = `
+          <div class="bar-row time-axis-row">
+            <div class="bar-label"></div>
+            <div class="time-axis">
+              ${ticks.map(t => `<span style="left:${(t / scaleMax * 100).toFixed(1)}%">${formatSeconds(t)}</span>`).join('')}
+            </div>
+          </div>`;
+        container.innerHTML = rowsHtml + axisHtml;
+        return;
+      }
+
+      // One option per group of rows (paired bars) — each option gets a row
+      // per split group, e.g. a 4-Man bar and a 3-Man bar, each as a % of
+      // that group's own submissions (not the combined total).
+      if (chart.type === 'single_split') {
+        const container = document.getElementById(chart.id);
+        if (!container) return;
+        const groupsHtml = chart.labels.map(label => {
+          const rowsHtml = chart.splitGroups.map((group, i) => {
+            const groupRows = chartRows.filter(group.rowsFilter);
+            const count = groupRows.filter(r => r.answers && r.answers[chart.qid] === label).length;
+            const p = groupRows.length > 0 ? Math.round((count / groupRows.length) * 100) : 0;
+            const valueLeft = Math.min(p, 88);
+            const fillClass = i === 0 ? chart.color : chart.color + ' bar-fill-secondary';
+            return `
+              <div class="bar-row">
+                <div class="bar-label">${group.label}</div>
+                <div class="bar-track bar-track-scale">
+                  <div class="bar-fill ${fillClass}" style="width: ${p}%"></div>
+                  <span class="bar-time-value" style="left: ${valueLeft}%">${p}%</span>
+                </div>
+              </div>`;
+          }).join('');
+          return `<div class="split-group"><div class="split-group-label">${label}</div>${rowsHtml}</div>`;
+        }).join('');
+        container.innerHTML = groupsHtml + pctAxisHtml();
+        return;
+      }
+
+      // One bar-row per group, bar length = that group's percentage for a
+      // yes/no-style predicate. Same visual language as avg_time_multi, but
+      // scaled 0-100% instead of a time axis (no axis row needed). Works for
+      // a single ungrouped bar too — just pass one group with an "always true"
+      // rowsFilter.
+      if (chart.type === 'percent_multi') {
+        const container = document.getElementById(chart.id);
+        if (!container) return;
+        const rowsHtml = chart.groups.map(group => {
+          const groupRows = group.rowsFilter ? chartRows.filter(group.rowsFilter) : chartRows;
+          const denomRows = chart.denomFilter ? groupRows.filter(chart.denomFilter) : groupRows;
+          const count = denomRows.filter(chart.predicate).length;
+          const p = denomRows.length > 0 ? Math.round((count / denomRows.length) * 100) : 0;
+          const valueLeft = Math.min(p, 88);
+          return `
+            <div class="bar-row">
+              <div class="bar-label">${group.label}</div>
+              <div class="bar-track bar-track-scale">
+                <div class="bar-fill ${chart.color}" style="width: ${p}%"></div>
+                <span class="bar-time-value" style="left: ${valueLeft}%">${p}%</span>
+              </div>
+            </div>`;
+        }).join('');
+        container.innerHTML = rowsHtml + pctAxisHtml();
         return;
       }
 
@@ -206,39 +345,77 @@
       // Older submissions made before other debrief types existed don't have
       // an operation_type tag at all, so those are treated as interior attack too.
       filter: r => r.answers && (!r.answers.operation_type || r.answers.operation_type === 'interior_attack'),
+      // Collective (all crew sizes combined) headline for each metric that
+      // also gets a more detailed breakdown chart further down. Avg Time to
+      // Extinguishment and Heel Man Present are percent/avg_time collective
+      // numbers; Load Type, Attack Technique, and Entry Point are
+      // categorical, so their headline is the most-picked option and its %.
       stats: [
-        { id: 'stat-knockdown', label: 'Avg time to extinguishment', type: 'avg_time', qid: 'time_to_extinguish',
+        { id: 'stat-knockdown', label: 'Avg Time to Extinguishment', type: 'avg_time', qid: 'time_to_extinguish',
           midpoints: { 'Under 15 seconds': 7, '15–30 seconds': 22, '30 seconds – 1 minute': 45, 'Over 1 minute': 75 } },
-        { id: 'stat-injury', label: 'Injury / close-call rate', red: true, type: 'percent',
-          predicate: r => { const v = r.answers['injuries'] && r.answers['injuries'].selected; return !!v && v !== 'None'; } },
-        { id: 'stat-heelman', label: 'Heel man present', type: 'percent',
+        { id: 'stat-heelman', label: 'Heel Man Present', type: 'percent',
           predicate: r => r.answers['heel_man'] === 'Yes' },
-        { id: 'stat-oneline', label: 'One line sufficient', type: 'percent',
-          predicate: r => r.answers['one_line_enough'] === 'Extinguished with this line alone' },
-        { id: 'stat-samechoice', label: 'Would do it all the same again', type: 'percent',
-          predicate: r => (r.answers['would_repeat'] && r.answers['would_repeat'].selected) === 'Yes, all the same' },
-        { id: 'stat-taxing', label: 'Very taxing / exhausting', red: true, type: 'percent',
-          predicate: r => r.answers['physically_taxing'] === 'Very taxing / exhausting' }
+        { id: 'stat-loadtype', label: 'Load Type Pulled', type: 'mode', qid: 'load_type' },
+        { id: 'stat-technique', label: 'Attack Technique Used', type: 'mode', qid: 'attack_technique' },
+        { id: 'stat-entry', label: 'Entry Point Used', type: 'mode', qid: 'entry_door' }
       ],
       charts: [
-        { id: 'chart-crew', title: 'Crew Size', type: 'single', qid: 'crew_size', color: 'blue',
-          labels: ['Yes', 'No, three-man'] },
+        { id: 'chart-injury', title: 'Injury / close-call rate', type: 'percent_multi', color: 'red',
+          predicate: r => { const v = r.answers['injuries'] && r.answers['injuries'].selected; return !!v && v !== 'None'; },
+          groups: [
+            { label: '4 Man', rowsFilter: r => r.answers['crew_size'] === 'Yes' },
+            { label: '3 Man', rowsFilter: r => r.answers['crew_size'] === 'No, three-man' }
+          ] },
+        { id: 'chart-heelman', title: 'Heel Man Present', type: 'percent_multi', color: 'yellow',
+          predicate: r => r.answers['heel_man'] === 'Yes',
+          groups: [
+            { label: '4 Man', rowsFilter: r => r.answers['crew_size'] === 'Yes' },
+            { label: '3 Man', rowsFilter: r => r.answers['crew_size'] === 'No, three-man' }
+          ] },
+        { id: 'chart-oneline', title: 'One Line Sufficient', type: 'percent_multi', color: 'green',
+          predicate: r => r.answers['one_line_enough'] === 'Extinguished with this line alone',
+          groups: [ { label: '', rowsFilter: r => true } ] },
+        { id: 'chart-taxing', title: 'Very Taxing / Exhausting', type: 'percent_multi', color: 'red',
+          predicate: r => r.answers['physically_taxing'] === 'Very taxing / exhausting',
+          groups: [
+            { label: '4 Man', rowsFilter: r => r.answers['crew_size'] === 'Yes' },
+            { label: '3 Man', rowsFilter: r => r.answers['crew_size'] === 'No, three-man' }
+          ] },
         { id: 'chart-load', title: 'Load Type Pulled', type: 'single', qid: 'load_type', color: 'blue',
           labels: ['Bulk load', 'Pre-connect', 'Bumper Load', 'Denver'] },
         { id: 'chart-hoseline', title: 'Hoseline & Nozzle Selected', type: 'single', qid: 'hoseline_nozzle', color: 'purple',
           labels: ['1¾" blue', '1¾" red', '1¾" pre-connect', '2½"', '1¾" Bumper'] },
+        { id: 'chart-hosepulled', title: 'Hose Length Projected to Pull', type: 'single', qid: 'hose_pulled', color: 'blue',
+          labels: ['50 ft', '100 ft', '150 ft', '200 ft', '250 ft', '300+ ft'] },
+        { id: 'chart-hosegroundamount', title: 'Hose Length That Ended Up on the Ground', type: 'nested',
+          qid: 'hose_on_ground', subKey: 'amount', color: 'purple',
+          labels: ['50 ft', '100 ft', '150 ft', '200 ft', '250 ft', '300+ ft'] },
+        { id: 'chart-hoseneeded', title: 'Hose Length Actually Needed', type: 'single', qid: 'hose_needed', color: 'green',
+          labels: ['50 ft', '100 ft', '150 ft', '200 ft', '250 ft', '300+ ft'] },
         { id: 'chart-hoseground', title: 'Hose on the Ground: More or Less Than Wanted', type: 'nested',
           qid: 'hose_on_ground', subKey: 'was that more or less than you wanted?', color: 'red',
           labels: ['Extra hose', 'Less hose', 'About right'] },
-        { id: 'chart-technique', title: 'Attack Technique Used', type: 'single', qid: 'attack_technique', color: 'yellow',
-          labels: ['Continuous flow to the seat of the fire', 'Shut down water to move', 'Half bailed nozzle to move'] },
+        { id: 'chart-technique', title: 'Attack Technique Used', type: 'single_split', qid: 'attack_technique', color: 'yellow',
+          labels: ['Continuous flow to the seat of the fire', 'Shut down water to move', 'Half bailed nozzle to move'],
+          splitGroups: [
+            { label: '4 Man', rowsFilter: r => r.answers['crew_size'] === 'Yes' },
+            { label: '3 Man', rowsFilter: r => r.answers['crew_size'] === 'No, three-man' }
+          ] },
         { id: 'chart-entry', title: 'Entry Point Used', type: 'single', qid: 'entry_door', color: 'green',
           labels: ['Front door', 'Side door', 'Rear door', 'Garage door/opening', 'Window'] },
-        { id: 'chart-air', title: 'SCBA Air Remaining on Exit', type: 'single', qid: 'scba_air', color: 'blue',
-          labels: ['75–100%', '50–75%', '25–50%', 'Under 25% / low-air alarm activated'] },
-        { id: 'chart-reach', title: 'Time to Get Water on the Fire', type: 'avg_time_bar', qid: 'time_to_water',
-          color: 'blue', scaleDivisor: 3,
-          midpoints: { 'Under 1 minute': 30, '1–2 minutes': 90, '2–4 minutes': 180, 'Over 4 minutes': 300 } }
+        { id: 'chart-air', title: 'SCBA Air Remaining on Exit', type: 'single_split', qid: 'scba_air', color: 'blue',
+          labels: ['75–100%', '50–75%', '25–50%', 'Under 25% / low-air alarm activated'],
+          splitGroups: [
+            { label: '4 Man', rowsFilter: r => r.answers['crew_size'] === 'Yes' },
+            { label: '3 Man', rowsFilter: r => r.answers['crew_size'] === 'No, three-man' }
+          ] },
+        { id: 'chart-knockdown', title: 'Avg Time to Extinguishment', type: 'avg_time_multi', qid: 'time_to_extinguish',
+          color: 'blue', scaleMax: 90, axisTicks: [0, 15, 30, 60, 90],
+          midpoints: { 'Under 15 seconds': 7, '15–30 seconds': 22, '30 seconds – 1 minute': 45, 'Over 1 minute': 75 },
+          groups: [
+            { label: '4 Man', rowsFilter: r => r.answers['crew_size'] === 'Yes' },
+            { label: '3 Man', rowsFilter: r => r.answers['crew_size'] === 'No, three-man' }
+          ] }
       ]
     };
 
@@ -246,18 +423,20 @@
     // debrief-search.html (FFRS, tagged 'search_ffrs') and debrief-search-2.html
     // (simplified, tagged 'search') use identical wording/options for every
     // field below, so both tabs reuse this same set of definitions.
+    // Shared bucket->seconds map for "how long did the primary search take",
+    // used by both the collective avg-time stat and the crew-size-split chart.
+    const SEARCH_TIME_MIDPOINTS = {
+      'Under 2 minutes': 90, '2–3 minutes': 150, '3–5 minutes': 240, 'Over 5 minutes': 330
+    };
+
     function makeSearchStats(prefix) {
       return [
-        { id: prefix + '-stat-victim', label: 'Victim located (by anyone)', type: 'percent',
-          predicate: r => { const v = r.answers['victims_found']; return !!v && v !== 'No victims found' && v !== 'Search not completed'; } },
-        { id: prefix + '-stat-injury', label: 'Injury / close-call rate', red: true, type: 'percent',
-          predicate: r => { const v = r.answers['injuries'] && r.answers['injuries'].selected; return !!v && v !== 'None'; } },
-        { id: prefix + '-stat-orientation', label: 'Maintained orientation to exit', type: 'percent',
-          predicate: r => r.answers['orientation'] === 'Yes' },
+        { id: prefix + '-stat-time', label: 'Avg Time to Conduct Primary Search', type: 'avg_time',
+          qid: 'search_completion_time', midpoints: SEARCH_TIME_MIDPOINTS },
+        { id: prefix + '-stat-approach', label: 'Search Approach', type: 'mode', qid: 'search_approach' },
+        { id: prefix + '-stat-timing', label: 'When Search Was Initiated', type: 'mode', qid: 'search_initiated_timing' },
         { id: prefix + '-stat-ventimprove', label: 'Ventilation improved conditions', type: 'percent',
           predicate: r => r.answers['vent_improvement'] === 'Yes' },
-        { id: prefix + '-stat-noequip', label: 'No equipment problems', type: 'percent',
-          predicate: r => r.answers['equipment_problems'] === 'No problems' },
         { id: prefix + '-stat-preknock', label: 'Search initiated pre-knockdown', type: 'percent',
           predicate: r => r.answers['search_initiated_timing'] === 'Pre fire knockdown' }
       ];
@@ -265,8 +444,19 @@
 
     function makeSearchCharts(prefix) {
       return [
+        { id: prefix + '-chart-completion', title: 'Completion of Primary Search', type: 'avg_time_multi',
+          qid: 'search_completion_time', color: 'green', scaleMax: 360, axisTicks: [0, 120, 240, 360],
+          midpoints: SEARCH_TIME_MIDPOINTS,
+          groups: [
+            { label: '4 Man', rowsFilter: r => r.answers['crew_size'] === 'Yes' },
+            { label: '3 Man', rowsFilter: r => r.answers['crew_size'] === 'No, three-man' }
+          ] },
         { id: prefix + '-chart-approach', title: 'Search Approach', type: 'single', qid: 'search_approach', color: 'blue',
           labels: ['All in', 'Split into two teams'] },
+        { id: prefix + '-chart-timing', title: 'When Search Was Initiated', type: 'single', qid: 'search_initiated_timing', color: 'yellow',
+          labels: ['Pre fire knockdown', 'Simultaneous with knockdown', 'Post fire knockdown'] },
+        { id: prefix + '-chart-smoke', title: 'Smoke Conditions Upon Entry', type: 'single', qid: 'smoke_conditions_entry', color: 'red',
+          labels: ['High visibility', 'Moderate visibility', 'Low visibility', 'Zero visibility'] },
         { id: prefix + '-chart-type', title: 'Type of Search Conducted', type: 'single', qid: 'search_type', color: 'purple',
           labels: ['VES', 'Right-hand wall', 'Left-hand wall', 'Oriented / team search', 'Thermal imaging-led', 'Other'] },
         { id: prefix + '-chart-entry', title: 'Entry Method', type: 'single', qid: 'entry_method', color: 'green',
@@ -279,11 +469,17 @@
           labels: ['None', 'Locked doors', 'Cluttered / hoarding conditions', 'Structural collapse concern', 'Furniture blocking path', 'Other'] },
         { id: prefix + '-chart-victims', title: 'Victim Search Outcome', type: 'single', qid: 'victims_found', color: 'green',
           labels: ['Yes - I found the victim', 'Yes - My crew member found the victim', 'No - Another crew found the victim', 'No victims found', 'Search not completed'] },
+        { id: prefix + '-chart-ventimprove', title: 'Ventilation Improved Conditions', type: 'single', qid: 'vent_improvement', color: 'blue',
+          labels: ['Yes', 'No', 'Other'] },
         { id: prefix + '-chart-equip', title: 'Equipment Problems', type: 'single', qid: 'equipment_problems', color: 'blue',
-          labels: ['No problems', 'TIC malfunction', 'PASS device issue', 'Other'] }
+          labels: ['No problems', 'TIC malfunction', 'PASS device issue', 'Other'] },
+        { id: prefix + '-chart-injuries', title: 'Injuries / Close Calls', type: 'selected', qid: 'injuries', color: 'red',
+          labels: ['None', 'Minor injury', 'Serious injury', 'Close call / near-miss (no injury)', 'Other'] }
       ];
     }
 
+    // Search (FFRS) is left out of the tab list for now — its config is kept
+    // here, unused, in case it comes back later.
     const searchFfrsConfig = {
       tabLabel: 'Search (FFRS)',
       pageTitle: 'Search (FFRS) Trends',
@@ -316,18 +512,9 @@
       noun: 'ventilation debrief',
       filter: r => r.answers && r.answers.operation_type === 'ventilation',
       stats: [
-        { id: 'vent-stat-injury', label: 'Injury / close-call rate', red: true, type: 'percent',
-          predicate: r => { const v = r.answers['injuries'] && r.answers['injuries'].selected; return !!v && v !== 'None'; } },
-        { id: 'vent-stat-sounded', label: 'Roof sounded before cutting (vertical)', type: 'percent',
-          denomFilter: isVerticalVent, predicate: r => r.answers['sounded_roof'] === 'Yes' },
-        { id: 'vent-stat-relief', label: 'Got noticeable smoke relief (vertical)', type: 'percent',
-          denomFilter: isVerticalVent, predicate: r => { const v = r.answers['smoke_relief']; return v === 'Yes, minimal' || v === 'Yes, mild' || v === 'Yes, significant'; } },
-        { id: 'vent-stat-coord', label: 'Coordinated with interior crew beforehand (horizontal)', type: 'percent',
-          denomFilter: isHorizontalVent, predicate: r => r.answers['coordination'] === 'Yes, coordinated beforehand' },
-        { id: 'vent-stat-improve', label: 'Conditions improved afterward (horizontal)', type: 'percent',
-          denomFilter: isHorizontalVent, predicate: r => { const v = r.answers['condition_change']; return v === 'Yes, noticeable improvement' || v === 'Some improvement'; } },
-        { id: 'vent-stat-noequip', label: 'No equipment problems', type: 'percent',
-          predicate: r => r.answers['equipment_problems'] === 'No problems' }
+        { id: 'vent-stat-pattern', label: 'Cut Pattern Used', type: 'mode', qid: 'cut_pattern', rowsFilter: isVerticalVent },
+        { id: 'vent-stat-cuttime', label: 'Time to Complete the Cut', type: 'avg_time', qid: 'cut_time', rowsFilter: isVerticalVent,
+          midpoints: { 'Less than 1 min': 30, '1–2 min': 90, '2–3 min': 150, '3–5 min': 240, 'Over 5 min': 360 } }
       ],
       charts: [
         { id: 'vent-chart-type', title: 'Ventilation Type', type: 'single', qid: 'ventilation_type', color: 'blue',
@@ -335,15 +522,18 @@
         { id: 'vent-chart-construction', title: 'Roof Construction', type: 'group', qid: 'roof_construction', subKey: 'construction',
           color: 'purple', rowsFilter: isVerticalVent, note: 'Vertical / roof ventilations only',
           labels: ['Dimensional lumber', 'Lightweight truss', 'Not sure'] },
+        { id: 'vent-chart-roofaccess', title: 'How Did You Get on the Roof?', type: 'single', qid: 'roof_access', color: 'blue',
+          rowsFilter: isVerticalVent, note: 'Vertical / roof ventilations only',
+          labels: ["24' extension ladder", "28' extension ladder", "35' extension ladder", 'Bucket'] },
+        { id: 'vent-chart-egress', title: 'Second Means of Egress Established or Known Of', type: 'single', qid: 'second_egress', color: 'yellow',
+          rowsFilter: isVerticalVent, note: 'Vertical / roof ventilations only',
+          labels: ['Yes', 'No', 'Not sure'] },
         { id: 'vent-chart-pattern', title: 'Cut Pattern Used', type: 'single', qid: 'cut_pattern', color: 'yellow',
           rowsFilter: isVerticalVent, note: 'Vertical / roof ventilations only',
           labels: ['Low Eight', 'Quick Six', 'High Five', 'Dice', 'Trench cut'] },
         { id: 'vent-chart-cuttime', title: 'Time to Complete the Cut', type: 'avg_time_bar', qid: 'cut_time',
           color: 'blue', scaleDivisor: 3.6, rowsFilter: isVerticalVent, note: 'Vertical / roof ventilations only',
           midpoints: { 'Less than 1 min': 30, '1–2 min': 90, '2–3 min': 150, '3–5 min': 240, 'Over 5 min': 360 } },
-        { id: 'vent-chart-tools', title: 'Tools Used', type: 'multi', qid: 'tools_used', color: 'green',
-          rowsFilter: isHorizontalVent, note: 'Horizontal ventilations only',
-          labels: ['Chainsaw', 'Axe', 'Roof hook / pike pole', 'Ventilation saw', 'Hand tools only', 'Other'] },
         { id: 'vent-chart-structural', title: 'Structural Concerns Encountered', type: 'multi', qid: 'structural_concerns', color: 'red',
           rowsFilter: isHorizontalVent, note: 'Horizontal ventilations only',
           labels: ['None', 'Soft spots / spongy roof', 'Signs of sagging or collapse', 'Truss construction concerns', 'Other'] },
@@ -355,11 +545,18 @@
       ]
     };
 
+    const miscConfig = {
+      tabLabel: 'Misc',
+      pageTitle: 'Misc Trends',
+      noun: 'misc debrief',
+      placeholder: "Nothing here yet — tell me what stats and graphs you'd like on this tab and I'll build it."
+    };
+
     const TYPE_CONFIGS = {
       interior_attack: interiorAttackConfig,
-      search_ffrs: searchFfrsConfig,
       search: searchConfig,
-      ventilation: ventilationConfig
+      ventilation: ventilationConfig,
+      misc: miscConfig
     };
 
     // ============================================================
@@ -392,6 +589,18 @@
       const config = TYPE_CONFIGS[typeKey];
       document.getElementById('page-title').textContent = config.pageTitle;
 
+      // Highlights (and any other future placeholder tab) has no operation
+      // type to filter submissions by — just show the placeholder note.
+      if (config.placeholder) {
+        document.getElementById('submission-count').textContent = '';
+        document.getElementById('empty-state').style.display = 'none';
+        document.getElementById('charts-wrapper').style.display = 'block';
+        document.getElementById('stat-grid').innerHTML = '';
+        document.getElementById('sections').innerHTML =
+          `<div class="jt-empty" style="padding: 60px 24px;">${config.placeholder}</div>`;
+        return;
+      }
+
       const rows = allRows.filter(config.filter);
       const total = rows.length;
 
@@ -414,7 +623,7 @@
       statGrid.innerHTML = config.stats.map(stat => `
         <div class="stat-card">
           <div class="label">${stat.label}</div>
-          <div class="value${stat.red ? ' red' : ''}" id="${stat.id}">—</div>
+          <div class="value${stat.red ? ' red' : ''}${stat.type === 'mode' ? ' text' : ''}" id="${stat.id}">—</div>
         </div>
       `).join('');
       config.stats.forEach(stat => {
@@ -426,7 +635,7 @@
       sections.innerHTML = config.charts.map(chart => `
         <div class="section-card">
           <h2 class="headline">${chart.title}</h2>
-          ${chart.note ? `<div style="color:#a89e91; font-size:12px; margin:-10px 0 16px;">${chart.note}</div>` : ''}
+          ${chart.note ? `<div class="chart-note">${chart.note}</div>` : ''}
           <div id="${chart.id}"></div>
         </div>
       `).join('');
