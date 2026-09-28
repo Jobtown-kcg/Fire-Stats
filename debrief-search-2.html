@@ -13,7 +13,15 @@
     <div class="progress-track">
       <div class="progress-fill" id="progress-fill"></div>
     </div>
-    <div class="progress-label" id="progress-label">0 of 16 questions answered</div>
+    <div class="progress-label" id="progress-label">0 of 17 questions answered</div>
+  </div>
+
+  <div class="question-card" data-qid="crew_size">
+    <h3><span class="qnum">1.</span> Did you run this search with a four-man engine crew?</h3>
+    <div class="options">
+      <button class="option-btn">Yes</button>
+      <button class="option-btn">No, three-man</button>
+    </div>
   </div>
 
   <!-- ===== Identifier questions — who's filling this out ===== -->
@@ -33,6 +41,24 @@
     <div class="options">
       <button class="option-btn">All in</button>
       <button class="option-btn">Split into two teams</button>
+    </div>
+
+    <div class="inline-followup" data-show-if='[{"qid":"search_approach","equals":"Split into two teams"}]'>
+      <div data-qid="search_split_type">
+        <div class="sub-label">What were the crews split into?</div>
+        <div class="options">
+          <button class="option-btn">Search and vent</button>
+          <button class="option-btn">Search and assist with fire attack</button>
+          <button class="option-btn">Search and fire attack</button>
+        </div>
+      </div>
+      <div data-qid="search_life_or_fire">
+        <div class="sub-label">Did your crew search for life or for fire?</div>
+        <div class="options">
+          <button class="option-btn">Life</button>
+          <button class="option-btn">Fire</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -55,11 +81,23 @@
     </div>
   </div>
 
+  <div class="question-card" data-qid="structure_stories">
+    <h3><span class="qnum">•</span> How many stories was the structure?</h3>
+    <input type="text" inputmode="numeric" class="text-input" id="structure-stories-input" placeholder="e.g. 2">
+  </div>
+
   <div class="question-card" data-qid="entry_method" data-show-if='[{"qid":"search_approach","answered":true}]'>
     <h3><span class="qnum">•</span> How did you enter?</h3>
     <div class="options">
       <button class="option-btn">Door</button>
       <button class="option-btn">Window</button>
+    </div>
+
+    <div class="inline-followup" data-show-if='[{"qid":"entry_method","answered":true},{"qid":"structure_stories","answered":true}]'>
+      <div data-qid="entry_story">
+        <div class="sub-label">Which story did you enter on?</div>
+        <div class="options" id="entry-story-options"></div>
+      </div>
     </div>
 
     <div class="inline-followup" data-show-if='[{"qid":"entry_method","answered":true}]'>
@@ -140,7 +178,7 @@
   </div>
 
   <div class="question-card" data-qid="victims_found">
-    <h3><span class="qnum">•</span> Did you locate the victim?</h3>
+    <h3><span class="qnum">•</span> Did you locate a victim?</h3>
     <div class="options">
       <button class="option-btn">Yes - I found the victim</button>
       <button class="option-btn">Yes - My crew member found the victim</button>
@@ -199,6 +237,11 @@
         </div>
       </div>
 
+      <div data-qid="victims_removal">
+        <div class="sub-label">Describe where and how the victim was removed from the structure.</div>
+        <textarea class="text-input" rows="2" placeholder="Describe"></textarea>
+      </div>
+
     </div>
   </div>
 
@@ -249,15 +292,6 @@
     </div>
   </div>
 
-  <div class="question-card" data-qid="orientation">
-    <h3><span class="qnum">7.</span> Did you maintain orientation to your exit at all times?</h3>
-    <div class="options">
-      <button class="option-btn">Yes</button>
-      <button class="option-btn">Lost orientation briefly</button>
-      <button class="option-btn">Lost orientation – needed help finding my way out</button>
-    </div>
-  </div>
-
   <div class="question-card" data-qid="clear_method">
     <h3><span class="qnum">8.</span> How did you confirm areas were clear?</h3>
     <div class="options">
@@ -265,6 +299,16 @@
       <button class="option-btn">Tool sweep under furniture/beds</button>
       <button class="option-btn">Visual only</button>
       <button class="option-btn">Thermal imaging camera</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="search_completion_time">
+    <h3><span class="qnum">9.</span> About how long did it take to complete the primary search?</h3>
+    <div class="options">
+      <button class="option-btn">Under 2 minutes</button>
+      <button class="option-btn">2–3 minutes</button>
+      <button class="option-btn">3–5 minutes</button>
+      <button class="option-btn">Over 5 minutes</button>
     </div>
   </div>
 
@@ -368,9 +412,18 @@
       const el = document.querySelector(`[data-qid="${qid}"]`);
       if (!el) return null;
       const group = el.querySelector(':scope > .options');
-      if (!group) return null;
-      const selected = group.querySelector('.option-btn.selected');
-      return selected ? selected.textContent.trim() : null;
+      if (group) {
+        const selected = group.querySelector('.option-btn.selected');
+        return selected ? selected.textContent.trim() : null;
+      }
+      // Plain fill-in fields (no .options group) — e.g. a numeric text input —
+      // count as "answered" once they have a non-empty value.
+      const field = el.querySelector(':scope > input[type="text"], :scope > textarea');
+      if (field) {
+        const val = field.value.trim();
+        return val ? val : null;
+      }
+      return null;
     }
 
     // Checks whether a given option's button is selected within a question's
@@ -456,6 +509,59 @@
         });
       });
     });
+
+    // ===== Dynamic "which story did you enter on?" options =====
+    // The number of story options offered under Q6 (entry_method) isn't a
+    // fixed list — it's generated from whatever number the firefighter typed
+    // into the "How many stories was the structure?" fill-in field. So this
+    // group's buttons get (re)built in JS instead of living in the static
+    // HTML, and get their own delegated click handler since the generic
+    // wiring above only ever saw an empty container at page load.
+
+    function ordinal(n) {
+      const suffixes = ['th', 'st', 'nd', 'rd'];
+      const v = n % 100;
+      return n + (suffixes[(v - 20) % 10] || suffixes[v] || suffixes[0]);
+    }
+
+    function renderStoryOptions() {
+      const container = document.getElementById('entry-story-options');
+      if (!container) return;
+      const storiesInput = document.querySelector('[data-qid="structure_stories"] input');
+      const n = storiesInput ? parseInt(storiesInput.value, 10) : NaN;
+      const count = (Number.isInteger(n) && n > 0 && n <= 20) ? n : 0;
+      const previouslySelected = container.querySelector('.option-btn.selected');
+      const previousLabel = previouslySelected ? previouslySelected.textContent.trim() : null;
+
+      container.innerHTML = '';
+      for (let i = 1; i <= count; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.textContent = ordinal(i) + ' story';
+        if (btn.textContent === previousLabel) btn.classList.add('selected');
+        container.appendChild(btn);
+      }
+    }
+
+    const entryStoryContainer = document.getElementById('entry-story-options');
+    if (entryStoryContainer) {
+      entryStoryContainer.addEventListener('click', (e) => {
+        const btn = e.target.closest('.option-btn');
+        if (!btn) return;
+        const alreadySelected = btn.classList.contains('selected');
+        entryStoryContainer.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.toggle('selected', !alreadySelected);
+        refreshForm();
+      });
+    }
+
+    const structureStoriesInput = document.querySelector('[data-qid="structure_stories"] input');
+    if (structureStoriesInput) {
+      structureStoriesInput.addEventListener('input', () => {
+        renderStoryOptions();
+        refreshForm();
+      });
+    }
 
     function getGroupValue(group) {
       const isMulti = group.dataset.mode === 'multi';
@@ -622,6 +728,7 @@
     });
 
     // Initial pass: hide every conditional element until its trigger question is answered
+    renderStoryOptions();
     refreshForm();
   </script>
 
