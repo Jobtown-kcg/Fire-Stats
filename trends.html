@@ -10,12 +10,6 @@
 
   <div class="jt-topbar">
     <a href="index.html" class="jt-brand">
-      <div class="jt-badge">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 2 L14 8 L20 8.5 L15.5 12.3 L17 18.5 L12 15 L7 18.5 L8.5 12.3 L4 8.5 L10 8 Z"
-                fill="#e0392f" stroke="#e0392f" stroke-width="0.5"/>
-        </svg>
-      </div>
       <div>
         <div class="jt-brand-title">JOBTOWN AAR</div>
         <div class="jt-brand-sub">TACTICAL OPERATION STREAM</div>
@@ -360,12 +354,6 @@
         { id: 'stat-entry', label: 'Entry Point Used', type: 'mode', qid: 'entry_door' }
       ],
       charts: [
-        { id: 'chart-injury', title: 'Injury / close-call rate', type: 'percent_multi', color: 'red',
-          predicate: r => { const v = r.answers['injuries'] && r.answers['injuries'].selected; return !!v && v !== 'None'; },
-          groups: [
-            { label: '4 Man', rowsFilter: r => r.answers['crew_size'] === 'Yes' },
-            { label: '3 Man', rowsFilter: r => r.answers['crew_size'] === 'No, three-man' }
-          ] },
         { id: 'chart-heelman', title: 'Heel Man Present', type: 'percent_multi', color: 'yellow',
           predicate: r => r.answers['heel_man'] === 'Yes',
           groups: [
@@ -412,6 +400,12 @@
         { id: 'chart-knockdown', title: 'Avg Time to Extinguishment', type: 'avg_time_multi', qid: 'time_to_extinguish',
           color: 'blue', scaleMax: 90, axisTicks: [0, 15, 30, 60, 90],
           midpoints: { 'Under 15 seconds': 7, '15–30 seconds': 22, '30 seconds – 1 minute': 45, 'Over 1 minute': 75 },
+          groups: [
+            { label: '4 Man', rowsFilter: r => r.answers['crew_size'] === 'Yes' },
+            { label: '3 Man', rowsFilter: r => r.answers['crew_size'] === 'No, three-man' }
+          ] },
+        { id: 'chart-injury', title: 'Injury / close-call rate', type: 'percent_multi', color: 'red',
+          predicate: r => { const v = r.answers['injuries'] && r.answers['injuries'].selected; return !!v && v !== 'None'; },
           groups: [
             { label: '4 Man', rowsFilter: r => r.answers['crew_size'] === 'Yes' },
             { label: '3 Man', rowsFilter: r => r.answers['crew_size'] === 'No, three-man' }
