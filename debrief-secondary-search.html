@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Secondary Search Debrief</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="no-bottom-nav">
+
+  <div class="intro-banner">
+    <div class="intro-title headline">🔁 Secondary Search — Firefighter Debrief</div>
+    <p>For the firefighter who conducted a secondary search after the fire was under control. Tap an answer to select it — tap again to change it.</p>
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+    <div class="progress-label" id="progress-label">0 of 10 questions answered</div>
+  </div>
+
+  <div class="question-card" data-qid="crew_size">
+    <h3><span class="qnum">1.</span> Did you run this search with a four-man engine crew?</h3>
+    <div class="options">
+      <button class="option-btn">Yes</button>
+      <button class="option-btn">No, three-man</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="seat_assignment">
+    <h3><span class="qnum">2.</span> What was your seat assignment?</h3>
+    <div class="options">
+      <button class="option-btn">Captain</button>
+      <button class="option-btn">Engineer</button>
+      <button class="option-btn">FF1</button>
+      <button class="option-btn">FF2</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="conditions">
+    <h3><span class="qnum">3.</span> Conditions you encountered at the start of secondary search.</h3>
+
+    <div class="sub-label">Smoke</div>
+    <div class="options">
+      <button class="option-btn">Light</button>
+      <button class="option-btn">Moderate</button>
+      <button class="option-btn">Heavy</button>
+    </div>
+
+    <div class="sub-label">Heat</div>
+    <div class="options">
+      <button class="option-btn">Mild</button>
+      <button class="option-btn">Moderate</button>
+      <button class="option-btn">Severe / high heat</button>
+    </div>
+
+    <div class="sub-label">Visibility</div>
+    <div class="options">
+      <button class="option-btn">Good</button>
+      <button class="option-btn">Reduced</button>
+      <button class="option-btn">Zero</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="primary_search_participant">
+    <h3><span class="qnum">4.</span> Were you a part of primary search?</h3>
+    <div class="options">
+      <button class="option-btn">Yes</button>
+      <button class="option-btn">No</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="time_since_primary">
+    <h3><span class="qnum">5.</span> Approximately how long was secondary initiated after primary?</h3>
+    <div class="options">
+      <button class="option-btn">Less than 1 min</button>
+      <button class="option-btn">1–3 min</button>
+      <button class="option-btn">3–5 min</button>
+      <button class="option-btn">5–10 min</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="timing">
+    <h3><span class="qnum">6.</span> Was this search conducted after the fire was knocked down / under control?</h3>
+    <div class="options">
+      <button class="option-btn">Yes</button>
+      <button class="option-btn">No, conducted concurrently with attack</button>
+      <button class="option-btn">Not sure</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="areas_searched">
+    <h3><span class="qnum">7.</span> Which areas did you search?</h3>
+    <div class="select-note">Select all that apply</div>
+    <div class="options" data-mode="multi">
+      <button class="option-btn">Room of origin</button>
+      <button class="option-btn">Bedrooms</button>
+      <button class="option-btn">Living areas</button>
+      <button class="option-btn">Kitchen</button>
+      <button class="option-btn">Basement</button>
+      <button class="option-btn">Attic</button>
+      <button class="option-btn">Areas not covered in primary search</button>
+      <button class="option-btn">Entire structure</button>
+      <button class="option-btn">Other</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="victims_found">
+    <h3><span class="qnum">8.</span> Did you locate any victims not found during the primary search?</h3>
+    <div class="options">
+      <button class="option-btn">Yes</button>
+      <button class="option-btn">No</button>
+      <button class="option-btn">N/A – no primary search issues reported</button>
+    </div>
+
+    <div class="inline-followup" data-show-if='[{"qid":"victims_found","equals":"Yes"}]'>
+      <div data-qid="victims_room">
+        <div class="sub-label">What room?</div>
+        <textarea class="text-input" rows="1" placeholder="e.g. Bedroom 2, kitchen..."></textarea>
+      </div>
+
+      <div data-qid="victims_multiple">
+        <div class="sub-label">Were there multiple victims in that area?</div>
+        <div class="options">
+          <button class="option-btn">Yes</button>
+          <button class="option-btn">No</button>
+        </div>
+      </div>
+
+      <div class="inline-followup" data-show-if='[{"qid":"victims_multiple","equals":"Yes"}]'>
+        <div data-qid="victims_multiple_count">
+          <div class="sub-label">How many more victims?</div>
+          <input type="text" inputmode="numeric" class="text-input" placeholder="e.g. 2">
+        </div>
+      </div>
+
+      <div data-qid="victims_other_areas">
+        <div class="sub-label">Were additional victims found in other areas of the structure?</div>
+        <div class="options">
+          <button class="option-btn">Yes</button>
+          <button class="option-btn">No</button>
+        </div>
+      </div>
+
+      <div class="inline-followup" data-show-if='[{"qid":"victims_other_areas","equals":"Yes"}]'>
+        <div data-qid="victims_other_areas_where">
+          <div class="sub-label">Where?</div>
+          <textarea class="text-input" rows="1" placeholder="e.g. Living room, basement..."></textarea>
+        </div>
+        <div data-qid="victims_other_areas_finder">
+          <div class="sub-label">Was it you or another person who found them?</div>
+          <div class="options">
+            <button class="option-btn">Me</button>
+            <button class="option-btn">Another person</button>
+          </div>
+        </div>
+
+        <div class="inline-followup" data-show-if='[{"qid":"victims_other_areas_finder","equals":"Me"}]'>
+          <div data-qid="victims_other_areas_count">
+            <div class="sub-label">How many?</div>
+            <input type="text" inputmode="numeric" class="text-input" placeholder="e.g. 2">
+          </div>
+        </div>
+      </div>
+
+      <div data-qid="victims_removal">
+        <div class="sub-label">Describe where and how the victim was removed from the structure.</div>
+        <textarea class="text-input" rows="2" placeholder="Describe"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="equipment_problems">
+    <h3><span class="qnum">9.</span> Did you experience any equipment problems?</h3>
+    <div class="options">
+      <button class="option-btn">No problems</button>
+      <button class="option-btn">TIC malfunction</button>
+      <button class="option-btn">PASS device issue</button>
+      <button class="option-btn">Other</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="injuries">
+    <h3><span class="qnum">10.</span> Did you experience any injuries, close calls, or near-misses during this search?</h3>
+    <div class="options">
+      <button class="option-btn">None</button>
+      <button class="option-btn">Minor injury</button>
+      <button class="option-btn">Serious injury</button>
+      <button class="option-btn">Close call / near-miss (no injury)</button>
+      <button class="option-btn">Other</button>
+    </div>
+    <textarea class="text-input" rows="2" placeholder="If yes, briefly describe (optional)"></textarea>
+  </div>
+
+  <div class="chat-followup-card">
+    <h3><span class="qnum">💬</span> Quick Follow-Up</h3>
+    <p class="chat-subtitle">A few open-ended questions, in your own words — this helps build a narrative summary for the AAR. Optional.</p>
+    <div class="chat-thread" id="chat-thread"></div>
+    <div class="chat-input-row" id="chat-input-row">
+      <textarea id="chat-textarea" rows="1" placeholder="Type your answer…"></textarea>
+      <button class="chat-send-btn" id="chat-send-btn" type="button">➤</button>
+    </div>
+    <button class="chat-skip-link" id="chat-skip-btn" type="button">Skip this question</button>
+  </div>
+
+  <div class="question-card" id="submit-card">
+    <button class="submit-btn" id="submit-btn">Submit Debrief</button>
+    <div class="submit-status" id="submit-status"></div>
+  </div>
+
+  <!-- Supabase client library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = 'https://phdvucbtlyqercviknhr.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_O5SQke2CeQj2PMMQnsQfHg_YMpe4MVk';
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  </script>
+
+  <script>
+    // ===== Conditional / branching form engine =====
+    // (Same engine used by the Search debrief — ported over so the
+    // victims_found follow-up questions can show/hide based on the answer.)
+    //
+    // Any element carrying data-show-if is a conditional question-card. Its
+    // data-show-if is a JSON list of conditions that must ALL be true for it
+    // to be visible:
+    //   {"qid": "x", "equals": "Y"}    -> show only if question x's answer is exactly Y
+    //   {"qid": "x", "not": "Y"}       -> show unless question x's answer is exactly Y
+    //   {"qid": "x", "answered": true} -> show as soon as question x has any answer
+
+    function getAnswerFor(qid) {
+      const el = document.querySelector(`[data-qid="${qid}"]`);
+      if (!el) return null;
+      const group = el.querySelector(':scope > .options');
+      if (group) {
+        const selected = group.querySelector('.option-btn.selected');
+        return selected ? selected.textContent.trim() : null;
+      }
+      const field = el.querySelector(':scope > input[type="text"], :scope > textarea');
+      if (field) {
+        const val = field.value.trim();
+        return val ? val : null;
+      }
+      return null;
+    }
+
+    function optionSelected(qid, text) {
+      const el = document.querySelector(`[data-qid="${qid}"]`);
+      if (!el) return false;
+      const groups = Array.from(el.querySelectorAll(':scope > .options'));
+      return groups.some(g =>
+        Array.from(g.querySelectorAll('.option-btn.selected')).some(b => b.textContent.trim() === text)
+      );
+    }
+
+    function conditionMet(cond) {
+      if ('includes' in cond) return optionSelected(cond.qid, cond.includes);
+      const val = getAnswerFor(cond.qid);
+      if (cond.answered) return val !== null && val !== '';
+      if ('equals' in cond) return val === cond.equals;
+      if ('not' in cond) return val !== cond.not;
+      if ('in' in cond) return Array.isArray(cond.in) && cond.in.includes(val);
+      return true;
+    }
+
+    function elementVisible(el) {
+      const raw = el.dataset.showIf;
+      if (!raw) return true;
+      return JSON.parse(raw).every(conditionMet);
+    }
+
+    function refreshForm() {
+      Array.from(document.querySelectorAll('[data-show-if]')).forEach(el => {
+        el.style.display = elementVisible(el) ? '' : 'none';
+      });
+      renumberVisible();
+      updateProgress();
+    }
+
+    function renumberVisible() {
+      let n = 1;
+      Array.from(document.querySelectorAll('.question-card[data-qid]')).forEach(card => {
+        if (card.offsetParent === null) return;
+        const qnumEl = card.querySelector(':scope > h3 .qnum');
+        if (qnumEl) qnumEl.textContent = n + '.';
+        n++;
+      });
+      const commentsQnum = document.querySelector('#comments-card .qnum');
+      if (commentsQnum) commentsQnum.textContent = n + '.';
+    }
+
+    function updateProgress() {
+      const cards = Array.from(document.querySelectorAll('.question-card[data-qid]'))
+        .filter(c => c.offsetParent !== null);
+      const countable = cards.filter(c => c.querySelectorAll(':scope > .options').length > 0);
+      let answeredCount = 0;
+
+      countable.forEach(card => {
+        const groups = Array.from(card.querySelectorAll(':scope > .options'));
+        const allGroupsAnswered = groups.every(g => g.querySelector('.option-btn.selected'));
+        if (allGroupsAnswered) answeredCount++;
+      });
+
+      const total = countable.length;
+      const percent = total > 0 ? (answeredCount / total) * 100 : 0;
+      document.getElementById('progress-fill').style.width = percent + '%';
+      document.getElementById('progress-label').innerText =
+        `${answeredCount} of ${total} questions answered`;
+    }
+
+    document.querySelectorAll('.options').forEach(group => {
+      const isMulti = group.dataset.mode === 'multi';
+
+      group.querySelectorAll('.option-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const alreadySelected = btn.classList.contains('selected');
+
+          if (!isMulti) {
+            group.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+          }
+
+          btn.classList.toggle('selected', !alreadySelected);
+          refreshForm();
+        });
+      });
+    });
+
+    function getGroupValue(group) {
+      const isMulti = group.dataset.mode === 'multi';
+      const selected = Array.from(group.querySelectorAll('.option-btn.selected'))
+        .map(b => b.textContent.trim());
+      return isMulti ? selected : (selected[0] || null);
+    }
+
+    // Only reads answers from currently-visible [data-qid] elements, so a
+    // follow-up that never popped open (e.g. victims_found answered "No")
+    // never ends up in the submitted data. Walks ALL [data-qid] elements
+    // (not just top-level question-cards) so nested inline-followup
+    // sub-questions get captured too.
+    function collectAnswers() {
+      const answers = {};
+
+      Array.from(document.querySelectorAll('[data-qid]')).forEach(el => {
+        if (el.offsetParent === null) return;
+
+        const qid = el.dataset.qid;
+        const groups = Array.from(el.querySelectorAll(':scope > .options'));
+
+        if (groups.length === 0) {
+          const field = el.querySelector('textarea, input[type="text"]');
+          answers[qid] = field ? field.value.trim() : '';
+          return;
+        }
+
+        const textarea = el.querySelector(':scope > textarea');
+
+        let value;
+        if (groups.length === 1) {
+          value = getGroupValue(groups[0]);
+        } else if (groups.length > 1) {
+          value = {};
+          groups.forEach(g => {
+            const label = g.previousElementSibling && g.previousElementSibling.classList.contains('sub-label')
+              ? g.previousElementSibling.textContent.trim().toLowerCase()
+              : 'value';
+            value[label] = getGroupValue(g);
+          });
+        }
+
+        if (textarea) {
+          answers[qid] = { selected: value, note: textarea.value.trim() };
+        } else {
+          answers[qid] = value;
+        }
+      });
+
+      const commentsBox = document.getElementById('comments-textarea');
+      answers['comments'] = commentsBox ? commentsBox.value.trim() : '';
+
+      return answers;
+    }
+
+    // ===== AI chat follow-up =====
+    // A small fixed set of open-ended prompts, presented like a text
+    // conversation. Free-text answers ride along with the structured
+    // answers when the debrief is submitted.
+    const chatPrompts = [
+      "Walk me through how this went, in your own words.",
+      "Anything that surprised you, or that you'd want the next crew to know?",
+      "Anything you'd do differently next time, or any final thoughts?"
+    ];
+
+    let chatStep = 0;
+    const chatAnswers = [];
+    const chatThread = document.getElementById('chat-thread');
+    const chatInputRow = document.getElementById('chat-input-row');
+    const chatTextarea = document.getElementById('chat-textarea');
+    const chatSendBtn = document.getElementById('chat-send-btn');
+    const chatSkipBtn = document.getElementById('chat-skip-btn');
+
+    function addChatBubble(text, type) {
+      const bubble = document.createElement('div');
+      bubble.className = 'chat-bubble ' + type;
+      bubble.textContent = text;
+      chatThread.appendChild(bubble);
+      chatThread.scrollTop = chatThread.scrollHeight;
+    }
+
+    function askNextChatPrompt() {
+      if (chatStep < chatPrompts.length) {
+        addChatBubble(chatPrompts[chatStep], 'incoming');
+      } else {
+        chatInputRow.style.display = 'none';
+        chatSkipBtn.style.display = 'none';
+        addChatBubble("That's everything — hit Submit Debrief below when you're ready.", 'incoming system-note');
+      }
+    }
+
+    function advanceChat(responseText) {
+      if (responseText) {
+        chatAnswers.push({ prompt: chatPrompts[chatStep], response: responseText });
+      }
+      chatStep++;
+      askNextChatPrompt();
+    }
+
+    chatSendBtn.addEventListener('click', () => {
+      const text = chatTextarea.value.trim();
+      if (!text) return;
+      addChatBubble(text, 'outgoing');
+      chatTextarea.value = '';
+      advanceChat(text);
+    });
+
+    chatTextarea.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        chatSendBtn.click();
+      }
+    });
+
+    chatSkipBtn.addEventListener('click', () => {
+      chatTextarea.value = '';
+      advanceChat(null);
+    });
+
+    askNextChatPrompt();
+
+    document.getElementById('submit-btn').addEventListener('click', async () => {
+      const statusEl = document.getElementById('submit-status');
+      const btn = document.getElementById('submit-btn');
+
+      btn.disabled = true;
+      btn.textContent = 'Submitting…';
+      statusEl.textContent = '';
+      statusEl.className = 'submit-status';
+
+      const answers = collectAnswers();
+      answers.operation_type = 'secondary_search';
+      answers.chat_followup = chatAnswers;
+
+      // One AI call: turns the structured answers + free-text chat responses
+      // into a narrative summary for the AAR. Runs through a Supabase Edge
+      // Function so the real API key stays server-side. If the function
+      // isn't deployed yet (or the call fails for any reason), we don't
+      // block the submission — the structured data still reaches Trends.
+      try {
+        const { data: summaryData, error: summaryError } = await sb.functions.invoke('generate-debrief-summary', {
+          body: { answers }
+        });
+        if (!summaryError && summaryData && summaryData.summary) {
+          answers.ai_summary = summaryData.summary;
+        }
+      } catch (e) {
+        console.warn('AI summary unavailable, submitting without it:', e);
+      }
+
+      const { error } = await sb.from('debrief_submissions').insert([{ answers }]);
+
+      if (error) {
+        statusEl.textContent = 'Something went wrong submitting this — please try again. (' + error.message + ')';
+        statusEl.className = 'submit-status error';
+        btn.disabled = false;
+        btn.textContent = 'Submit Debrief';
+      } else {
+        statusEl.textContent = 'Debrief submitted — thank you. This will now be reflected on the Trends page.';
+        statusEl.className = 'submit-status success';
+        btn.textContent = 'Submitted ✓';
+      }
+    });
+
+    // Initial pass: hide every conditional element until its trigger question is answered
+    refreshForm();
+  </script>
+
+</body>
+</html>
