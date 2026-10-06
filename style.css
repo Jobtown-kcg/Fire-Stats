@@ -162,6 +162,14 @@ body.no-bottom-nav {
   color: var(--color-accent-stat);
 }
 
+/* Longer text values (e.g. "Bulk load — 62%" for a most-picked-option stat)
+   need a smaller size than the plain numeric stats to avoid overflowing
+   the card. */
+.stat-card .value.text {
+  font-size: 20px;
+  line-height: 1.3;
+}
+
 .stat-card .unit {
   font-size: 20px;
   font-weight: 700;
@@ -227,6 +235,19 @@ body.no-bottom-nav {
   text-align: right;
 }
 
+.chart-note {
+  color: var(--color-text-muted);
+  font-size: 12px;
+  margin: -10px 0 16px;
+}
+
+.avg-caption {
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 13px;
+  margin-top: 6px;
+}
+
 .bar-track {
   background-color: var(--color-track);
   border-radius: 6px;
@@ -253,6 +274,80 @@ body.no-bottom-nav {
   box-shadow: 0 0 10px rgba(155, 107, 214, 0.5);
 }
 .bar-fill.red { background-color: #e0483e; }
+
+/* Grouped time chart (e.g. "Avg Time to Extinguishment" split by crew
+   size) — same bar-row grid as everything else, but the track doubles as
+   a shared time scale: the fill length is the group's average time, a
+   value label sits at the end of the fill, and a matching tick row runs
+   underneath so the scale reads left-to-right like an axis. */
+.bar-track-scale {
+  position: relative;
+  overflow: visible;
+}
+
+.bar-time-value {
+  position: absolute;
+  top: 50%;
+  transform: translate(6px, -50%);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.time-axis-row {
+  margin-top: -2px;
+  margin-bottom: 4px;
+}
+
+.time-axis {
+  position: relative;
+  height: 18px;
+  border-top: 1px solid var(--color-border);
+}
+
+.time-axis span {
+  position: absolute;
+  top: 4px;
+  transform: translateX(-50%);
+  font-size: 10px;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.time-axis span:first-child { transform: translateX(0); }
+.time-axis span:last-child { transform: translateX(-100%); }
+
+/* Crew-size-split chart (e.g. Attack Technique Used, 4-Man vs 3-Man) —
+   each answer option becomes its own labeled group, with one bar-row per
+   split group underneath. The second group's bar reuses the same color at
+   lower opacity, so a pair reads as one option instead of two unrelated bars. */
+.split-group {
+  margin-bottom: 20px;
+}
+
+.split-group:last-child {
+  margin-bottom: 0;
+}
+
+.split-group-label {
+  font-size: 13px;
+  color: var(--color-text);
+  margin-bottom: 8px;
+}
+
+.split-group .bar-row {
+  margin-bottom: 8px;
+}
+
+.split-group .bar-row:last-child {
+  margin-bottom: 0;
+}
+
+.bar-fill-secondary {
+  opacity: 0.55;
+}
 
 /* ---- Question cards (Debrief page) ---- */
 .question-card {
