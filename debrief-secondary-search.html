@@ -34,14 +34,30 @@
     </div>
   </div>
 
+  <div class="question-card" data-qid="secondary_after_vent_visibility">
+    <h3><span class="qnum">3.</span> Was secondary search completed after ventilation with visibility improved?</h3>
+    <div class="options">
+      <button class="option-btn">Yes</button>
+      <button class="option-btn">No</button>
+    </div>
+
+    <div class="inline-followup" data-show-if='[{"qid":"secondary_after_vent_visibility","equals":"No"}]'>
+      <div data-qid="secondary_after_vent_visibility_why">
+        <div class="sub-label">Why not?</div>
+        <textarea class="text-input" rows="2" placeholder="Describe"></textarea>
+      </div>
+    </div>
+  </div>
+
   <div class="question-card" data-qid="conditions">
     <h3><span class="qnum">3.</span> Conditions you encountered at the start of secondary search.</h3>
 
-    <div class="sub-label">Smoke</div>
+    <div class="sub-label">Smoke conditions</div>
     <div class="options">
-      <button class="option-btn">Light</button>
-      <button class="option-btn">Moderate</button>
-      <button class="option-btn">Heavy</button>
+      <button class="option-btn">High visibility</button>
+      <button class="option-btn">Moderate visibility</button>
+      <button class="option-btn">Low visibility</button>
+      <button class="option-btn">Zero visibility</button>
     </div>
 
     <div class="sub-label">Heat</div>
@@ -49,13 +65,6 @@
       <button class="option-btn">Mild</button>
       <button class="option-btn">Moderate</button>
       <button class="option-btn">Severe / high heat</button>
-    </div>
-
-    <div class="sub-label">Visibility</div>
-    <div class="options">
-      <button class="option-btn">Good</button>
-      <button class="option-btn">Reduced</button>
-      <button class="option-btn">Zero</button>
     </div>
   </div>
 
@@ -77,17 +86,8 @@
     </div>
   </div>
 
-  <div class="question-card" data-qid="timing">
-    <h3><span class="qnum">6.</span> Was this search conducted after the fire was knocked down / under control?</h3>
-    <div class="options">
-      <button class="option-btn">Yes</button>
-      <button class="option-btn">No, conducted concurrently with attack</button>
-      <button class="option-btn">Not sure</button>
-    </div>
-  </div>
-
   <div class="question-card" data-qid="areas_searched">
-    <h3><span class="qnum">7.</span> Which areas did you search?</h3>
+    <h3><span class="qnum">6.</span> Which areas did you search?</h3>
     <div class="select-note">Select all that apply</div>
     <div class="options" data-mode="multi">
       <button class="option-btn">Room of origin</button>
@@ -100,20 +100,34 @@
       <button class="option-btn">Entire structure</button>
       <button class="option-btn">Other</button>
     </div>
+
+    <div class="inline-followup" data-show-if='[{"qid":"areas_searched","includes":"Other"}]'>
+      <div data-qid="areas_searched_other">
+        <div class="sub-label">Please describe</div>
+        <textarea class="text-input" rows="2" placeholder="Describe"></textarea>
+      </div>
+    </div>
   </div>
 
   <div class="question-card" data-qid="victims_found">
-    <h3><span class="qnum">8.</span> Did you locate any victims not found during the primary search?</h3>
+    <h3><span class="qnum">7.</span> Did you locate any victims not found during the primary search?</h3>
     <div class="options">
-      <button class="option-btn">Yes</button>
-      <button class="option-btn">No</button>
-      <button class="option-btn">N/A – no primary search issues reported</button>
+      <button class="option-btn">Yes - I found the victim</button>
+      <button class="option-btn">Yes - My crew member found the victim</button>
+      <button class="option-btn">No - Another crew found the victim</button>
+      <button class="option-btn">No victims found</button>
+      <button class="option-btn">Search not completed</button>
     </div>
 
-    <div class="inline-followup" data-show-if='[{"qid":"victims_found","equals":"Yes"}]'>
+    <div class="inline-followup" data-show-if='[{"qid":"victims_found","in":["Yes - I found the victim","Yes - My crew member found the victim"]}]'>
       <div data-qid="victims_room">
         <div class="sub-label">What room?</div>
         <textarea class="text-input" rows="1" placeholder="e.g. Bedroom 2, kitchen..."></textarea>
+      </div>
+
+      <div data-qid="victims_found_how">
+        <div class="sub-label">How was the victim found?</div>
+        <textarea class="text-input" rows="2" placeholder="Describe"></textarea>
       </div>
 
       <div data-qid="victims_multiple">
@@ -164,21 +178,38 @@
         <div class="sub-label">Describe where and how the victim was removed from the structure.</div>
         <textarea class="text-input" rows="2" placeholder="Describe"></textarea>
       </div>
+
+      <div data-qid="victims_removed_how">
+        <div class="sub-label">How was the victim removed?</div>
+        <textarea class="text-input" rows="2" placeholder="Describe"></textarea>
+      </div>
+
+      <div data-qid="victims_removal_problems">
+        <div class="sub-label">Were there any problems removing the victim?</div>
+        <textarea class="text-input" rows="2" placeholder="Describe"></textarea>
+      </div>
     </div>
   </div>
 
   <div class="question-card" data-qid="equipment_problems">
-    <h3><span class="qnum">9.</span> Did you experience any equipment problems?</h3>
+    <h3><span class="qnum">8.</span> Did you experience any equipment problems?</h3>
     <div class="options">
       <button class="option-btn">No problems</button>
       <button class="option-btn">TIC malfunction</button>
       <button class="option-btn">PASS device issue</button>
       <button class="option-btn">Other</button>
     </div>
+
+    <div class="inline-followup" data-show-if='[{"qid":"equipment_problems","includes":"Other"}]'>
+      <div data-qid="equipment_problems_other">
+        <div class="sub-label">Please describe</div>
+        <textarea class="text-input" rows="2" placeholder="Describe"></textarea>
+      </div>
+    </div>
   </div>
 
   <div class="question-card" data-qid="injuries">
-    <h3><span class="qnum">10.</span> Did you experience any injuries, close calls, or near-misses during this search?</h3>
+    <h3><span class="qnum">9.</span> Did you experience any injuries, close calls, or near-misses during this search?</h3>
     <div class="options">
       <button class="option-btn">None</button>
       <button class="option-btn">Minor injury</button>
