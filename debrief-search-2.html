@@ -13,7 +13,7 @@
     <div class="progress-track">
       <div class="progress-fill" id="progress-fill"></div>
     </div>
-    <div class="progress-label" id="progress-label">0 of 17 questions answered</div>
+    <div class="progress-label" id="progress-label">0 of 18 questions answered</div>
   </div>
 
   <div class="question-card" data-qid="crew_size">
@@ -52,13 +52,6 @@
           <button class="option-btn">Search and fire attack</button>
         </div>
       </div>
-      <div data-qid="search_life_or_fire">
-        <div class="sub-label">Did your crew search for life or for fire?</div>
-        <div class="options">
-          <button class="option-btn">Life</button>
-          <button class="option-btn">Fire</button>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -68,6 +61,53 @@
       <button class="option-btn">Pre fire knockdown</button>
       <button class="option-btn">Simultaneous with knockdown</button>
       <button class="option-btn">Post fire knockdown</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="search_type">
+    <h3><span class="qnum">5.</span> What type of search did you conduct?</h3>
+    <div class="options">
+      <button class="option-btn">VES</button>
+      <button class="option-btn">Right-hand wall</button>
+      <button class="option-btn">Left-hand wall</button>
+      <button class="option-btn">Oriented / team search</button>
+      <button class="option-btn">Thermal imaging-led</button>
+      <button class="option-btn">Split search</button>
+      <button class="option-btn">WIS</button>
+      <button class="option-btn">Other</button>
+    </div>
+
+    <div class="inline-followup" data-show-if='[{"qid":"search_type","includes":"Other"}]'>
+      <div data-qid="search_type_other">
+        <div class="sub-label">Please describe</div>
+        <textarea class="text-input" rows="2" placeholder="Describe"></textarea>
+      </div>
+    </div>
+
+    <div class="inline-followup" data-show-if='[{"qid":"search_type","equals":"VES"}]'>
+      <div data-qid="ves_entry_order">
+        <div class="sub-label">Were you the first or second person to enter?</div>
+        <div class="options">
+          <button class="option-btn">First</button>
+          <button class="option-btn">Second</button>
+          <button class="option-btn">Third</button>
+          <button class="option-btn">Fourth</button>
+        </div>
+      </div>
+      <div data-qid="ves_process">
+        <div class="sub-label">Walk me through the search process you took. Did you search beyond the room you entered — for example, through the hallway into another room? If so, how many additional rooms, and did you run into any trouble?</div>
+        <textarea class="text-input" rows="4" placeholder="Describe what you did, step by step, including whether you searched beyond the room you entered, how many additional rooms, and any trouble you ran into"></textarea>
+      </div>
+    </div>
+
+    <div class="inline-followup" data-show-if='[{"qid":"search_type","equals":"Split search"}]'>
+      <div data-qid="search_life_or_fire">
+        <div class="sub-label">Did your crew search for life or for fire?</div>
+        <div class="options">
+          <button class="option-btn">Life</button>
+          <button class="option-btn">Fire</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -84,6 +124,11 @@
   <div class="question-card" data-qid="structure_stories">
     <h3><span class="qnum">•</span> How many stories was the structure?</h3>
     <input type="text" inputmode="numeric" class="text-input" id="structure-stories-input" placeholder="e.g. 2">
+  </div>
+
+  <div class="question-card" data-qid="fire_floor">
+    <h3><span class="qnum">7.</span> What floor was the fire on?</h3>
+    <div class="options" id="fire-floor-options"></div>
   </div>
 
   <div class="question-card" data-qid="entry_method" data-show-if='[{"qid":"search_approach","answered":true}]'>
@@ -142,41 +187,6 @@
     </div>
   </div>
 
-  <div class="question-card" data-qid="search_type">
-    <h3><span class="qnum">3.</span> What type of search did you conduct?</h3>
-    <div class="options">
-      <button class="option-btn">VES</button>
-      <button class="option-btn">Right-hand wall</button>
-      <button class="option-btn">Left-hand wall</button>
-      <button class="option-btn">Oriented / team search</button>
-      <button class="option-btn">Thermal imaging-led</button>
-      <button class="option-btn">Other</button>
-    </div>
-
-    <div class="inline-followup" data-show-if='[{"qid":"search_type","includes":"Other"}]'>
-      <div data-qid="search_type_other">
-        <div class="sub-label">Please describe</div>
-        <textarea class="text-input" rows="2" placeholder="Describe"></textarea>
-      </div>
-    </div>
-
-    <div class="inline-followup" data-show-if='[{"qid":"search_type","equals":"VES"}]'>
-      <div data-qid="ves_entry_order">
-        <div class="sub-label">Were you the first or second person to enter?</div>
-        <div class="options">
-          <button class="option-btn">First</button>
-          <button class="option-btn">Second</button>
-          <button class="option-btn">Third</button>
-          <button class="option-btn">Fourth</button>
-        </div>
-      </div>
-      <div data-qid="ves_process">
-        <div class="sub-label">Walk me through the search process you took. Did you search beyond the room you entered — for example, through the hallway into another room? If so, how many additional rooms, and did you run into any trouble?</div>
-        <textarea class="text-input" rows="4" placeholder="Describe what you did, step by step, including whether you searched beyond the room you entered, how many additional rooms, and any trouble you ran into"></textarea>
-      </div>
-    </div>
-  </div>
-
   <div class="question-card" data-qid="victims_found">
     <h3><span class="qnum">•</span> Did you locate a victim?</h3>
     <div class="options">
@@ -191,6 +201,11 @@
       <div data-qid="victims_room">
         <div class="sub-label">What room?</div>
         <textarea class="text-input" rows="1" placeholder="e.g. Bedroom 2, kitchen..."></textarea>
+      </div>
+
+      <div data-qid="victims_found_how">
+        <div class="sub-label">How was the victim found?</div>
+        <textarea class="text-input" rows="2" placeholder="Describe"></textarea>
       </div>
 
       <div data-qid="victims_multiple">
@@ -239,6 +254,16 @@
 
       <div data-qid="victims_removal">
         <div class="sub-label">Describe where and how the victim was removed from the structure.</div>
+        <textarea class="text-input" rows="2" placeholder="Describe"></textarea>
+      </div>
+
+      <div data-qid="victims_removed_how">
+        <div class="sub-label">How was the victim removed?</div>
+        <textarea class="text-input" rows="2" placeholder="Describe"></textarea>
+      </div>
+
+      <div data-qid="victims_removal_problems">
+        <div class="sub-label">Were there any problems removing the victim?</div>
         <textarea class="text-input" rows="2" placeholder="Describe"></textarea>
       </div>
 
@@ -302,7 +327,7 @@
     </div>
   </div>
 
-  <div class="question-card" data-qid="search_completion_time">
+  <div class="question-card" data-qid="search_completion_time" data-show-if='[{"qid":"seat_assignment","equals":"Captain"}]'>
     <h3><span class="qnum">9.</span> About how long did it take to complete the primary search?</h3>
     <div class="options">
       <button class="option-btn">Under 2 minutes</button>
@@ -555,10 +580,53 @@
       });
     }
 
+    // ===== Dynamic "what floor was the fire on?" options =====
+    // Same idea as the story-entry options above, but for Q7 (fire_floor):
+    // the choices are Basement, then one option per story typed into Q6
+    // (structure_stories), then Attic — so a 3-story answer produces
+    // Basement / 1st floor / 2nd floor / 3rd floor / Attic.
+    function renderFireFloorOptions() {
+      const container = document.getElementById('fire-floor-options');
+      if (!container) return;
+      const storiesInput = document.querySelector('[data-qid="structure_stories"] input');
+      const n = storiesInput ? parseInt(storiesInput.value, 10) : NaN;
+      const count = (Number.isInteger(n) && n > 0 && n <= 20) ? n : 0;
+      const previouslySelected = container.querySelector('.option-btn.selected');
+      const previousLabel = previouslySelected ? previouslySelected.textContent.trim() : null;
+
+      const labels = ['Basement'];
+      for (let i = 1; i <= count; i++) {
+        labels.push(ordinal(i) + ' floor');
+      }
+      labels.push('Attic');
+
+      container.innerHTML = '';
+      labels.forEach(label => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.textContent = label;
+        if (label === previousLabel) btn.classList.add('selected');
+        container.appendChild(btn);
+      });
+    }
+
+    const fireFloorContainer = document.getElementById('fire-floor-options');
+    if (fireFloorContainer) {
+      fireFloorContainer.addEventListener('click', (e) => {
+        const btn = e.target.closest('.option-btn');
+        if (!btn) return;
+        const alreadySelected = btn.classList.contains('selected');
+        fireFloorContainer.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.toggle('selected', !alreadySelected);
+        refreshForm();
+      });
+    }
+
     const structureStoriesInput = document.querySelector('[data-qid="structure_stories"] input');
     if (structureStoriesInput) {
       structureStoriesInput.addEventListener('input', () => {
         renderStoryOptions();
+        renderFireFloorOptions();
         refreshForm();
       });
     }
@@ -729,6 +797,7 @@
 
     // Initial pass: hide every conditional element until its trigger question is answered
     renderStoryOptions();
+    renderFireFloorOptions();
     refreshForm();
   </script>
 
