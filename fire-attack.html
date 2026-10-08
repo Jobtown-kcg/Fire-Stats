@@ -13,36 +13,119 @@
     <div class="progress-track">
       <div class="progress-fill" id="progress-fill"></div>
     </div>
-    <div class="progress-label" id="progress-label">0 of 26 questions answered</div>
+    <div class="progress-label" id="progress-label">0 of 2 questions answered</div>
   </div>
 
-  <div class="question-card" data-qid="load_type">
-    <h3><span class="qnum">1.</span> What load did you pull?</h3>
+  <div class="question-card" data-qid="attack_mode">
+    <h3><span class="qnum">1.</span> Was this an Offensive Operation or a Defensive Operation?</h3>
     <div class="options">
-      <button class="option-btn">Bulk load</button>
-      <button class="option-btn">Pre-connect</button>
+      <button class="option-btn">Offensive</button>
+      <button class="option-btn">Defensive</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="crew_size" data-show-if='[{"qid":"attack_mode","equals":"Offensive"}]'>
+    <h3><span class="qnum">2.</span> Did you run this attack with a four-man engine crew?</h3>
+    <div class="options">
+      <button class="option-btn">Yes</button>
+      <button class="option-btn">No, three-man</button>
+    </div>
+  </div>
+
+  <!-- ===== Defensive Operation questions ===== -->
+
+  <div class="question-card" data-qid="defensive_crew_size" data-show-if='[{"qid":"attack_mode","equals":"Defensive"}]'>
+    <h3><span class="qnum">•</span> Did you run this attack with a four-man engine crew?</h3>
+    <div class="options">
+      <button class="option-btn">Yes</button>
+      <button class="option-btn">No, three-man</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="defensive_hoseline_nozzle" data-show-if='[{"qid":"attack_mode","equals":"Defensive"}]'>
+    <h3><span class="qnum">•</span> Hoseline and nozzle selected for this attack</h3>
+    <div class="options">
+      <button class="option-btn">Blue Line</button>
+      <button class="option-btn">Red Line</button>
       <button class="option-btn">Bumper Load</button>
-      <button class="option-btn">Denver</button>
-      <button class="option-btn">Other</button>
+      <button class="option-btn">Pre-connected crosslay</button>
+      <button class="option-btn">2.25 Green</button>
+      <button class="option-btn">3" Blitzfire</button>
+      <button class="option-btn">4" Ground Monitor</button>
+      <button class="option-btn">Deck Gun</button>
     </div>
-    <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
   </div>
 
-  <div class="question-card" data-qid="hoseline_nozzle">
-    <h3><span class="qnum">2.</span> Hoseline and nozzle selected for this attack</h3>
+  <div class="question-card" data-qid="defensive_exposure_protection" data-show-if='[{"qid":"attack_mode","equals":"Defensive"}]'>
+    <h3><span class="qnum">•</span> Was this used to protect exposures?</h3>
     <div class="options">
-      <button class="option-btn">1¾" blue</button>
-      <button class="option-btn">1¾" red</button>
-      <button class="option-btn">1¾" pre-connect</button>
-      <button class="option-btn">2½"</button>
-      <button class="option-btn">1¾" Bumper</button>
+      <button class="option-btn">Yes</button>
+      <button class="option-btn">No, directly on the fire</button>
+    </div>
+
+    <div class="inline-followup" data-show-if='[{"qid":"defensive_exposure_protection","equals":"Yes"}]'>
+      <div data-qid="defensive_exposure_which">
+        <div class="sub-label">Which exposure?</div>
+        <div class="options">
+          <button class="option-btn">Alpha</button>
+          <button class="option-btn">Bravo</button>
+          <button class="option-btn">Charlie</button>
+          <button class="option-btn">Delta</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="defensive_hoseline_reason" data-show-if='[{"qid":"attack_mode","equals":"Defensive"}]'>
+    <h3><span class="qnum">•</span> Primary reason you chose this hoseline/nozzle</h3>
+    <div class="options">
+      <button class="option-btn">Anticipated fire load or occupancy size</button>
+      <button class="option-btn">Needed reach/distance</button>
+      <button class="option-btn">Easier to maneuver/advance</button>
+      <button class="option-btn">Directed by officer/command</button>
+      <button class="option-btn">Policies/Procedure</button>
       <button class="option-btn">Other</button>
     </div>
     <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
   </div>
 
-  <div class="question-card" data-qid="hoseline_reason">
-    <h3><span class="qnum">3.</span> Primary reason you chose this hoseline/nozzle</h3>
+  <div class="question-card" data-qid="defensive_heel_man" data-show-if='[{"qid":"attack_mode","equals":"Defensive"}]'>
+    <h3><span class="qnum">•</span> Did you have a heel man (backup firefighter behind you managing/feeding the line)?</h3>
+    <div class="options">
+      <button class="option-btn">Yes</button>
+      <button class="option-btn">No</button>
+    </div>
+  </div>
+
+  <div class="question-card" data-qid="defensive_hoseline_trouble" data-show-if='[{"qid":"attack_mode","equals":"Defensive"}]'>
+    <h3><span class="qnum">•</span> Did you or your team have any trouble managing/advancing the hoseline?</h3>
+    <div class="select-note">Select all that apply</div>
+    <div class="options" data-mode="multi">
+      <button class="option-btn">No trouble</button>
+      <button class="option-btn">Kinks</button>
+      <button class="option-btn">Snagged on doorway/furniture</button>
+      <button class="option-btn">Excess hose / too much slack</button>
+      <button class="option-btn">Stairs/tight spaces</button>
+      <button class="option-btn">Other</button>
+    </div>
+    <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
+  </div>
+
+  <div class="question-card" data-qid="hoseline_nozzle" data-show-if='[{"qid":"attack_mode","equals":"Offensive"}]'>
+    <h3><span class="qnum">3.</span> Hoseline and nozzle selected for this attack</h3>
+    <div class="options">
+      <button class="option-btn">Blue Line</button>
+      <button class="option-btn">Red Line</button>
+      <button class="option-btn">Bumper Load</button>
+      <button class="option-btn">Pre-connected crosslay</button>
+      <button class="option-btn">2.25 Green</button>
+      <button class="option-btn">Other</button>
+    </div>
+    <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
+  </div>
+
+  <div class="question-card" data-qid="hoseline_reason" data-show-if='[{"qid":"attack_mode","equals":"Offensive"}]'>
+    <h3><span class="qnum">5.</span> Primary reason you chose this hoseline/nozzle</h3>
     <div class="options">
       <button class="option-btn">Anticipated fire load or occupancy size</button>
       <button class="option-btn">Needed reach/distance</button>
@@ -53,8 +136,8 @@
     <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
   </div>
 
-  <div class="question-card" data-qid="hose_pulled">
-    <h3><span class="qnum">4.</span> How much hose did you project you would need to pull?</h3>
+  <div class="question-card" data-qid="hose_pulled" data-show-if='[{"qid":"attack_mode","equals":"Offensive"}]'>
+    <h3><span class="qnum">6.</span> How much hose did you project you would need to pull?</h3>
     <div class="options">
       <button class="option-btn">50 ft</button>
       <button class="option-btn">100 ft</button>
@@ -68,8 +151,8 @@
     <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
   </div>
 
-  <div class="question-card" data-qid="hose_on_ground">
-    <h3><span class="qnum">5.</span> How much hose ended up on the ground?</h3>
+  <div class="question-card" data-qid="hose_on_ground" data-show-if='[{"qid":"attack_mode","equals":"Offensive"}]'>
+    <h3><span class="qnum">7.</span> How much hose ended up on the ground?</h3>
 
     <div class="sub-label">Amount</div>
     <div class="options">
@@ -88,14 +171,14 @@
     <div class="options">
       <button class="option-btn">Extra hose</button>
       <button class="option-btn">Less hose</button>
-      <button class="option-btn">About right</button>
+      <button class="option-btn">The right amount</button>
     </div>
 
     <textarea class="text-input" rows="2" placeholder="Why was it more or less than you wanted? (optional)"></textarea>
   </div>
 
-  <div class="question-card" data-qid="hose_needed">
-    <h3><span class="qnum">6.</span> How much did you end up actually needing?</h3>
+  <div class="question-card" data-qid="hose_needed" data-show-if='[{"qid":"attack_mode","equals":"Offensive"}]'>
+    <h3><span class="qnum">8.</span> How much did you end up actually needing?</h3>
     <div class="options">
       <button class="option-btn">50 ft</button>
       <button class="option-btn">100 ft</button>
@@ -109,8 +192,8 @@
     <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
   </div>
 
-  <div class="question-card" data-qid="entry_door">
-    <h3><span class="qnum">7.</span> Which door or opening did you use to make entry into the structure?</h3>
+  <div class="question-card" data-qid="entry_door" data-show-if='[{"qid":"attack_mode","equals":"Offensive"}]'>
+    <h3><span class="qnum">9.</span> Which door or opening did you use to make entry into the structure?</h3>
     <div class="options">
       <button class="option-btn">Front door</button>
       <button class="option-btn">Side door</button>
@@ -122,8 +205,8 @@
     <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
   </div>
 
-  <div class="question-card" data-qid="entry_reason">
-    <h3><span class="qnum">8.</span> Primary reason you chose that specific entry point over other options</h3>
+  <div class="question-card" data-qid="entry_reason" data-show-if='[{"qid":"attack_mode","equals":"Offensive"}]'>
+    <h3><span class="qnum">10.</span> Primary reason you chose that specific entry point over other options</h3>
     <div class="options">
       <button class="option-btn">Closest to the fire</button>
       <button class="option-btn">Fire/smoke showing at that location</button>
@@ -131,19 +214,21 @@
       <button class="option-btn">Path of least resistance/most accessible</button>
       <button class="option-btn">Wind direction/ventilation profile</button>
       <button class="option-btn">Prior knowledge of building layout</button>
+      <button class="option-btn">This was the intake location</button>
       <button class="option-btn">Other</button>
     </div>
     <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
   </div>
 
-  <div class="question-card" data-qid="conditions">
-    <h3><span class="qnum">9.</span> Conditions you encountered immediately upon entry</h3>
+  <div class="question-card" data-qid="conditions" data-show-if='[{"qid":"attack_mode","equals":"Offensive"}]'>
+    <h3><span class="qnum">11.</span> Conditions you encountered immediately upon entry</h3>
 
-    <div class="sub-label">Smoke</div>
+    <div class="sub-label">Smoke conditions</div>
     <div class="options">
-      <button class="option-btn">Light</button>
-      <button class="option-btn">Moderate</button>
-      <button class="option-btn">Heavy</button>
+      <button class="option-btn">High visibility</button>
+      <button class="option-btn">Moderate visibility</button>
+      <button class="option-btn">Low visibility</button>
+      <button class="option-btn">Zero visibility</button>
     </div>
 
     <div class="sub-label">Heat</div>
@@ -152,37 +237,49 @@
       <button class="option-btn">Moderate</button>
       <button class="option-btn">Severe / high heat</button>
     </div>
-
-    <div class="sub-label">Visibility</div>
-    <div class="options">
-      <button class="option-btn">Good</button>
-      <button class="option-btn">Reduced</button>
-      <button class="option-btn">Zero</button>
-    </div>
   </div>
 
-  <div class="question-card" data-qid="attack_technique">
-    <h3><span class="qnum">10.</span> How did you conduct your attack?</h3>
+  <div class="question-card" data-qid="attack_technique" data-show-if='[{"qid":"attack_mode","equals":"Offensive"}]'>
+    <h3><span class="qnum">12.</span> How did you conduct your attack?</h3>
     <div class="options">
-      <button class="option-btn">Continuous flow to the seat of the fire</button>
-      <button class="option-btn">Shut down water to move</button>
+      <button class="option-btn">Flow and Move</button>
+      <button class="option-btn">Hit and Move</button>
       <button class="option-btn">Half bailed nozzle to move</button>
-      <button class="option-btn">Other</button>
+      <button class="option-btn">No flow until arrival at the seat</button>
     </div>
-    <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
   </div>
 
-  <div class="question-card" data-qid="heel_man">
-    <h3><span class="qnum">11.</span> Did you have a heel man (backup firefighter behind you managing/feeding the line)?</h3>
+  <div class="question-card" data-qid="heel_man" data-show-if='[{"qid":"attack_mode","equals":"Offensive"}]'>
+    <h3><span class="qnum">13.</span> Did you have a heel man (backup firefighter behind you managing/feeding the line)?</h3>
     <div class="options">
       <button class="option-btn">Yes</button>
       <button class="option-btn">No</button>
-      <button class="option-btn">Not sure</button>
+    </div>
+
+    <div class="inline-followup" data-show-if='[{"qid":"heel_man","equals":"Yes"}]'>
+      <div data-qid="heel_count">
+        <div class="sub-label">How many firefighters working the heel position were used to make the fire room</div>
+        <div class="options">
+          <button class="option-btn">1</button>
+          <button class="option-btn">2</button>
+          <button class="option-btn">3</button>
+          <button class="option-btn">4</button>
+          <button class="option-btn">4+</button>
+        </div>
+      </div>
+      <div data-qid="heel_count_appropriate">
+        <div class="sub-label">Was the number of heels appropriate?</div>
+        <div class="options">
+          <button class="option-btn">Yes</button>
+          <button class="option-btn">No, needed more</button>
+          <button class="option-btn">No, needed less</button>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="question-card" data-qid="heat_increase">
-    <h3><span class="qnum">12.</span> If you stopped flowing water or half-bailed the nozzle to move, did you notice an increase in heat/temperature?</h3>
+  <div class="question-card" data-qid="heat_increase" data-show-if='[{"qid":"attack_mode","equals":"Offensive"}]'>
+    <h3><span class="qnum">14.</span> If you stopped flowing water or half-bailed the nozzle to move, did you notice an increase in heat/temperature?</h3>
     <div class="options">
       <button class="option-btn">Yes, noticeable increase</button>
       <button class="option-btn">No noticeable change</button>
@@ -191,18 +288,35 @@
     </div>
   </div>
 
-  <div class="question-card" data-qid="vent_improvement">
-    <h3><span class="qnum">13.</span> Did you notice a significant improvement in conditions after vertical vent?</h3>
+  <div class="question-card" data-qid="vent_improvement" data-show-if='[{"qid":"attack_mode","equals":"Offensive"}]'>
+    <h3><span class="qnum">15.</span> Did you notice a significant improvement in conditions after vertical vent?</h3>
     <div class="options">
       <button class="option-btn">Yes</button>
       <button class="option-btn">No</button>
-      <button class="option-btn">Other</button>
     </div>
-    <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
+
+    <div class="inline-followup" data-show-if='[{"qid":"vent_improvement","equals":"Yes"}]'>
+      <div data-qid="vent_improvement_conditions">
+        <div class="sub-label">Smoke conditions</div>
+        <div class="options">
+          <button class="option-btn">High visibility</button>
+          <button class="option-btn">Moderate visibility</button>
+          <button class="option-btn">Low visibility</button>
+          <button class="option-btn">Zero visibility</button>
+        </div>
+
+        <div class="sub-label">Heat</div>
+        <div class="options">
+          <button class="option-btn">Mild</button>
+          <button class="option-btn">Moderate</button>
+          <button class="option-btn">Severe / high heat</button>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="question-card" data-qid="hoseline_trouble">
-    <h3><span class="qnum">14.</span> Did you or your team have any trouble managing/advancing the hoseline?</h3>
+  <div class="question-card" data-qid="hoseline_trouble" data-show-if='[{"qid":"attack_mode","equals":"Offensive"}]'>
+    <h3><span class="qnum">16.</span> Did you or your team have any trouble managing/advancing the hoseline?</h3>
     <div class="select-note">Select all that apply</div>
     <div class="options" data-mode="multi">
       <button class="option-btn">No trouble</button>
@@ -215,19 +329,20 @@
     <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
   </div>
 
-  <div class="question-card" data-qid="found_seat">
-    <h3><span class="qnum">15.</span> How did you find your way to the seat of the fire?</h3>
+  <div class="question-card" data-qid="found_seat" data-show-if='[{"qid":"attack_mode","equals":"Offensive"}]'>
+    <h3><span class="qnum">17.</span> How did you find your way to the seat of the fire?</h3>
     <div class="options">
       <button class="option-btn">Thermal imaging camera</button>
       <button class="option-btn">Visual on the glow/light</button>
       <button class="option-btn">Prior knowledge of the layout</button>
+      <button class="option-btn">Sonar/headhunting</button>
       <button class="option-btn">Other</button>
     </div>
     <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
   </div>
 
-  <div class="question-card" data-qid="time_to_water">
-    <h3><span class="qnum">16.</span> Approximately how long until you got water on the fire?</h3>
+  <div class="question-card" data-qid="time_to_water" data-show-if='[{"qid":"attack_mode","equals":"Offensive"}]'>
+    <h3><span class="qnum">18.</span> Approximately how long until you got water on the fire?</h3>
     <div class="options">
       <button class="option-btn">Under 1 minute</button>
       <button class="option-btn">1–2 minutes</button>
@@ -237,8 +352,8 @@
     </div>
   </div>
 
-  <div class="question-card" data-qid="time_to_extinguish">
-    <h3><span class="qnum">17.</span> After getting water on the fire, approximately how long until extinguishment?</h3>
+  <div class="question-card" data-qid="time_to_extinguish" data-show-if='[{"qid":"attack_mode","equals":"Offensive"}]'>
+    <h3><span class="qnum">19.</span> After getting water on the fire, approximately how long until extinguishment?</h3>
     <div class="options">
       <button class="option-btn">Under 15 seconds</button>
       <button class="option-btn">15–30 seconds</button>
@@ -248,44 +363,45 @@
     </div>
   </div>
 
-  <div class="question-card" data-qid="physically_taxing">
-    <h3><span class="qnum">18.</span> Was stretching the line and performing this attack physically taxing?</h3>
+  <div class="question-card" data-qid="physically_taxing" data-show-if='[{"qid":"attack_mode","equals":"Offensive"}]'>
+    <h3><span class="qnum">20.</span> Was stretching the line and performing this attack physically taxing?</h3>
     <div class="options">
       <button class="option-btn">Not at all taxing</button>
       <button class="option-btn">Slightly taxing</button>
       <button class="option-btn">Moderately taxing</button>
       <button class="option-btn">Very taxing / exhausting</button>
     </div>
-  </div>
 
-  <div class="question-card" data-qid="taxing_factors">
-    <h3><span class="qnum">19.</span> If taxing, what contributed most?</h3>
-    <div class="select-note">Select all that apply</div>
-    <div class="options" data-mode="multi">
-      <button class="option-btn">Management of hose</button>
-      <button class="option-btn">Heat stress</button>
-      <button class="option-btn">Heavy breathing/air consumption</button>
-      <button class="option-btn">Muscle strain/fatigue</button>
-      <button class="option-btn">Distance/stairs</button>
-      <button class="option-btn">N/A – not taxing</button>
-      <button class="option-btn">Other</button>
+    <div class="inline-followup" data-show-if='[{"qid":"physically_taxing","in":["Slightly taxing","Moderately taxing","Very taxing / exhausting"]}]'>
+      <div data-qid="taxing_factors">
+        <div class="sub-label">What contributed most?</div>
+        <div class="select-note">Select all that apply</div>
+        <div class="options" data-mode="multi">
+          <button class="option-btn">Management of hose</button>
+          <button class="option-btn">Heat stress</button>
+          <button class="option-btn">Heavy breathing/air consumption</button>
+          <button class="option-btn">Muscle strain/fatigue</button>
+          <button class="option-btn">Distance/stairs</button>
+          <button class="option-btn">Other</button>
+        </div>
+        <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
+      </div>
     </div>
-    <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
   </div>
 
-  <div class="question-card" data-qid="scba_air">
-    <h3><span class="qnum">20.</span> Approximately how much SCBA air did you have remaining when you exited the structure?</h3>
+  <div class="question-card" data-qid="scba_air" data-show-if='[{"qid":"attack_mode","equals":"Offensive"}]'>
+    <h3><span class="qnum">22.</span> Approximately how much SCBA air did you have remaining when you exited the structure?</h3>
     <div class="options">
       <button class="option-btn">75–100%</button>
       <button class="option-btn">50–75%</button>
       <button class="option-btn">25–50%</button>
-      <button class="option-btn">Under 25% / low-air alarm activated</button>
+      <button class="option-btn">33% / low-air alarm activated</button>
       <button class="option-btn">Not sure</button>
     </div>
   </div>
 
-  <div class="question-card" data-qid="equipment_problems">
-    <h3><span class="qnum">21.</span> Did you experience any equipment problems during this evolution?</h3>
+  <div class="question-card" data-qid="equipment_problems" data-show-if='[{"qid":"attack_mode","equals":"Offensive"}]'>
+    <h3><span class="qnum">23.</span> Did you experience any equipment problems during this evolution?</h3>
     <div class="options">
       <button class="option-btn">No problems</button>
       <button class="option-btn">Nozzle issue</button>
@@ -297,8 +413,8 @@
     <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
   </div>
 
-  <div class="question-card" data-qid="one_line_enough">
-    <h3><span class="qnum">22.</span> Was the fire fully extinguished with this line alone, or was more needed?</h3>
+  <div class="question-card" data-qid="one_line_enough" data-show-if='[{"qid":"attack_mode","equals":"Offensive"}]'>
+    <h3><span class="qnum">24.</span> Was the fire fully extinguished with this line alone, or was more needed?</h3>
     <div class="options">
       <button class="option-btn">Extinguished with this line alone</button>
       <button class="option-btn">Additional line(s) needed</button>
@@ -308,8 +424,8 @@
     <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
   </div>
 
-  <div class="question-card" data-qid="injuries">
-    <h3><span class="qnum">23.</span> Did you experience any injuries, close calls, or near-misses during this evolution?</h3>
+  <div class="question-card" data-qid="injuries" data-show-if='[{"qid":"attack_mode","equals":"Offensive"}]'>
+    <h3><span class="qnum">25.</span> Did you experience any injuries, close calls, or near-misses during this evolution?</h3>
     <div class="options">
       <button class="option-btn">None</button>
       <button class="option-btn">Minor injury</button>
@@ -320,8 +436,8 @@
     <textarea class="text-input" rows="2" placeholder="If yes, briefly describe (optional)"></textarea>
   </div>
 
-  <div class="question-card" data-qid="would_repeat">
-    <h3><span class="qnum">24.</span> Looking back, would you choose the same hoseline, entry point, and technique again?</h3>
+  <div class="question-card" data-qid="would_repeat" data-show-if='[{"qid":"attack_mode","equals":"Offensive"}]'>
+    <h3><span class="qnum">26.</span> Looking back, would you choose the same hoseline, entry point, and technique again?</h3>
     <div class="options">
       <button class="option-btn">Yes, all the same</button>
       <button class="option-btn">No, would change hoseline</button>
@@ -333,47 +449,39 @@
     <textarea class="text-input" rows="2" placeholder="Why or why not (optional)"></textarea>
   </div>
 
-  <div class="question-card" data-qid="would_change">
-    <h3><span class="qnum">25.</span> What, if anything, would you do differently next time?</h3>
+  <div class="question-card" data-qid="would_change" data-show-if='[{"qid":"attack_mode","equals":"Offensive"}]'>
+    <h3><span class="qnum">27.</span> What, if anything, would you do differently next time?</h3>
     <div class="select-note">Select all that apply</div>
     <div class="options" data-mode="multi">
       <button class="option-btn">Nothing, would do the same</button>
       <button class="option-btn">Choose different hoseline/nozzle</button>
       <button class="option-btn">Choose different entry point</button>
       <button class="option-btn">Communicate more with command/crew</button>
+      <button class="option-btn">Communicate less with command/crew</button>
       <button class="option-btn">Manage air consumption differently</button>
       <button class="option-btn">Other</button>
     </div>
     <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
   </div>
 
-  <div class="question-card" data-qid="crew_size">
-    <h3><span class="qnum">26.</span> Did you run this attack with a four-man engine crew?</h3>
-    <div class="options">
-      <button class="option-btn">Yes</button>
-      <button class="option-btn">No, three-man</button>
-    </div>
-  </div>
-
   <div class="question-card" id="comments-card">
-    <h3><span class="qnum">27.</span> Any other comments, hazards, or lessons learned from this specific attack?</h3>
+    <h3><span class="qnum">28.</span> Any other comments, hazards, or lessons learned from this specific attack?</h3>
     <textarea class="text-input" id="comments-textarea" rows="3" placeholder="Type your answer here (optional)"></textarea>
   </div>
 
   <div class="chat-followup-card">
     <h3><span class="qnum">💬</span> Quick Follow-Up</h3>
-    <p class="chat-subtitle">A few open-ended questions, in your own words — this helps build a narrative summary for the AAR. Optional.</p>
+    <p class="chat-subtitle">A few open-ended questions, in your own words — this helps build a narrative summary for the AAR. Required.</p>
     <div class="chat-thread" id="chat-thread"></div>
     <div class="chat-input-row" id="chat-input-row">
       <textarea id="chat-textarea" rows="1" placeholder="Type your answer…"></textarea>
       <button class="chat-send-btn" id="chat-send-btn" type="button">➤</button>
     </div>
-    <button class="chat-skip-link" id="chat-skip-btn" type="button">Skip this question</button>
   </div>
 
   <div class="question-card" id="submit-card">
-    <button class="submit-btn" id="submit-btn">Submit Debrief</button>
-    <div class="submit-status" id="submit-status"></div>
+    <button class="submit-btn" id="submit-btn" disabled>Submit Debrief</button>
+    <div class="submit-status" id="submit-status">Answer the Quick Follow-Up questions above to unlock submit.</div>
   </div>
 
   <!-- Supabase client library -->
@@ -388,8 +496,83 @@
   </script>
 
   <script>
-    const questionCards = Array.from(document.querySelectorAll('.question-card[data-qid]'));
-    const totalQuestions = questionCards.length;
+    // ===== Conditional / branching form engine =====
+    // (Same engine used by the Search and Secondary Search debriefs.) Question
+    // #2 (attack_mode) now gates the entire rest of the Offensive question set
+    // (load_type through would_change), so top-level questions can appear and
+    // disappear — question numbering, the progress total, and the answered
+    // count are all computed fresh on every refresh instead of fixed at load.
+    //
+    // Any element carrying data-show-if is a conditional block. Its
+    // data-show-if is a JSON list of conditions that must ALL be true for it
+    // to be visible:
+    //   {"qid": "x", "equals": "Y"}    -> show only if question x's answer is exactly Y
+    //   {"qid": "x", "not": "Y"}       -> show unless question x's answer is exactly Y
+    //   {"qid": "x", "answered": true} -> show as soon as question x has any answer
+
+    function getAnswerFor(qid) {
+      const el = document.querySelector(`[data-qid="${qid}"]`);
+      if (!el) return null;
+      const group = el.querySelector(':scope > .options');
+      if (group) {
+        const selected = group.querySelector('.option-btn.selected');
+        return selected ? selected.textContent.trim() : null;
+      }
+      const field = el.querySelector(':scope > input[type="text"], :scope > textarea');
+      if (field) {
+        const val = field.value.trim();
+        return val ? val : null;
+      }
+      return null;
+    }
+
+    function optionSelected(qid, text) {
+      const el = document.querySelector(`[data-qid="${qid}"]`);
+      if (!el) return false;
+      const groups = Array.from(el.querySelectorAll(':scope > .options'));
+      return groups.some(g =>
+        Array.from(g.querySelectorAll('.option-btn.selected')).some(b => b.textContent.trim() === text)
+      );
+    }
+
+    function conditionMet(cond) {
+      if ('includes' in cond) return optionSelected(cond.qid, cond.includes);
+      const val = getAnswerFor(cond.qid);
+      if (cond.answered) return val !== null && val !== '';
+      if ('equals' in cond) return val === cond.equals;
+      if ('not' in cond) return val !== cond.not;
+      if ('in' in cond) return Array.isArray(cond.in) && cond.in.includes(val);
+      return true;
+    }
+
+    function elementVisible(el) {
+      const raw = el.dataset.showIf;
+      if (!raw) return true;
+      return JSON.parse(raw).every(conditionMet);
+    }
+
+    function refreshForm() {
+      Array.from(document.querySelectorAll('[data-show-if]')).forEach(el => {
+        el.style.display = elementVisible(el) ? '' : 'none';
+      });
+      renumberVisible();
+      updateProgress();
+    }
+
+    // Walks every top-level question-card (including comments-card, which
+    // has no data-qid of its own) in actual document order and renumbers
+    // their qnum spans to match whatever is actually visible right now —
+    // so switching attack_mode between Offensive/Defensive keeps the
+    // numbering gapless and in the same order the cards are rendered.
+    function renumberVisible() {
+      const visibleCards = Array.from(document.querySelectorAll('.question-card'))
+        .filter(c => c.offsetParent !== null && c.querySelector(':scope > h3 > .qnum'));
+
+      visibleCards.forEach((card, i) => {
+        const qnum = card.querySelector(':scope > h3 > .qnum');
+        qnum.textContent = (i + 1) + '.';
+      });
+    }
 
     // Wire up every options group (single-select by default, multi-select if data-mode="multi")
     document.querySelectorAll('.options').forEach(group => {
@@ -405,7 +588,7 @@
           }
 
           btn.classList.toggle('selected', !alreadySelected);
-          updateProgress();
+          refreshForm();
         });
       });
     });
@@ -437,19 +620,22 @@
     });
 
     function updateProgress() {
-      let answeredCount = 0;
+      const cards = Array.from(document.querySelectorAll('.question-card[data-qid]'))
+        .filter(c => c.offsetParent !== null);
+      const countable = cards.filter(c => c.querySelectorAll(':scope > .options').length > 0);
+      const total = countable.length;
 
-      questionCards.forEach(card => {
-        const groups = Array.from(card.querySelectorAll('.options'));
-        if (groups.length === 0) return; // open-text-only question, not counted
+      let answeredCount = 0;
+      countable.forEach(card => {
+        const groups = Array.from(card.querySelectorAll(':scope > .options'));
         const allGroupsAnswered = groups.every(g => g.querySelector('.option-btn.selected'));
         if (allGroupsAnswered) answeredCount++;
       });
 
-      const percent = (answeredCount / totalQuestions) * 100;
+      const percent = total > 0 ? (answeredCount / total) * 100 : 0;
       document.getElementById('progress-fill').style.width = percent + '%';
       document.getElementById('progress-label').innerText =
-        `${answeredCount} of ${totalQuestions} questions answered`;
+        `${answeredCount} of ${total} questions answered`;
     }
 
     // Reads the current selection(s) out of one .options group. If "Other"
@@ -471,15 +657,20 @@
       return isMulti ? selected : (selected[0] || null);
     }
 
-    // Walks every question card and builds one big answers object keyed by
-    // each question's stable name, e.g. { load_type: "Bulk load", conditions: {smoke: "Light", ...}, ... }
+    // Walks every [data-qid] element (not just top-level question-cards, so
+    // heel_man's nested follow-ups get captured too) and builds one big
+    // answers object keyed by each question's stable name. Only reads from
+    // currently-visible elements, so a follow-up that never popped open
+    // (heel_man answered "No") never ends up in the submitted data.
     function collectAnswers() {
       const answers = {};
 
-      questionCards.forEach(card => {
-        const qid = card.dataset.qid;
-        const groups = Array.from(card.querySelectorAll('.options'));
-        const textarea = card.querySelector('textarea');
+      Array.from(document.querySelectorAll('[data-qid]')).forEach(el => {
+        if (el.offsetParent === null) return;
+
+        const qid = el.dataset.qid;
+        const groups = Array.from(el.querySelectorAll(':scope > .options'));
+        const textarea = el.querySelector(':scope > textarea');
 
         let value;
         if (groups.length === 1) {
@@ -525,7 +716,6 @@
     const chatInputRow = document.getElementById('chat-input-row');
     const chatTextarea = document.getElementById('chat-textarea');
     const chatSendBtn = document.getElementById('chat-send-btn');
-    const chatSkipBtn = document.getElementById('chat-skip-btn');
 
     function addChatBubble(text, type) {
       const bubble = document.createElement('div');
@@ -535,20 +725,26 @@
       chatThread.scrollTop = chatThread.scrollHeight;
     }
 
+    // The Quick Follow-Up is required — there's no skip option. Once all
+    // three prompts have an answer, the chat input hides and the Submit
+    // Debrief button (disabled by default in the markup) unlocks.
     function askNextChatPrompt() {
       if (chatStep < chatPrompts.length) {
         addChatBubble(chatPrompts[chatStep], 'incoming');
       } else {
         chatInputRow.style.display = 'none';
-        chatSkipBtn.style.display = 'none';
         addChatBubble("That's everything — hit Submit Debrief below when you're ready.", 'incoming system-note');
+
+        const submitBtn = document.getElementById('submit-btn');
+        const statusEl = document.getElementById('submit-status');
+        submitBtn.disabled = false;
+        statusEl.textContent = '';
+        statusEl.className = 'submit-status';
       }
     }
 
     function advanceChat(responseText) {
-      if (responseText) {
-        chatAnswers.push({ prompt: chatPrompts[chatStep], response: responseText });
-      }
+      chatAnswers.push({ prompt: chatPrompts[chatStep], response: responseText });
       chatStep++;
       askNextChatPrompt();
     }
@@ -566,11 +762,6 @@
         e.preventDefault();
         chatSendBtn.click();
       }
-    });
-
-    chatSkipBtn.addEventListener('click', () => {
-      chatTextarea.value = '';
-      advanceChat(null);
     });
 
     askNextChatPrompt();
@@ -617,6 +808,9 @@
         btn.textContent = 'Submitted ✓';
       }
     });
+
+    // Initial pass: hide the heel_man follow-up until it's triggered
+    refreshForm();
   </script>
 
 </body>
