@@ -443,12 +443,12 @@
     </div>
   </div>
 
-  <div class="question-card" id="comments-card">
+  <div class="question-card" id="comments-card" data-show-if='[{"qid":"ventilation_type","answered":true}]'>
     <h3><span class="qnum">•</span> Any other comments, hazards, or lessons learned from this ventilation operation?</h3>
     <textarea class="text-input" id="comments-textarea" rows="3" placeholder="Type your answer here (optional)"></textarea>
   </div>
 
-  <div class="chat-followup-card">
+  <div class="chat-followup-card" data-show-if='[{"qid":"ventilation_type","answered":true}]'>
     <h3><span class="qnum">💬</span> Quick Follow-Up</h3>
     <p class="chat-subtitle">A few open-ended questions, in your own words — this helps build a narrative summary for the AAR. Optional.</p>
     <div class="chat-thread" id="chat-thread"></div>
@@ -459,7 +459,7 @@
     <button class="chat-skip-link" id="chat-skip-btn" type="button">Skip this question</button>
   </div>
 
-  <div class="question-card" id="submit-card">
+  <div class="question-card" id="submit-card" data-show-if='[{"qid":"ventilation_type","answered":true}]'>
     <button class="submit-btn" id="submit-btn">Submit Debrief</button>
     <div class="submit-status" id="submit-status"></div>
   </div>
