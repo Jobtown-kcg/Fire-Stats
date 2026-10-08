@@ -4,91 +4,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Interior Attack Line Debrief</title>
   <link rel="stylesheet" href="style.css">
-  <style>
-    body.jt-locked > *:not(#jt-lock-overlay) { display: none !important; }
-    #jt-lock-overlay {
-      position: fixed; inset: 0; z-index: 9999;
-      background: #0b0e11;
-      display: flex; align-items: center; justify-content: center;
-      padding: 24px;
-    }
-    .jt-lock-box {
-      background: #161a1f; border: 1px solid #2a2f36; border-radius: 12px;
-      padding: 32px 28px; max-width: 320px; width: 100%; text-align: center;
-      font-family: system-ui, -apple-system, sans-serif;
-    }
-    .jt-lock-title { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 8px; }
-    .jt-lock-sub { font-size: 14px; color: #9aa4af; margin-bottom: 20px; }
-    .jt-lock-input {
-      width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid #2a2f36;
-      background: #0b0e11; color: #fff; font-size: 15px; margin-bottom: 12px; box-sizing: border-box;
-    }
-    .jt-lock-btn {
-      width: 100%; padding: 10px 12px; border-radius: 8px; border: none;
-      background: #d64545; color: #fff; font-size: 15px; font-weight: 600; cursor: pointer;
-    }
-    .jt-lock-btn:hover { background: #c23a3a; }
-    .jt-lock-error { color: #ff6b6b; font-size: 13px; margin-top: 10px; min-height: 16px; }
-  </style>
 </head>
-<body class="no-bottom-nav jt-locked">
-
-  <div id="jt-lock-overlay" class="jt-lock-overlay">
-    <div class="jt-lock-box">
-      <div class="jt-lock-title">🔒 Restricted</div>
-      <p class="jt-lock-sub">Enter the password to view this debrief.</p>
-      <input type="password" id="jt-lock-input" class="jt-lock-input" placeholder="Password" autocomplete="off">
-      <button id="jt-lock-btn" class="jt-lock-btn" type="button">Unlock</button>
-      <div id="jt-lock-error" class="jt-lock-error"></div>
-    </div>
-  </div>
-
-  <script>
-    (function() {
-      var LOCK_KEY = 'jt_debrief_unlocked_v1';
-      var PASSWORD_HASH = 'adf53a8335d86e54221042493e4a099d29bb5b81ce24af2982c0e73fad4fcdb1';
-
-      function sha256(text) {
-        var enc = new TextEncoder().encode(text);
-        return crypto.subtle.digest('SHA-256', enc).then(function(buf) {
-          return Array.from(new Uint8Array(buf)).map(function(b) {
-            return b.toString(16).padStart(2, '0');
-          }).join('');
-        });
-      }
-
-      function unlock() {
-        document.body.classList.remove('jt-locked');
-        var overlay = document.getElementById('jt-lock-overlay');
-        if (overlay) overlay.remove();
-      }
-
-      if (localStorage.getItem(LOCK_KEY) === 'true') {
-        unlock();
-      } else {
-        var input = document.getElementById('jt-lock-input');
-        var btn = document.getElementById('jt-lock-btn');
-        var errorEl = document.getElementById('jt-lock-error');
-
-        function tryUnlock() {
-          sha256(input.value).then(function(hash) {
-            if (hash === PASSWORD_HASH) {
-              localStorage.setItem(LOCK_KEY, 'true');
-              unlock();
-            } else {
-              errorEl.textContent = 'Incorrect password.';
-              input.value = '';
-              input.focus();
-            }
-          });
-        }
-
-        btn.addEventListener('click', tryUnlock);
-        input.addEventListener('keydown', function(e) { if (e.key === 'Enter') tryUnlock(); });
-        input.focus();
-      }
-    })();
-  </script>
+<body class="no-bottom-nav">
 
   <div class="intro-banner">
     <div class="intro-title headline">🔥 Interior Attack Line — Firefighter Debrief</div>
@@ -547,12 +464,12 @@
     <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
   </div>
 
-  <div class="question-card" id="comments-card">
+  <div class="question-card" id="comments-card" data-show-if='[{"qid":"attack_mode","answered":true}]'>
     <h3><span class="qnum">28.</span> Any other comments, hazards, or lessons learned from this specific attack?</h3>
     <textarea class="text-input" id="comments-textarea" rows="3" placeholder="Type your answer here (optional)"></textarea>
   </div>
 
-  <div class="chat-followup-card">
+  <div class="chat-followup-card" data-show-if='[{"qid":"attack_mode","answered":true}]'>
     <h3><span class="qnum">💬</span> Quick Follow-Up</h3>
     <p class="chat-subtitle">A few open-ended questions, in your own words — this helps build a narrative summary for the AAR. Required.</p>
     <div class="chat-thread" id="chat-thread"></div>
@@ -562,7 +479,7 @@
     </div>
   </div>
 
-  <div class="question-card" id="submit-card">
+  <div class="question-card" id="submit-card" data-show-if='[{"qid":"attack_mode","answered":true}]'>
     <button class="submit-btn" id="submit-btn" disabled>Submit Debrief</button>
     <div class="submit-status" id="submit-status">Answer the Quick Follow-Up questions above to unlock submit.</div>
   </div>
