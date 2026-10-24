@@ -552,19 +552,16 @@
     <textarea class="text-input" id="comments-textarea" rows="3" placeholder="Type your answer here (optional)"></textarea>
   </div>
 
-  <div class="chat-followup-card" data-show-if='[{"qid":"attack_mode","answered":true}]'>
-    <h3><span class="qnum">💬</span> Quick Follow-Up</h3>
-    <p class="chat-subtitle">A few open-ended questions, in your own words — this helps build a narrative summary for the AAR. Required.</p>
-    <div class="chat-thread" id="chat-thread"></div>
-    <div class="chat-input-row" id="chat-input-row">
-      <textarea id="chat-textarea" rows="1" placeholder="Type your answer…"></textarea>
-      <button class="chat-send-btn" id="chat-send-btn" type="button">➤</button>
-    </div>
+  <div class="your-take-card" data-show-if='[{"qid":"attack_mode","answered":true}]'>
+    <h3><span class="qnum">💬</span> Your Take</h3>
+    <p class="chat-subtitle">Share your experience in your own words. Keep it brief, but include anything you feel is important.<br>Your responses help build the AAR and capture lessons learned.</p>
+    <p class="yt-optional-note">All questions are optional.</p>
+    <div class="yt-list" id="yt-list"></div>
   </div>
 
   <div class="question-card" id="submit-card" data-show-if='[{"qid":"attack_mode","answered":true}]'>
-    <button class="submit-btn" id="submit-btn" disabled>Submit Debrief</button>
-    <div class="submit-status" id="submit-status">Answer the Quick Follow-Up questions above to unlock submit.</div>
+    <button class="submit-btn" id="submit-btn">Submit Debrief</button>
+    <div class="submit-status" id="submit-status"></div>
   </div>
 
   <!-- Supabase client library -->
@@ -783,71 +780,62 @@
       return answers;
     }
 
-    // ===== AI chat follow-up =====
-    // A small fixed set of open-ended prompts, presented like a text
-    // conversation. Free-text answers ride along with the structured
-    // answers when the debrief is submitted.
-    const chatPrompts = [
-      "Walk me through the calls you made out there — what did you decide, and why'd you go that way instead of another option?",
-      "What's the biggest obstacle or curveball you ran into, and how did you work through it?",
-      "Looking back, is there anything you wish you'd known before this call — something that would've changed how you walked in?"
+    // ===== Your Take (open-ended follow-up questions) =====
+    // Three generic, always-optional questions rendered as a static list.
+    // Nothing here is "required" -- whatever's typed in each box at the
+    // moment Submit Debrief is clicked rides along with the rest of the
+    // answers; an empty box is simply left out.
+    const yourTakePrompts = [
+      { q: "Walk us through what happened from your perspective.", desc: "Briefly describe your assignment, actions, and important decisions." },
+      { q: "What went well, and what could have gone better?", desc: "Share any successes, challenges, or missed opportunities." },
+      { q: "What should other crews take away from this incident?", desc: "Share any lessons learned, recommendations, or important observations." }
     ];
 
-    let chatStep = 0;
-    const chatAnswers = [];
-    const chatThread = document.getElementById('chat-thread');
-    const chatInputRow = document.getElementById('chat-input-row');
-    const chatTextarea = document.getElementById('chat-textarea');
-    const chatSendBtn = document.getElementById('chat-send-btn');
-
-    function addChatBubble(text, type) {
-      const bubble = document.createElement('div');
-      bubble.className = 'chat-bubble ' + type;
-      bubble.textContent = text;
-      chatThread.appendChild(bubble);
-      chatThread.scrollTop = chatThread.scrollHeight;
-    }
-
-    // The Quick Follow-Up is required — there's no skip option. Once all
-    // three prompts have an answer, the chat input hides and the Submit
-    // Debrief button (disabled by default in the markup) unlocks.
-    function askNextChatPrompt() {
-      if (chatStep < chatPrompts.length) {
-        addChatBubble(chatPrompts[chatStep], 'incoming');
-      } else {
-        chatInputRow.style.display = 'none';
-        addChatBubble("That's everything — hit Submit Debrief below when you're ready.", 'incoming system-note');
-
-        const submitBtn = document.getElementById('submit-btn');
-        const statusEl = document.getElementById('submit-status');
-        submitBtn.disabled = false;
-        statusEl.textContent = '';
-        statusEl.className = 'submit-status';
-      }
-    }
-
-    function advanceChat(responseText) {
-      chatAnswers.push({ prompt: chatPrompts[chatStep], response: responseText });
-      chatStep++;
-      askNextChatPrompt();
-    }
-
-    chatSendBtn.addEventListener('click', () => {
-      const text = chatTextarea.value.trim();
-      if (!text) return;
-      addChatBubble(text, 'outgoing');
-      chatTextarea.value = '';
-      advanceChat(text);
+    const ytList = document.getElementById('yt-list');
+    yourTakePrompts.forEach((item, i) => {
+      const row = document.createElement('div');
+      row.className = 'yt-question';
+      row.innerHTML = `
+        <div class="yt-row">
+          <div class="yt-num">${i + 1}</div>
+          <div class="yt-body">
+            <div class="yt-q">${item.q}</div>
+            <div class="yt-desc">${item.desc}</div>
+            <div class="yt-input-row">
+              <input type="text" class="yt-input" placeholder="Type your answer…">
+              <button class="yt-send-btn" type="button">➤</button>
+            </div>
+          </div>
+        </div>
+      `;
+      ytList.appendChild(row);
     });
 
-    chatTextarea.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        chatSendBtn.click();
-      }
+    // The round send button (and Enter) just hops focus to the next
+    // question -- nothing is "locked in" per row since every question
+    // here is optional.
+    const ytInputs = Array.from(ytList.querySelectorAll('.yt-input'));
+    ytInputs.forEach((input, i) => {
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          const next = ytInputs[i + 1];
+          if (next) next.focus(); else input.blur();
+        }
+      });
+    });
+    ytList.querySelectorAll('.yt-send-btn').forEach((btn, i) => {
+      btn.addEventListener('click', () => {
+        const next = ytInputs[i + 1];
+        if (next) next.focus(); else ytInputs[i].blur();
+      });
     });
 
-    askNextChatPrompt();
+    function collectYourTake() {
+      return yourTakePrompts
+        .map((item, i) => ({ prompt: item.q, response: ytInputs[i].value.trim() }))
+        .filter(a => a.response);
+    }
 
     document.getElementById('submit-btn').addEventListener('click', async () => {
       const statusEl = document.getElementById('submit-status');
@@ -860,7 +848,7 @@
 
       const answers = collectAnswers();
       answers.operation_type = 'interior_attack';
-      answers.chat_followup = chatAnswers;
+      answers.chat_followup = collectYourTake();
 
       // One AI call: turns the structured answers + free-text chat responses
       // into a narrative summary for the AAR. Runs through a Supabase Edge
