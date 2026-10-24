@@ -552,15 +552,11 @@
     <textarea class="text-input" id="comments-textarea" rows="3" placeholder="Type your answer here (optional)"></textarea>
   </div>
 
-  <div class="chat-followup-card" data-show-if='[{"qid":"attack_mode","answered":true}]'>
+  <div class="your-take-card" data-show-if='[{"qid":"attack_mode","answered":true}]'>
     <h3><span class="qnum">💬</span> Your Take</h3>
-    <p class="chat-subtitle">A few open-ended questions, in your own words — this helps build a narrative summary for the AAR. Optional.</p>
-    <div class="chat-thread" id="chat-thread"></div>
-    <div class="chat-input-row" id="chat-input-row">
-      <textarea id="chat-textarea" rows="1" placeholder="Type your answer…"></textarea>
-      <button class="chat-send-btn" id="chat-send-btn" type="button">➤</button>
-    </div>
-    <button class="chat-skip-link" id="chat-skip-btn" type="button">Skip this question</button>
+    <p class="chat-subtitle">Share your experience in your own words. Keep it brief, but include anything you feel is important.<br>Your responses help build the AAR and capture lessons learned.</p>
+    <p class="yt-optional-note">All questions are optional.</p>
+    <div class="yt-list" id="yt-list"></div>
   </div>
 
   <div class="question-card" id="submit-card" data-show-if='[{"qid":"attack_mode","answered":true}]'>
@@ -784,73 +780,67 @@
       return answers;
     }
 
-        // ===== Your Take (open-ended follow-up chat) =====
-    const chatPrompts = [
-      "Walk us through what happened from your perspective — your assignment, actions, and any important decisions.",
-      "What went well, and what could have gone better?",
-      "What should other crews take away from this incident — any lessons learned or recommendations?"
+            // ===== Your Take (open-ended follow-up questions) =====
+    // Same 3 generic, always-optional questions, shown one at a time:
+    // answering (or skipping via an empty send) reveals the next.
+    const yourTakePrompts = [
+      { q: "Walk us through what happened from your perspective.", desc: "Briefly describe your assignment, actions, and important decisions." },
+      { q: "What went well, and what could have gone better?", desc: "Share any successes, challenges, or missed opportunities." },
+      { q: "What should other crews take away from this incident?", desc: "Share any lessons learned, recommendations, or important observations." }
     ];
-    let chatStep = 0;
-    const chatAnswers = [];
 
-    const chatThread = document.getElementById('chat-thread');
-    const chatTextarea = document.getElementById('chat-textarea');
-    const chatSendBtn = document.getElementById('chat-send-btn');
-    const chatSkipBtn = document.getElementById('chat-skip-btn');
-    const chatInputRow = document.getElementById('chat-input-row');
+    const ytList = document.getElementById('yt-list');
+    yourTakePrompts.forEach((item, i) => {
+      const row = document.createElement('div');
+      row.className = 'yt-question' + (i > 0 ? ' yt-hidden' : '');
+      row.innerHTML = `
+        <div class="yt-row">
+          <div class="yt-num">${i + 1}</div>
+          <div class="yt-body">
+            <div class="yt-q">${item.q}</div>
+            <div class="yt-desc">${item.desc}</div>
+            <div class="yt-input-row">
+              <input type="text" class="yt-input" placeholder="Type your answer…">
+              <button class="yt-send-btn" type="button">➤</button>
+            </div>
+          </div>
+        </div>
+      `;
+      ytList.appendChild(row);
+    });
 
-    function addChatBubble(text, type) {
-      const bubble = document.createElement('div');
-      bubble.className = 'chat-bubble ' + type;
-      bubble.textContent = text;
-      chatThread.appendChild(bubble);
-      chatThread.scrollTop = chatThread.scrollHeight;
-    }
+    const ytRows = Array.from(ytList.querySelectorAll('.yt-question'));
+    const ytInputs = Array.from(ytList.querySelectorAll('.yt-input'));
 
-    function askNextChatPrompt() {
-      if (chatStep < chatPrompts.length) {
-        addChatBubble(chatPrompts[chatStep], 'incoming');
+    // Reveal question i+1 (if any) and move focus into it.
+    function ytRevealNext(i) {
+      const next = ytRows[i + 1];
+      if (next) {
+        next.classList.remove('yt-hidden');
+        const nextInput = next.querySelector('.yt-input');
+        if (nextInput) nextInput.focus();
       } else {
-        addChatBubble('Thanks for sharing — that helps build the full picture.', 'incoming system-note');
-        if (chatInputRow) chatInputRow.style.display = 'none';
-        if (chatSkipBtn) chatSkipBtn.style.display = 'none';
+        ytInputs[i].blur();
       }
     }
 
-    function advanceChat(responseText) {
-      chatAnswers[chatStep] = responseText;
-      if (responseText) addChatBubble(responseText, 'outgoing');
-      chatStep++;
-      chatTextarea.value = '';
-      askNextChatPrompt();
-    }
-
-    if (chatSendBtn) {
-      chatSendBtn.addEventListener('click', () => {
-        const val = chatTextarea.value.trim();
-        if (!val) return;
-        advanceChat(val);
-      });
-    }
-
-    if (chatTextarea) {
-      chatTextarea.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
+    ytInputs.forEach((input, i) => {
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
           e.preventDefault();
-          const val = chatTextarea.value.trim();
-          if (!val) return;
-          advanceChat(val);
+          ytRevealNext(i);
         }
       });
-    }
+    });
+    ytList.querySelectorAll('.yt-send-btn').forEach((btn, i) => {
+      btn.addEventListener('click', () => ytRevealNext(i));
+    });
 
-    if (chatSkipBtn) {
-      chatSkipBtn.addEventListener('click', () => {
-        advanceChat('');
-      });
+    function collectYourTake() {
+      return yourTakePrompts
+        .map((item, i) => ({ prompt: item.q, response: ytInputs[i].value.trim() }))
+        .filter(a => a.response);
     }
-
-    askNextChatPrompt();
 
 document.getElementById('submit-btn').addEventListener('click', async () => {
       const statusEl = document.getElementById('submit-status');
@@ -863,7 +853,7 @@ document.getElementById('submit-btn').addEventListener('click', async () => {
 
       const answers = collectAnswers();
       answers.operation_type = 'interior_attack';
-      answers.chat_followup = chatAnswers;
+      answers.chat_followup = collectYourTake();
 
       // One AI call: turns the structured answers + free-text chat responses
       // into a narrative summary for the AAR. Runs through a Supabase Edge
