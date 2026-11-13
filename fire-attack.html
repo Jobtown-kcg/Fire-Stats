@@ -223,8 +223,8 @@
   <div class="question-card" data-qid="hose_amounts" data-show-if='[{"qid":"attack_mode","equals":"Offensive"}]'>
     <h3><span class="qnum">6.</span> Hose pulled, hose on the ground, and hose needed</h3>
 
-    <div class="sub-label">How much hose did you project you would need to pull?</div>
-    <div class="options">
+    <div class="sub-label" data-show-if='[{"qid":"hoseline_nozzle","not_in":["Pre-connected crosslay","2.25 Green"]}]'>How much hose did you project you would need to pull?</div>
+    <div class="options" data-show-if='[{"qid":"hoseline_nozzle","not_in":["Pre-connected crosslay","2.25 Green"]}]'>
       <button class="option-btn">50 ft</button>
       <button class="option-btn">100 ft</button>
       <button class="option-btn">150 ft</button>
@@ -236,8 +236,8 @@
     </div>
     <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
 
-    <div class="sub-label">How much hose ended up on the ground?</div>
-    <div class="options">
+    <div class="sub-label" data-show-if='[{"qid":"hoseline_nozzle","not_in":["Pre-connected crosslay","2.25 Green"]}]'>How much hose ended up on the ground?</div>
+    <div class="options" data-show-if='[{"qid":"hoseline_nozzle","not_in":["Pre-connected crosslay","2.25 Green"]}]'>
       <button class="option-btn">50 ft</button>
       <button class="option-btn">100 ft</button>
       <button class="option-btn">150 ft</button>
@@ -250,13 +250,13 @@
     <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
 
     <div class="sub-label">Was that more or less than you wanted?</div>
-    <div class="options">
+    <div class="options" id="hose-more-less">
       <button class="option-btn">Extra hose</button>
       <button class="option-btn">Less hose</button>
       <button class="option-btn">The right amount</button>
     </div>
 
-    <textarea class="text-input" rows="2" placeholder="Why was it more or less than you wanted? (optional)"></textarea>
+    <textarea class="text-input" rows="2" placeholder="Why was it more or less than you wanted?" data-show-if='[{"group":"hose-more-less","in":["Extra hose","Less hose"]}]'></textarea>
 
     <div data-qid="hose_adequate">
       <div class="sub-label">Was the amount of hose you had adequate for an uninterrupted push?</div>
@@ -279,7 +279,7 @@
       </div>
     </div>
 
-    <div class="sub-label">How much did you end up actually needing?</div>
+    <div class="sub-label">How much did you end up actually needing to reach the seat of the fire?</div>
     <div class="options">
       <button class="option-btn">50 ft</button>
       <button class="option-btn">100 ft</button>
@@ -344,9 +344,10 @@
 
     <div class="sub-label">Heat</div>
     <div class="options">
+      <button class="option-btn">Low</button>
       <button class="option-btn">Mild</button>
-      <button class="option-btn">Moderate</button>
-      <button class="option-btn">Severe / high heat</button>
+      <button class="option-btn">High</button>
+      <button class="option-btn">Severe</button>
     </div>
   </div>
 
@@ -404,13 +405,104 @@
   </div>
 
   
-  <div class="question-card" data-qid="heat_increase" data-show-if='[{"qid":"attack_mode","equals":"Offensive"}]'>
-    <h3><span class="qnum">14.</span> If you stopped flowing water or half-bailed the nozzle to move, did you notice an increase in heat/temperature?</h3>
+  <div class="question-card" data-qid="conditions_change" data-show-if='[{"qid":"attack_mode","equals":"Offensive"}]'>
+    <h3><span class="qnum">14.</span> Did conditions change between entry and the seat of the fire?</h3>
     <div class="options">
-      <button class="option-btn">Yes, noticeable increase</button>
-      <button class="option-btn">No noticeable change</button>
-      <button class="option-btn">N/A – flowed continuously the whole time</button>
-      <button class="option-btn">Not sure</button>
+      <button class="option-btn">Improved</button>
+      <button class="option-btn">Deteriorated</button>
+      <button class="option-btn">Unchanged</button>
+    </div>
+
+    <!-- ===== IMPROVED ===== -->
+    <div class="inline-followup" data-show-if='[{"qid":"conditions_change","equals":"Improved"}]'>
+      <div data-qid="improved_cause">
+        <div class="sub-label">What changed the conditions?</div>
+        <div class="select-note">Select all that apply</div>
+        <div class="options" data-mode="multi">
+          <button class="option-btn">Change in ventilation</button>
+          <button class="option-btn">Change in building location in relation with the fire</button>
+          <button class="option-btn">Gases controlled by fire attack</button>
+          <button class="option-btn">Other</button>
+        </div>
+        <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
+      </div>
+
+      <div class="inline-followup" data-show-if='[{"qid":"improved_cause","includes":"Change in ventilation"}]'>
+        <div data-qid="improved_vent_type">
+          <div class="sub-label">What kind of ventilation?</div>
+          <div class="options">
+            <button class="option-btn">Vertical Ventilation by Crews</button>
+            <button class="option-btn">Fire self ventilated</button>
+            <button class="option-btn">Other ventilation</button>
+          </div>
+          <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
+        </div>
+
+        <div class="inline-followup" data-show-if='[{"qid":"improved_vent_type","equals":"Fire self ventilated"}]'>
+          <div data-qid="improved_self_vent_detail">
+            <div class="sub-label">Fire self ventilated: please explain</div>
+            <textarea class="text-input" rows="2" placeholder="Briefly describe"></textarea>
+          </div>
+        </div>
+
+        <div class="inline-followup" data-show-if='[{"qid":"improved_vent_type","includes":"Vertical Ventilation by Crews"}]'>
+          <div data-qid="improved_vent_conditions">
+            <div class="sub-label">Smoke conditions</div>
+            <div class="options">
+              <button class="option-btn">High visibility</button>
+              <button class="option-btn">Moderate visibility</button>
+              <button class="option-btn">Low visibility</button>
+              <button class="option-btn">Zero visibility</button>
+            </div>
+
+            <div class="sub-label">Heat</div>
+            <div class="options">
+              <button class="option-btn">Low</button>
+              <button class="option-btn">Mild</button>
+              <button class="option-btn">High</button>
+              <button class="option-btn">Severe</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== DETERIORATED ===== -->
+    <div class="inline-followup" data-show-if='[{"qid":"conditions_change","equals":"Deteriorated"}]'>
+      <div data-qid="deteriorated_cause">
+        <div class="sub-label">What changed the conditions?</div>
+        <div class="select-note">Select all that apply</div>
+        <div class="options" data-mode="multi">
+          <button class="option-btn">Change in ventilation</button>
+          <button class="option-btn">Gases not controlled by fire attack</button>
+        </div>
+      </div>
+
+      <div class="inline-followup" data-show-if='[{"qid":"deteriorated_cause","includes":"Change in ventilation"}]'>
+        <div data-qid="deteriorated_vent_type">
+          <div class="sub-label">What kind of ventilation?</div>
+          <div class="options">
+            <button class="option-btn">Vertical Ventilation by Crews</button>
+            <button class="option-btn">Fire self ventilated</button>
+            <button class="option-btn">Other ventilation</button>
+          </div>
+          <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
+        </div>
+
+        <div class="inline-followup" data-show-if='[{"qid":"deteriorated_vent_type","includes":"Vertical Ventilation by Crews"}]'>
+          <div data-qid="deteriorated_vent_crews_detail">
+            <div class="sub-label">Vertical Ventilation by Crews: please explain</div>
+            <textarea class="text-input" rows="2" placeholder="Briefly describe"></textarea>
+          </div>
+        </div>
+
+        <div class="inline-followup" data-show-if='[{"qid":"deteriorated_vent_type","includes":"Fire self ventilated"}]'>
+          <div data-qid="deteriorated_self_vent_detail">
+            <div class="sub-label">Fire self ventilated: please explain</div>
+            <textarea class="text-input" rows="2" placeholder="Briefly describe"></textarea>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -511,7 +603,7 @@
     </div>
   </div>
 
-  <div class="question-card" data-qid="vent_improvement" data-show-if='[{"qid":"attack_mode","equals":"Offensive"}]'>
+  <div class="question-card" data-qid="vent_improvement" data-show-if='[{"qid":"attack_mode","equals":"Offensive"},{"qid":"improved_vent_type","excludes":"Vertical Ventilation by Crews"}]'>
     <h3><span class="qnum">15.</span> Did you notice a significant improvement in conditions after vertical vent?</h3>
     <div class="options">
       <button class="option-btn">Yes</button>
@@ -531,9 +623,10 @@
 
         <div class="sub-label">Heat</div>
         <div class="options">
+          <button class="option-btn">Low</button>
           <button class="option-btn">Mild</button>
-          <button class="option-btn">Moderate</button>
-          <button class="option-btn">Severe / high heat</button>
+          <button class="option-btn">High</button>
+          <button class="option-btn">Severe</button>
         </div>
       </div>
     </div>
@@ -701,9 +794,26 @@
       );
     }
 
+    // Like optionSelected, but only counts if that question is currently
+    // visible (a pick left behind inside a collapsed follow-up doesn't count).
+    function optionSelectedVisible(qid, text) {
+      const el = document.querySelector(`[data-qid="${qid}"]`);
+      if (!el || el.offsetParent === null) return false;
+      return optionSelected(qid, text);
+    }
+
     function conditionMet(cond) {
+      if ('excludes' in cond) return !optionSelectedVisible(cond.qid, cond.excludes);
       if ('includes' in cond) return optionSelected(cond.qid, cond.includes);
       if ('includes_any' in cond) return cond.includes_any.some(t => optionSelected(cond.qid, t));
+      if ('group' in cond) {
+        // Targets one specific .options group by id (for a group that shares a
+        // card with others, so the qid-level lookups can't single it out).
+        const g = document.getElementById(cond.group);
+        const picked = g ? Array.from(g.querySelectorAll('.option-btn.selected')).map(b => b.textContent.trim()) : [];
+        return Array.isArray(cond.in) && picked.some(t => cond.in.includes(t));
+      }
+      if ('not_in' in cond) return !(Array.isArray(cond.not_in) && cond.not_in.includes(getAnswerFor(cond.qid)));
       if ('any_except' in cond) return anySelectedExcept(cond.qid, cond.any_except);
       const val = getAnswerFor(cond.qid);
       if (cond.answered) return val !== null && val !== '';
@@ -719,10 +829,49 @@
       return JSON.parse(raw).every(conditionMet);
     }
 
-    function refreshForm() {
+    function applyVisibility() {
       Array.from(document.querySelectorAll('[data-show-if]')).forEach(el => {
         el.style.display = elementVisible(el) ? '' : 'none';
       });
+    }
+
+    // When the user switches Improved / Deteriorated / Unchanged, wipe the
+    // answers left behind in the follow-ups that just closed, so coming back
+    // later starts fresh (and an old "Vertical Ventilation by Crews" tick
+    // can't silently hide Q20). Returns true if anything was cleared.
+    function clearCollapsedConditionBranches() {
+      let cleared = false;
+      document.querySelectorAll('[data-qid="conditions_change"] .inline-followup').forEach(box => {
+        if (box.offsetParent !== null) return;
+        box.querySelectorAll('.option-btn.selected').forEach(b => { b.classList.remove('selected'); cleared = true; });
+        box.querySelectorAll('input.text-input, textarea').forEach(f => {
+          if (f.value) { f.value = ''; cleared = true; }
+          if (f.classList.contains('other-writein')) f.style.display = 'none';
+        });
+      });
+      return cleared;
+    }
+
+    // Same idea for single groups / text boxes that carry their own data-show-if
+    // (e.g. the hose questions skipped for a crosslay, the "why more/less" box).
+    function clearHiddenConditionalFields() {
+      let cleared = false;
+      document.querySelectorAll('.options[data-show-if], textarea[data-show-if]').forEach(el => {
+        if (el.offsetParent !== null) return;
+        if (el.tagName === 'TEXTAREA') {
+          if (el.value) { el.value = ''; cleared = true; }
+          return;
+        }
+        el.querySelectorAll('.option-btn.selected').forEach(b => { b.classList.remove('selected'); cleared = true; });
+        const w = el.nextElementSibling;
+        if (w && w.classList.contains('other-writein')) { if (w.value) cleared = true; w.value = ''; w.style.display = 'none'; }
+      });
+      return cleared;
+    }
+
+    function refreshForm() {
+      applyVisibility();
+      if (clearCollapsedConditionBranches() | clearHiddenConditionalFields()) applyVisibility();
       renumberVisible();
       updateProgress();
     }
@@ -768,7 +917,7 @@
     // it. Whatever gets typed rides along with the answer as "Other: ...".
     document.querySelectorAll('.options').forEach(group => {
       const otherBtn = Array.from(group.querySelectorAll('.option-btn'))
-        .find(b => b.textContent.trim() === 'Other');
+        .find(b => /^Other\b/.test(b.textContent.trim()));
       if (!otherBtn) return;
 
       const writein = group.nextElementSibling;
@@ -795,7 +944,7 @@
 
       let answeredCount = 0;
       countable.forEach(card => {
-        const groups = Array.from(card.querySelectorAll(':scope > .options'));
+        const groups = Array.from(card.querySelectorAll(':scope > .options')).filter(g => g.offsetParent !== null);
         const allGroupsAnswered = groups.every(g => g.querySelector('.option-btn.selected'));
         if (allGroupsAnswered) answeredCount++;
       });
@@ -819,7 +968,7 @@
       const selected = Array.from(group.querySelectorAll('.option-btn.selected'))
         .map(b => {
           const label = b.textContent.trim();
-          return (label === 'Other' && detail) ? `Other: ${detail}` : label;
+          return (/^Other\b/.test(label) && detail) ? `${label}: ${detail}` : label;
         });
 
       return isMulti ? selected : (selected[0] || null);
@@ -837,7 +986,7 @@
         if (el.offsetParent === null) return;
 
         const qid = el.dataset.qid;
-        const groups = Array.from(el.querySelectorAll(':scope > .options'));
+        const groups = Array.from(el.querySelectorAll(':scope > .options')).filter(g => g.offsetParent !== null);
         const textarea = el.querySelector(':scope > textarea');
 
         let value;
