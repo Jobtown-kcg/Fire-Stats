@@ -635,11 +635,10 @@
   <div class="question-card" data-qid="scba_air" data-show-if='[{"qid":"attack_mode","equals":"Offensive"}]'>
     <h3><span class="qnum">22.</span> Approximately how much SCBA air did you have remaining when you exited the structure?</h3>
     <div class="options">
-      <button class="option-btn">75–100%</button>
-      <button class="option-btn">50–75%</button>
-      <button class="option-btn">25–50%</button>
-      <button class="option-btn">33% / low-air alarm activated</button>
-      <button class="option-btn">Not sure</button>
+      <button class="option-btn">100%-75%</button>
+      <button class="option-btn">75%-50%</button>
+      <button class="option-btn">50%-33%</button>
+      <button class="option-btn">Less than 33%</button>
     </div>
   </div>
 
@@ -649,11 +648,19 @@
       <button class="option-btn">No problems</button>
       <button class="option-btn">Nozzle issue</button>
       <button class="option-btn">Coupling/connection issue</button>
-      <button class="option-btn">Burst or kinked hose</button>
+      <button class="option-btn">Burst hose</button>
+      <button class="option-btn">Kinked hose</button>
       <button class="option-btn">PPE issue</button>
       <button class="option-btn">Other</button>
     </div>
     <input type="text" class="text-input other-writein" placeholder="Please specify" style="display:none;">
+
+    <div class="inline-followup" data-show-if='[{"qid":"equipment_problems","in":["Nozzle issue","Coupling/connection issue","Burst hose","Kinked hose","PPE issue"]}]'>
+      <div data-qid="equipment_problems_detail">
+        <div class="sub-label">What happened?</div>
+        <textarea class="text-input" rows="2" placeholder="Briefly describe the problem so we get a clear picture"></textarea>
+      </div>
+    </div>
   </div>
 
   <div class="question-card" data-qid="one_line_enough" data-show-if='[{"qid":"attack_mode","equals":"Offensive"}]'>
